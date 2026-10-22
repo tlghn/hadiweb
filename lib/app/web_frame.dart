@@ -127,7 +127,7 @@ class _Intro extends StatelessWidget {
           ),
         ]),
         const SizedBox(height: 14),
-        Text('Kamera, canlı yayın başlatma ve kimlik doğrulama gibi telefona özel özellikler uygulamada.',
+        Text('Canlı yayın ve fotoğraf düzenleyici (filtre, Güzelleştir, yüz efektleri) tarayıcıda da var. Video düzenleyici ve kimlik doğrulama gibi telefona özel özellikler uygulamada.',
             style: TextStyle(fontSize: 13, height: 1.45, color: ink2)),
       ]),
     );

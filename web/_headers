@@ -3,7 +3,8 @@
 # sayfaları burada da yayınlanır (site/ ve site_functions/ — kulüp sitesinin derleme anındaki kopyası; tools/sync_site.ps1).
 # script-src 'unsafe-inline': FlutterFire web eklentileri Firebase JS SDK'sını satır içi <script type="module"> ile yükler.
 # connect/img/media https: — üye medyası (Firebase Storage, GIF sağlayıcısı, radyo, canlı ses) farklı alan adlarından gelir.
-# Kamera/mikrofon/konum yalnızca bu site için ve üye izin verirse (sesli mesaj, yakındaki etkinlikler).
+# Kamera/mikrofon/konum yalnızca bu site için ve üye izin verirse (sesli mesaj, canlı yayın / sesli oda, yakındaki etkinlikler).
+# Canlı yayın (LiveKit): sinyal wss: ve medya WebRTC (ICE/TURN, CSP dışı); connect-src https: wss: yeter, media-src blob: var.
 # Uygulama sayfaları arama motorlarına kapalı (tuval üstünde çizilir); yasal sayfalar açıktır (aşağıda).
 
 /*
