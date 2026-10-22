@@ -1,0 +1,80 @@
+/* HADİ — Web Elmas kampanyaları: şerit, kampanya sayfası ve /hp/ paket rozetleri (assets/js/elmas.js yükler).
+   Mobil önce (360px+), dokunma hedefleri ≥44px, açık/koyu tema. Uygulamadan gelen oturumda hiç yüklenmez. */
+:root {
+  --ek-bg: #FFFFFF;
+  --ek-page: #F2F6F9;
+  --ek-ink: #17344F;
+  --ek-ink2: #3E5770;
+  --ek-line: #DCE4EB;
+  --ek-accent: #F2801F;
+  --ek-accent-ink: #17344F;
+  --ek-gold: #F6DD8A;
+  --ek-gold-ink: #5B440D;
+  --ek-strip-bg: #17344F;
+  --ek-strip-ink: #FFFFFF;
+  --ek-ok: #2F6410;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ek-bg: #14283A;
+    --ek-page: #0E1D2B;
+    --ek-ink: #EEF3F7;
+    --ek-ink2: #B9C8D6;
+    --ek-line: #22405A;
+    --ek-accent: #F59A4A;
+    --ek-accent-ink: #10202F;
+    --ek-strip-bg: #22405A;
+    --ek-ok: #A9DB86;
+  }
+}
+
+[data-elmas][hidden], .hadi-app-src [data-elmas] { display: none !important; }
+
+/* ---- şerit (site sayfaları, /hp/) */
+.ek-strip { box-sizing: border-box; background: var(--ek-strip-bg); color: var(--ek-strip-ink); }
+.ek-strip__in { box-sizing: border-box; width: min(1200px, 100% - 32px); margin-inline: auto; padding: 10px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.ek-strip__txt { flex: 1 1 220px; min-width: 0; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.ek-strip__txt time { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ek-badge { display: inline-block; background: var(--ek-gold); color: var(--ek-gold-ink); border-radius: 99px; padding: 2px 9px; font-size: .78rem; font-weight: 800; margin-right: 6px; vertical-align: 1px; }
+.ek-btn { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 18px; border-radius: 999px; background: var(--ek-accent); color: var(--ek-accent-ink); font-weight: 800; text-decoration: none; border: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.ek-btn:focus-visible, .ek-x:focus-visible { outline: 3px solid var(--ek-gold); outline-offset: 2px; }
+.ek-x { box-sizing: border-box; width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; color: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer; }
+
+/* ---- kampanya sayfası */
+.ek-page { margin: 0; background: var(--ek-page); color: var(--ek-ink); font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-text-size-adjust: 100%; }
+.ek-page *, .ek-page *::before, .ek-page *::after { box-sizing: border-box; }
+.ek-top { display: flex; align-items: center; gap: 10px; padding: 8px 16px; background: var(--ek-bg); border-bottom: 1px solid var(--ek-line); }
+.ek-top a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--ek-ink); text-decoration: none; font-weight: 800; }
+.ek-top img { width: 40px; height: 40px; border-radius: 10px; }
+.ek-main { width: min(860px, 100% - 32px); margin: 20px auto 56px; }
+.ek-main h1 { font-family: "Bricolage Grotesque", "Figtree", system-ui, sans-serif; font-size: clamp(1.6rem, 6vw, 2.5rem); line-height: 1.15; margin: 0 0 .4rem; }
+.ek-main h2 { font-family: "Bricolage Grotesque", "Figtree", system-ui, sans-serif; font-size: 1.25rem; margin: 0 0 .5rem; }
+.ek-lead { color: var(--ek-ink2); margin: 0 0 1rem; line-height: 1.5; }
+.ek-card { background: var(--ek-bg); border: 1px solid var(--ek-line); border-radius: 20px; padding: 16px; margin: 14px 0; }
+.ek-card h3 { margin: 4px 0 6px; font-size: 1.12rem; overflow-wrap: anywhere; }
+.ek-card p { margin: 0 0 8px; color: var(--ek-ink2); line-height: 1.5; }
+.ek-count { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ek-count span { min-width: 56px; text-align: center; background: var(--ek-page); border: 1px solid var(--ek-line); border-radius: 12px; padding: 6px 4px; font-variant-numeric: tabular-nums; font-weight: 800; }
+.ek-count small { display: block; font-weight: 600; font-size: .72rem; color: var(--ek-ink2); }
+.ek-tiers { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.ek-tiers li { border: 1px dashed var(--ek-line); border-radius: 12px; padding: 8px 10px; }
+.ek-tiers b { display: block; font-size: 1.1rem; color: var(--ek-ok); }
+.ek-pkgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.ek-pkg { background: var(--ek-bg); border: 1px solid var(--ek-line); border-radius: 16px; padding: 12px; min-width: 0; }
+.ek-pkg b { display: block; font-size: 1.25rem; }
+.ek-pkg .ek-plus { color: var(--ek-ok); font-weight: 800; }
+.ek-pkg span { display: block; color: var(--ek-ink2); font-size: .92rem; }
+.ek-cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0; }
+.ek-terms { font-size: .92rem; color: var(--ek-ink2); line-height: 1.55; }
+.ek-terms li { margin: 4px 0; }
+.ek-terms a, .ek-main a:not(.ek-btn) { color: inherit; text-decoration: underline; text-underline-offset: 2px; display: inline-block; min-height: 24px; }
+.ek-empty { background: var(--ek-bg); border: 1px dashed var(--ek-line); border-radius: 16px; padding: 16px; color: var(--ek-ink2); }
+.ek-foot { width: min(860px, 100% - 32px); margin: 0 auto 32px; font-size: .88rem; color: var(--ek-ink2); }
+.ek-foot a { color: inherit; display: inline-flex; align-items: center; min-height: 44px; margin-right: 14px; }
+
+/* ---- /hp/ paket rozeti */
+/* /hp/ sayfası yalnızca açık temada (beyaz kart) → sabit koyu yeşil (kontrast 6.9:1). */
+.ek-pkg-bonus { display: block; margin-top: 4px; color: #2F6410; font-weight: 800; font-size: .9rem; }
+.hp-pkg { min-height: 44px; }
+
+@media (prefers-reduced-motion: reduce) { .ek-page * { transition: none !important; animation: none !important; } }

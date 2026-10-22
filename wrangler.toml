@@ -1,0 +1,3 @@
+name = "hadi-web"
+pages_build_output_dir = "build/web"
+compatibility_date = "2026-10-01"

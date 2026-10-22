@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hadietkinlikkulubu.app",
+      "sha256_cert_fingerprints": [
+        "DOLDURULACAK:PLAY_APP_SIGNING_SHA256__Play_Console_>_Uygulama_butunlugu_>_Uygulama_imzalama_anahtari_sertifikasi"
+      ]
+    }
+  }
+]

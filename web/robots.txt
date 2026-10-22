@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /kvkk
+Allow: /kullanim-kosullari
+Allow: /katilim-kosullari
+Allow: /topluluk-kurallari
+Allow: /cerez-politikasi
+Allow: /sanal-para-kurallari
+Allow: /seffaflik
+Disallow: /

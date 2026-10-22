@@ -1,0 +1,25 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+/coverage/
+*.iml
+.idea/
+.DS_Store
+*.log
+
+# Firebase web ayarları: derlemede okunur, depoya girmez (README › Firebase web ayarları)
+web_config.json
+# Cloudflare Wrangler yerel durumu
+.wrangler/
+node_modules/
+
+# Silinmek üzere taşınanlar (yerel)
+_to_delete/
+
+# Uygulamanın görselleri: derlemede ..\hadimobile\assets'ten kopyalanır (tools/sync_assets.ps1)
+/assets/

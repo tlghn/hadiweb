@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>HADİ · Bağlantı yok</title>
+  <style>
+    :root { color-scheme: light dark; }
+    html, body { margin: 0; height: 100%; background: #FFF8F1; color: #1F1A16; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    @media (prefers-color-scheme: dark) { html, body { background: #121820; color: #F3EEE8; } p { color: #B9B1A8 !important; } }
+    main { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; box-sizing: border-box; text-align: center; }
+    img { width: 112px; height: 112px; }
+    h1 { margin: 6px 0 0; font-size: 22px; }
+    p { margin: 0; max-width: 320px; color: #6B5B4E; }
+    button { margin-top: 10px; border: 0; border-radius: 999px; padding: 13px 28px; font: 600 15px system-ui, sans-serif; background: #E8701E; color: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="splash.webp" alt="HADİ">
+    <h1>İnternet bağlantın yok</h1>
+    <p>HADİ'yi açmak için bağlantı gerekiyor. Bağlanınca kaldığın yerden devam edersin.</p>
+    <button onclick="location.reload()">Tekrar dene</button>
+  </main>
+  <script>window.addEventListener('online', function () { location.reload(); });</script>
+</body>
+</html>

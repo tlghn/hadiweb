@@ -1,0 +1,72 @@
+# HADİ Web → Cloudflare Pages "hadi-web" (https://hadisosyal.com, kök; ücretsiz plan, doğrudan yükleme).
+# Gerekli depo gizlileri (Settings › Secrets and variables › Actions) — README › GitHub:
+#   HADIMOBILE_READ_TOKEN   tlghn/hadimobile için salt okunur (Contents: Read) ince ayarlı erişim anahtarı
+#   CLOUDFLARE_API_TOKEN    "Cloudflare Pages: Edit" yetkili API anahtarı
+#   CLOUDFLARE_ACCOUNT_ID   Cloudflare hesap kimliği
+#   FB_API_KEY, FB_APP_ID, FB_SENDER_ID, FB_MEASUREMENT_ID (isteğe bağlı)  Firebase web uygulaması ayarları
+name: HADİ Web yayını
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: hadi-web-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: HADİ Web kodu
+        uses: actions/checkout@v4
+        with:
+          path: hadiweb
+
+      - name: Uygulama kodu (paylaşılan paket)
+        uses: actions/checkout@v4
+        with:
+          repository: tlghn/hadimobile
+          token: ${{ secrets.HADIMOBILE_READ_TOKEN }}
+          path: hadimobile
+
+      - name: Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.41.6
+          channel: stable
+          cache: true
+
+      - name: Firebase web ayarları
+        working-directory: hadiweb
+        env:
+          FB_API_KEY: ${{ secrets.FB_API_KEY }}
+          FB_APP_ID: ${{ secrets.FB_APP_ID }}
+          FB_SENDER_ID: ${{ secrets.FB_SENDER_ID }}
+          FB_MEASUREMENT_ID: ${{ secrets.FB_MEASUREMENT_ID }}
+        run: |
+          test -n "$FB_API_KEY" && test -n "$FB_APP_ID" && test -n "$FB_SENDER_ID" || { echo "Firebase gizlileri eksik"; exit 1; }
+          jq -n --arg a "$FB_API_KEY" --arg b "$FB_APP_ID" --arg c "$FB_SENDER_ID" --arg d "$FB_MEASUREMENT_ID" \
+            '{FB_API_KEY:$a, FB_APP_ID:$b, FB_SENDER_ID:$c, FB_MEASUREMENT_ID:$d}' > web_config.json
+
+      - name: Derle
+        working-directory: hadiweb
+        run: |
+          rm -rf assets && cp -r ../hadimobile/assets assets
+          flutter pub get
+          flutter build web --release --no-web-resources-cdn --no-wasm-dry-run --dart-define-from-file=web_config.json
+          cp -r site/. build/web/   # yasal metinler, /hp/, .well-known (kulüp sitesinin anlık görüntüsü)
+          rm -f build/web/404.html  # bilinmeyen yol → uygulama
+          rm -f web_config.json
+
+      - name: Cloudflare Pages'e yükle
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: hadiweb
+          command: pages deploy build/web --project-name=hadi-web --branch=main

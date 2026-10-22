@@ -1,0 +1,24 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["APPLE_TEAM_ID.com.hadietkinlikkulubu.app"],
+        "components": [
+          { "/": "/p/*", "comment": "gönderi" },
+          { "/": "/yazi/*", "comment": "yazı" },
+          { "/": "/etkinlik/*", "comment": "etkinlik" },
+          { "/": "/@*", "comment": "profil" },
+          { "/": "/anket/*", "comment": "anket" },
+          { "/": "/grup/*", "comment": "grup" },
+          { "/": "/kanal/*", "comment": "kanal" },
+          { "/": "/uygulama", "comment": "uygulama / eski davet (?davet=)" },
+          { "/": "/uygulama/", "comment": "uygulama" },
+          { "/": "/ai/*", "comment": "AI video" },
+          { "/": "/davet/*", "comment": "kapalı grup daveti" },
+          { "/": "/sonuc/*", "comment": "paylaşılan sonuç kartı" },
+          { "/": "/d/*", "comment": "kişisel davet kodu" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HADİ — etkinlikler, topluluklar ve yeni arkadaşlar. Tarayıcıda.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#FFF8F1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121820" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="HADİ">
+  <meta name="application-name" content="HADİ">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>HADİ</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { margin: 0; height: 100%; background: #FFF8F1; overscroll-behavior: none; }
+    @media (prefers-color-scheme: dark) { html, body { background: #121820; } }
+    #acilis { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      transition: opacity .35s ease; }
+    #acilis img { width: 120px; height: 120px; animation: nabiz 1.4s ease-in-out infinite; }
+    #acilis span { font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; color: #8A7A6D; letter-spacing: .2px; }
+    @keyframes nabiz { 0%, 100% { transform: scale(1); opacity: .92 } 50% { transform: scale(1.06); opacity: 1 } }
+    @media (prefers-reduced-motion: reduce) { #acilis img { animation: none } }
+  </style>
+</head>
+<body>
+  <div id="acilis" aria-live="polite"><img src="splash.webp" alt="HADİ"><span>Hadi, açılıyor…</span></div>
+  <noscript>HADİ'yi kullanmak için tarayıcında JavaScript'i aç.</noscript>
+  <script>
+    // Flutter ilk kareyi çizince açılış ekranı kaybolur.
+    window.addEventListener('flutter-first-frame', function () {
+      var a = document.getElementById('acilis');
+      if (a) { a.style.opacity = '0'; setTimeout(function () { a.remove(); }, 400); }
+    });
+  </script>
+  <script>
+    // Ana ekrana ekleme (PWA) köprüsü — Dart tarafı: lib/app/pwa.dart.
+    window.hadiPwa = (function () {
+      var deferred = null;
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault(); // tarayıcının kendi şeridi yerine HADİ'nin kartı, doğru anda
+        deferred = e;
+        window.dispatchEvent(new Event('hadi-install-ready'));
+      });
+      window.addEventListener('appinstalled', function () { deferred = null; });
+      return {
+        canPrompt: function () { return deferred !== null; },
+        prompt: function () {
+          var d = deferred;
+          if (!d) return Promise.resolve('unavailable');
+          deferred = null;
+          d.prompt();
+          return d.userChoice.then(function (r) { return r.outcome; }, function () { return 'dismissed'; });
+        },
+        standalone: function () {
+          return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        },
+        isIos: function () {
+          var ua = navigator.userAgent;
+          return /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+      };
+    })();
+    // Çevrimdışı açılışta "bağlantı yok" sayfası (sw.js; uygulama dosyalarını önbelleğe almaz).
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () { navigator.serviceWorker.register(new URL('sw.js', document.baseURI).href).catch(function () {}); });
+    }
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

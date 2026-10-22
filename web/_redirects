@@ -1,0 +1,34 @@
+# hadisosyal.com = HADİ Web + yasal sayfalar + /hp/ + paylaşım sayfaları (site/ anlık görüntüsü).
+# Kulüp sitesinin tanıtım sayfaları burada yok: yasal sayfaların menüsündeki bağlantılar hadietkinlikkulubu.com'a gider.
+# Uygulamanın kendi yolları (/etkinlikler, /oyunlar …) burada yönlendirilmez; yalnızca sitenin .html adları.
+
+/hakkimizda.html  https://hadietkinlikkulubu.com/hakkimizda.html  302
+/hakkimizda  https://hadietkinlikkulubu.com/hakkimizda  302
+/galeri.html  https://hadietkinlikkulubu.com/galeri.html  302
+/galeri  https://hadietkinlikkulubu.com/galeri  302
+/kurucular.html  https://hadietkinlikkulubu.com/kurucular.html  302
+/kurucular  https://hadietkinlikkulubu.com/kurucular  302
+/iletisim.html  https://hadietkinlikkulubu.com/iletisim.html  302
+/iletisim  https://hadietkinlikkulubu.com/iletisim  302
+/manifesto.html  https://hadietkinlikkulubu.com/manifesto.html  302
+/manifesto  https://hadietkinlikkulubu.com/manifesto  302
+/katil.html  https://hadietkinlikkulubu.com/katil.html  302
+/katil  https://hadietkinlikkulubu.com/katil  302
+/oner.html  https://hadietkinlikkulubu.com/oner.html  302
+/oner  https://hadietkinlikkulubu.com/oner  302
+/davetiye.html  https://hadietkinlikkulubu.com/davetiye.html  302
+/davetiye  https://hadietkinlikkulubu.com/davetiye  302
+/cark.html  https://hadietkinlikkulubu.com/cark.html  302
+/cark  https://hadietkinlikkulubu.com/cark  302
+/test.html  https://hadietkinlikkulubu.com/test.html  302
+/test  https://hadietkinlikkulubu.com/test  302
+/etkinlikler.html  https://hadietkinlikkulubu.com/etkinlikler.html  302
+/oyunlar.html  https://hadietkinlikkulubu.com/oyunlar.html  302
+/oyun-eslestir.html  https://hadietkinlikkulubu.com/oyun-eslestir.html  302
+/oyun-kos.html  https://hadietkinlikkulubu.com/oyun-kos.html  302
+/oyun-yapboz.html  https://hadietkinlikkulubu.com/oyun-yapboz.html  302
+/oyun-yilan.html  https://hadietkinlikkulubu.com/oyun-yilan.html  302
+/oyun-eslestir  https://hadietkinlikkulubu.com/oyun-eslestir  302
+/oyun-kos  https://hadietkinlikkulubu.com/oyun-kos  302
+/oyun-yapboz  https://hadietkinlikkulubu.com/oyun-yapboz  302
+/oyun-yilan  https://hadietkinlikkulubu.com/oyun-yilan  302

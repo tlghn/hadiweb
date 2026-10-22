@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ödeme yöntemlerim | HADİ Etkinlik Kulübü</title>
+<meta name="description" content="HADİ üyeleri için kayıtlı kartlar: iyzico'da saklanan kartlarını gör, ekle, adlandır, varsayılan yap ve sil.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://hadietkinlikkulubu.com/hp/odeme-yontemlerim.html">
+<meta name="theme-color" content="#17344F">
+<link rel="icon" type="image/png" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="hp.css">
+</head>
+<body data-page="cards">
+<header class="hp-top">
+  <a class="brand" href="../index.html" aria-label="HADİ Etkinlik Kulübü ana sayfa">
+    <img src="../assets/img/hadi-logo-512.jpg" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name"><b>H</b><b>A</b><b>D</b><b>İ</b></span><span class="brand-sub">Etkinlik Kulübü</span></span>
+  </a>
+  <span id="who" class="hp-who"></span>
+  <button id="logout" class="btn btn--ghost btn--sm hide" type="button">Çıkış</button>
+</header>
+
+<main class="hp-main">
+  <h1>Ödeme yöntemlerim</h1>
+  <p class="lead">Fiziksel ürün ve hizmet ödemelerinde (sipariş, kurye, bilet, yolculuk, bağış) kullandığın kayıtlı kartlar. Kart numaran HADİ'de tutulmaz; kartların lisanslı ödeme kuruluşu iyzico'da saklanır.</p>
+
+  <div id="cfgErr" class="hp-note err hide">Sayfa henüz ayarlanmadı. Lütfen daha sonra tekrar dene.</div>
+
+  <!-- Giriş (Elmas sayfasıyla aynı: telefonla ya da uygulamadan alınan kodla) -->
+  <section id="login" class="hp-card hide" aria-labelledby="loginTitle">
+    <h2 id="loginTitle">Hesabına giriş yap</h2>
+    <p class="muted">Uygulamada kullandığın telefon numarasıyla giriş yap.</p>
+    <div id="stepPhone">
+      <label for="phone">Telefon numaran</label>
+      <div class="hp-row"><span class="hp-prefix">+90</span><input id="phone" inputmode="tel" autocomplete="tel-national" placeholder="5xx xxx xx xx" maxlength="16"></div>
+      <button id="sendCode" class="btn btn--h" type="button">SMS kodu gönder</button>
+    </div>
+    <div id="stepCode" class="hide">
+      <label for="smsCode">SMS ile gelen kod</label>
+      <input id="smsCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 haneli kod">
+      <button id="verify" class="btn btn--h" type="button">Giriş yap</button>
+    </div>
+    <details class="hp-alt">
+      <summary>Uygulamadan aldığın giriş koduyla gir</summary>
+      <label for="appCode">8 karakterlik kod</label>
+      <input id="appCode" maxlength="9" placeholder="ABCD2345" autocapitalize="characters" autocomplete="off">
+      <button id="redeem" class="btn btn--ghost" type="button">Kodla giriş yap</button>
+    </details>
+    <div id="recaptcha"></div>
+    <p id="loginErr" class="hp-err" role="alert"></p>
+  </section>
+
+  <section id="cardsBox" class="hide" aria-live="polite">
+    <div id="off" class="hp-note hide">Kart kaydetme şu an kapalı; kayıtlı kartlarını görebilir ve silebilirsin.</div>
+    <div id="cards"></div>
+    <div id="empty" class="hp-note hide">Kayıtlı kartın yok. Kartla öderken iyzico sayfasında "Kartımı kaydet"i işaretleyebilir ya da aşağıdan ekleyebilirsin.</div>
+    <button id="add" class="btn btn--h" type="button">Kart ekle</button>
+    <p class="muted small">Kart ekle: kartını iyzico'nun güvenli sayfasında girersin. Kartı doğrulamak için 1,00 TL'lik bir ödeme başlatılır ve hemen iptal edilir; sayfada "Kartımı kaydet"i işaretle.</p>
+    <p id="err" class="hp-err" role="alert"></p>
+  </section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="../panel/config.js"></script>
+<script src="kartlarim.js"></script>
+</body>
+</html>

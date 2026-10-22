@@ -1,0 +1,17 @@
+[
+  {
+    "origin": [
+      "https://hadisosyal.com",
+      "https://www.hadisosyal.com",
+      "https://hadi-web.pages.dev",
+      "https://crew.hadisosyal.com",
+      "https://hadi-crew.pages.dev",
+      "https://founder.hadisosyal.com",
+      "https://hadi-founder.pages.dev",
+      "http://localhost:8080"
+    ],
+    "method": ["GET", "HEAD"],
+    "responseHeader": ["Content-Type", "Content-Length", "Content-Range", "Accept-Ranges", "Cache-Control", "ETag"],
+    "maxAgeSeconds": 3600
+  }
+]

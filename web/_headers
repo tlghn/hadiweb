@@ -1,0 +1,145 @@
+# HADİ Web — hadisosyal.com (kökte, ayrı Cloudflare Pages projesi "hadi-web"). Derlemede build/web köküne kopyalanır.
+# Kulüp sitesi (hadietkinlikkulubu.com) ayrı projedir ve bu dosyadan etkilenmez. Sitenin yasal sayfaları, /hp/ ve paylaşım
+# sayfaları burada da yayınlanır (site/ ve site_functions/ — kulüp sitesinin derleme anındaki kopyası; tools/sync_site.ps1).
+# script-src 'unsafe-inline': FlutterFire web eklentileri Firebase JS SDK'sını satır içi <script type="module"> ile yükler.
+# connect/img/media https: — üye medyası (Firebase Storage, GIF sağlayıcısı, radyo, canlı ses) farklı alan adlarından gelir.
+# Kamera/mikrofon/konum yalnızca bu site için ve üye izin verirse (sesli mesaj, yakındaki etkinlikler).
+# Uygulama sayfaları arama motorlarına kapalı (tuval üstünde çizilir); yasal sayfalar açıktır (aşağıda).
+
+/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.recaptcha.net https://www.googletagmanager.com https://unpkg.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss: blob: data:; frame-src 'self' https:; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self' https:
+  Cache-Control: no-cache
+
+/manifest.json
+  Content-Type: application/manifest+json
+# Flutter varlıkları (oyun sahneleri, görseller, yazı tipleri) adları değişmeden güncellenir: her açılışta ETag ile
+# doğrulanır (değişmediyse 304, indirme yok). Aksi hâlde güncellenen oyun dosyaları 1 güne kadar eski kalır.
+/assets/*
+  ! Cache-Control
+  Cache-Control: no-cache
+/canvaskit/*
+  ! Cache-Control
+  Cache-Control: public, max-age=86400
+
+# iPhone Universal Links ve Android App Links (uygulama yüklüyse hadisosyal.com bağlantıları uygulamada açılır).
+# Kaynak: kulüp sitesinin .well-known dosyaları (site/ anlık görüntüsü; tools/sync_site.ps1; site değiştirilmez).
+/.well-known/apple-app-site-association
+  ! X-Robots-Tag
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+/.well-known/assetlinks.json
+  ! X-Robots-Tag
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
+
+# ---- Kulüp sitesinden gelen sayfalar (site/ anlık görüntüsü; tools/sync_site.ps1). Sitedeki başlıklarla aynı.
+# Yasal metinler ve kampanyalar: sitenin genel CSP'si (Google Analytics, Cloudflare Insights, yazı tipleri).
+/kvkk
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/kvkk.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/kullanim-kosullari
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/kullanim-kosullari.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/katilim-kosullari
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/katilim-kosullari.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/topluluk-kurallari
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/topluluk-kurallari.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/cerez-politikasi
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/cerez-politikasi.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/sanal-para-kurallari
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/sanal-para-kurallari.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/elmas-kampanyalari
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+/elmas-kampanyalari.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://docs.google.com https://geocoding-api.open-meteo.com https://api.open-meteo.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https://docs.google.com
+  ! X-Frame-Options
+  X-Frame-Options: SAMEORIGIN
+  ! X-Robots-Tag
+# Web Elmas ödemesi (/hp/): Firebase giriş (telefon + reCAPTCHA) ve Cloud Functions; sayfaya özel CSP (sitedekiyle aynı).
+/hp/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net https://*.run.app https://www.google.com; frame-src https://www.google.com https://www.recaptcha.net https://*.firebaseapp.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'
+  X-Robots-Tag: noindex
+/assets/css/*
+  ! Cache-Control
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/assets/js/*
+  ! Cache-Control
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+/assets/js/forms-config.js
+  ! Cache-Control
+  Cache-Control: no-cache
+/assets/img/*
+  ! Cache-Control
+  Cache-Control: public, max-age=604800

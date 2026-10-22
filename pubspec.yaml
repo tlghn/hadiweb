@@ -1,0 +1,53 @@
+name: hadi_web
+description: "HADİ Web — üye uygulamasının web sürümü (Flutter Web, Cloudflare Pages)."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  # Kurucunun bilgisayarındaki Flutter 3.41 (Dart 3.11) ile aynı.
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  # Uygulamanın kendisi: tüm ekranlar, veri katmanı ve tema `hadi` paketinden gelir. Klasörler yan yana: D:\hadimobile, D:\hadiweb.
+  hadi:
+    path: ../hadimobile
+  # Sürümler hadi paketinin kısıtlarıyla çözülür ("any").
+  firebase_core: any
+  cupertino_icons: any
+  shared_preferences: any
+  url_launcher: any
+  # Tarayıcı API'leri (ana ekrana ekleme / PWA, localStorage).
+  web: any
+
+dependency_overrides:
+  # hadi ile aynı (dmrtd / livekit uyumu).
+  pointycastle: ^4.0.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  # Uygulamanın görselleri, oyun sahneleri ve 3B nokta bulutları uygulamadaki yollarıyla (assets/...) okunur.
+  # Bu klasörler derlemeden önce ../hadimobile/assets'ten kopyalanır (tools/sync_assets.ps1; depoya girmez).
+  assets:
+    - assets/logo/
+    - assets/img/
+    - assets/games/
+    - assets/games/tex/
+    - assets/fonts/
+    - assets/particles/
+  fonts:
+    - family: Bricolage
+      fonts:
+        - asset: assets/fonts/BricolageGrotesque-Regular.ttf
+        - asset: assets/fonts/BricolageGrotesque-Bold.ttf
+          weight: 700

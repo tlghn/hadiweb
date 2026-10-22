@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ödeme tamamlanamadı | HADİ Etkinlik Kulübü</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#17344F">
+<link rel="icon" type="image/png" href="../assets/img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="hp.css">
+</head>
+<body data-page="fail">
+<header class="hp-top">
+  <a class="brand" href="../index.html" aria-label="HADİ Etkinlik Kulübü ana sayfa">
+    <img src="../assets/img/hadi-logo-512.jpg" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name"><b>H</b><b>A</b><b>D</b><b>İ</b></span><span class="brand-sub">Etkinlik Kulübü</span></span>
+  </a>
+</header>
+<main class="hp-main">
+  <div id="cfgErr" class="hp-note err hide">Ödeme sayfası henüz ayarlanmadı.</div>
+  <section class="hp-card">
+    <h1>Ödeme tamamlanamadı</h1>
+    <p id="result" class="lead" aria-live="polite">Ödeme onaylanmadı ve hesabından para çekilmedi. Kart bilgilerini kontrol edip tekrar deneyebilir ya da başka bir ödeme yöntemi seçebilirsin.</p>
+    <p><a class="btn btn--h" href="./">Elmas sayfasına dön</a></p>
+  </section>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../panel/config.js"></script>
+<script src="hp.js"></script>
+</body>
+</html>

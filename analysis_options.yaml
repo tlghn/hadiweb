@@ -1,0 +1,12 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - _xfer/**
+    - _to_delete/**
+    - build/**
+
+linter:
+  rules:
+    prefer_single_quotes: true
+    require_trailing_commas: false

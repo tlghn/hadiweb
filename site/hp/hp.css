@@ -1,0 +1,38 @@
+/* HADİ Para yükleme sayfaları (/hp/). Site stil dosyası (../assets/css/style.css) üzerine. */
+body { background: var(--mist); }
+.hide { display: none !important; }
+.hp-top { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--line); }
+.hp-top .brand img { width: 44px; height: 44px; }
+.hp-who { color: var(--ink-2); font-size: .9rem; }
+.hp-main { width: min(760px, 100% - 32px); margin: 28px auto 64px; }
+.hp-main h1 { font-family: var(--display); font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0 0 .4rem; }
+.hp-main h2 { font-family: var(--display); font-size: 1.3rem; margin: 0 0 .4rem; }
+.hp-card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin: 16px 0; }
+.hp-card label, .hp-alt label { display: block; font-weight: 600; font-size: .9rem; margin: 12px 0 6px; color: var(--ink-2); }
+.hp-card input:not([type=checkbox]) { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; font: inherit; background: #fff; color: var(--ink); }
+.hp-card .btn { margin-top: 12px; }
+.hp-row { display: flex; gap: 8px; align-items: center; }
+.hp-prefix { font-weight: 700; color: var(--ink-2); }
+.hp-alt { margin-top: 16px; border-top: 1px dashed var(--line); padding-top: 12px; }
+.hp-alt summary { cursor: pointer; font-weight: 600; color: var(--ink-2); }
+.hp-err { color: #b23535; font-weight: 600; min-height: 1.2em; }
+.muted { color: var(--ink-2); }
+.small { font-size: .85rem; }
+.hp-note { border-radius: 14px; padding: 12px 14px; background: #E5F4FB; color: var(--ink); margin: 14px 0; }
+.hp-note.err { background: #FBE6E6; color: #8f2525; }
+.hp-note.ok { background: #EEF7E5; color: #2f6410; }
+.hp-balance { background: linear-gradient(90deg, #D9A93A, #F6DD8A); color: #5b440d; font-weight: 800; border-radius: 18px; padding: 14px 18px; font-size: 1.1rem; }
+.hp-chan h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hp-tag { font-size: .72rem; font-weight: 800; background: #FEF0E3; color: #a8520c; border-radius: 99px; padding: 2px 8px; font-family: var(--body); }
+.hp-pkgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+.hp-pkg { border: 2px solid var(--line); border-radius: 16px; background: #fff; padding: 14px 12px; text-align: left; cursor: pointer; font: inherit; color: var(--ink); transition: border-color .2s, transform .2s; }
+.hp-pkg:hover { border-color: var(--h); transform: translateY(-2px); }
+.hp-pkg:disabled { opacity: .55; cursor: default; transform: none; }
+.hp-pkg b { display: block; font-family: var(--display); font-size: 1.35rem; }
+.hp-pkg span { color: var(--ink-2); font-size: .92rem; }
+.hp-custom { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; margin-top: 12px; }
+.hp-custom > div { flex: 1; min-width: 140px; }
+.hp-custom output { font-weight: 800; }
+.hp-consent { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; font-size: .9rem; margin-top: 8px; }
+.hp-consent input { margin-top: 3px; flex: none; }
+@media (max-width: 520px) { .hp-who { display: none; } .hp-pkgs { grid-template-columns: 1fr 1fr; } }
