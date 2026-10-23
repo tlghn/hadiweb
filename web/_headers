@@ -22,6 +22,10 @@
   Content-Type: application/manifest+json
 # Flutter varlıkları (oyun sahneleri, görseller, yazı tipleri) adları değişmeden güncellenir: her açılışta ETag ile
 # doğrulanır (değişmediyse 304, indirme yok). Aksi hâlde güncellenen oyun dosyaları 1 güne kadar eski kalır.
+# Açık uygulamanın yeni sürümü fark etmesi için sürüm etiketi (tools/build.ps1 yazar; lib/app/update_check.dart okur).
+/hadi_build.txt
+  ! Cache-Control
+  Cache-Control: no-store
 /assets/*
   ! Cache-Control
   Cache-Control: no-cache

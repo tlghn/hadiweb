@@ -30,6 +30,12 @@ if ($LASTEXITCODE -ne 0) { throw "pub get başarısız" }
 $stamp = Get-Date -Format "yyyyMMddHHmmss"
 & $Flutter build web --release --no-web-resources-cdn --no-wasm-dry-run --dart-define-from-file=web_config.json --dart-define=HADI_BUILD=$stamp
 if ($LASTEXITCODE -ne 0) { throw "web derlemesi başarısız" }
+# Sürüm etiketi: index.html ve flutter_bootstrap.js içindeki __HADI_BUILD__ yerine yazılır (uygulama dosyaları etiketle istenir;
+# telefon tarayıcısında Ctrl+F5 gerekmez). hadi_build.txt: açık uygulama yeni sürümü bununla fark eder (lib/app/update_check.dart).
+foreach ($f in @("build\web\index.html", "build\web\flutter_bootstrap.js")) {
+  $t = [IO.File]::ReadAllText((Join-Path $root $f)); [IO.File]::WriteAllText((Join-Path $root $f), $t.Replace("__HADI_BUILD__", $stamp))
+}
+[IO.File]::WriteAllText((Join-Path $root "build\web\hadi_build.txt"), $stamp)
 
 # 3) Pakete kulüp sitesi sayfaları (.well-known dahil; uygulamanın dosyalarıyla çakışmaz)
 Copy-Item -Recurse -Force "site\*" "build\web\"

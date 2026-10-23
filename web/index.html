@@ -18,6 +18,8 @@
   <title>HADİ</title>
   <link rel="manifest" href="manifest.json">
   <style>
+    /* Firebase telefon girişinin görünmez reCAPTCHA rozeti: alt menünün üstünde kalıyordu; bilgilendirme metni giriş ekranında. */
+    .grecaptcha-badge { visibility: hidden !important; }
     html, body { margin: 0; height: 100%; background: #FFF8F1; overscroll-behavior: none; }
     @media (prefers-color-scheme: dark) { html, body { background: #121820; } }
     #acilis { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
@@ -71,6 +73,19 @@
       window.addEventListener('load', function () { navigator.serviceWorker.register(new URL('sw.js', document.baseURI).href).catch(function () {}); });
     }
   </script>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Sürüm etiketi (tools/build.ps1 derlemede __HADI_BUILD__ yerine yazar). Uygulama dosyaları (flutter_bootstrap.js,
+    // main.dart.js ve parçaları) bu etiketle istenir: tarayıcı/Cloudflare önbelleğindeki eski kopya kullanılmaz; telefonda
+    // Ctrl+F5 gerekmez. index.html önbelleğe alınmaz, yeni sürüm sayfa her açıldığında gelir.
+    window.HADI_BUILD = '__HADI_BUILD__';
+    window.dartDeferredLibraryLoader = function (uri, ok, err) {
+      var s = document.createElement('script');
+      s.src = uri + (uri.indexOf('?') < 0 ? '?' : '&') + 'v=' + window.HADI_BUILD;
+      s.onload = function () { ok(); };
+      s.onerror = function (e) { err(e); };
+      document.head.appendChild(s);
+    };
+  </script>
+  <script src="flutter_bootstrap.js?v=__HADI_BUILD__" async></script>
 </body>
 </html>

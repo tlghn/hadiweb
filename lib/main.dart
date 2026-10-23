@@ -17,6 +17,7 @@ import 'package:hadi/features/wallet/card_checkout.dart' show installCardCheckou
 
 import 'app/web_options.dart';
 import 'app/install_nudge.dart';
+import 'app/update_check.dart';
 import 'app/web_frame.dart';
 
 /// Yalnızca yerel deneme: `--dart-define=PANEL_DEMO=true` ile Firebase'siz, uygulamanın demo verisiyle açılır.
@@ -55,6 +56,6 @@ Future<void> _main() async {
   // "RenderBox was not laid out" hatası veriyordu. Uygulamanın içindeki sıra değişmez.
   runApp(FocusTraversalGroup(
     policy: WidgetOrderTraversalPolicy(),
-    child: WebFrame(child: InstallNudge(child: HadiApp(services: services))),
+    child: WebFrame(child: UpdateCheck(child: InstallNudge(child: HadiApp(services: services)))),
   ));
 }
