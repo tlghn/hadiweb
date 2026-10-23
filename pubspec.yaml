@@ -24,6 +24,7 @@ dependencies:
   url_launcher: any
   # Tarayıcı API'leri (ana ekrana ekleme / PWA, localStorage).
   web: any
+  pointer_interceptor: any
 
 dependency_overrides:
   # hadi ile aynı (dmrtd / livekit uyumu).

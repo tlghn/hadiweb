@@ -1404,7 +1404,7 @@ packages:
     source: hosted
     version: "2.1.8"
   pointer_interceptor:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pointer_interceptor
       sha256: "9ad8889f36a417649ad7578fdb6df967157208cb90f69facd043660424020710"
