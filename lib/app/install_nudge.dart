@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:hadi/core/app_hooks.dart';
 import 'package:hadi/core/session.dart';
@@ -102,7 +103,9 @@ class _InstallNudgeState extends State<InstallNudge> {
         left: 12,
         right: 12,
         bottom: 92 + bottom,
-        child: IgnorePointer(
+        child: PointerInterceptor(
+            intercepting: _show,
+            child: IgnorePointer(
           ignoring: !_show,
           child: AnimatedSlide(
             offset: _show ? Offset.zero : const Offset(0, .35),
@@ -114,6 +117,7 @@ class _InstallNudgeState extends State<InstallNudge> {
               child: _iosHelp ? _IosHelp(dark: dark, onClose: () => _close()) : _Card(dark: dark, busy: _busy, onAdd: _add, onLater: () => _close()),
             ),
           ),
+        ),
         ),
       ),
     ]);

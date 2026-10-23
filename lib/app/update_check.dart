@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:js_interop';
 
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:hadi/theme/hadi_colors.dart';
 import 'package:web/web.dart' as web;
@@ -77,7 +78,9 @@ class _UpdateCheckState extends State<UpdateCheck> {
           left: 12,
           right: 12,
           bottom: widget.bottomOffset + bottom,
-          child: Directionality(
+          // PointerInterceptor: oyun sahnesinin (iframe) üstünde de Yenile'ye dokunulabilsin.
+          child: PointerInterceptor(
+            child: Directionality(
             textDirection: TextDirection.ltr,
             child: Material(
               color: dark ? const Color(0xFF1E2833) : Colors.white,
@@ -108,6 +111,7 @@ class _UpdateCheckState extends State<UpdateCheck> {
                 ),
               ),
             ),
+          ),
           ),
         ),
     ]);
