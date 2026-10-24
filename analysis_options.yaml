@@ -5,6 +5,7 @@ analyzer:
     - _xfer/**
     - _to_delete/**
     - build/**
+    - web/**
 
 linter:
   rules:
