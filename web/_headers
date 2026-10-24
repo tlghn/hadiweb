@@ -36,6 +36,10 @@
 /canvaskit/*
   ! Cache-Control
   Cache-Control: public, max-age=86400
+# HADİ Kitap kamu malı kataloğu (hadimobile/tools/gen_book_catalog.js): yalnızca sunucu (books.adminSeedCatalog) okur.
+/books_seed/*
+  ! Cache-Control
+  Cache-Control: public, max-age=600
 
 # iPhone Universal Links ve Android App Links (uygulama yüklüyse hadisosyal.com bağlantıları uygulamada açılır).
 # Kaynak: kulüp sitesinin .well-known dosyaları (site/ anlık görüntüsü; tools/sync_site.ps1; site değiştirilmez).
