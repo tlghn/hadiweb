@@ -46,6 +46,10 @@ flutter:
     - assets/games/tex/
     - assets/fonts/
     - assets/particles/
+    # HADİ Mağaza 3B görüntüleyici (model-viewer sayfası, glTF modeller) ve Meydan bandı küçük görselleri.
+    - assets/store3d/
+    - assets/store3d/v1/
+    - assets/store3d/thumbs/
   fonts:
     - family: Bricolage
       fonts:

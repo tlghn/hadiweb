@@ -14,6 +14,8 @@ import 'package:hadi/core/web_support.dart';
 import 'package:hadi/data/demo_services.dart' show DemoApplicationService;
 import 'package:hadi/data/services.dart';
 import 'package:hadi/features/wallet/card_checkout.dart' show installCardCheckout;
+import 'package:hadi/features/secondhand/sh_routes.dart' show registerSecondhandHooks;
+import 'package:hadi/features/creator_subs/creator_page.dart' show registerCreatorSubsHooks;
 
 import 'app/web_options.dart';
 import 'app/install_nudge.dart';
@@ -50,6 +52,8 @@ Future<void> _main() async {
   KeepAwake.instance.init();
   await CrashReporting.instance.init(firebaseReady: firebaseOk);
   RecentErrors.install();
+  registerSecondhandHooks(); // HADİ 2. El: grup bit pazarı + profesyonel profil kancaları
+  registerCreatorSubsHooks(); // Üye abonelikleri: profesyonel profilde kademeler + Abone ol
   installCardCheckout(); // Kartla ödeme: web'de iyzico sayfası yeni sekmede (card_checkout.dart)
   // Uygulamanın dışındaki düğmeler (tanıtım, "ana ekrana ekle" kartı) için odak sırası widget sırasıyla belirlenir:
   // varsayılan (konuma göre) sıralama, tarayıcı sekmesi odak alınca ilk kare çizilmeden çalışıp
