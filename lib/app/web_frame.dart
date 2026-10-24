@@ -93,7 +93,8 @@ class _Intro extends StatelessWidget {
       style: TextStyle(fontFamily: 'Bricolage', color: ink, decoration: TextDecoration.none),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Uygulamanın açılışındaki logo (15 katman; sitedeki animasyonun aynısı): giriş bir kez, figürler hareketli.
-        const SizedBox(width: 136, height: 136, child: HadiLogoAnimation()),
+        // Büyük ve sütunda ortalı (kurucu, 24 Ekim 2026).
+        const Center(child: SizedBox(width: 240, height: 240, child: HadiLogoAnimation())),
         const SizedBox(height: 28),
         Text('Hadi, buluşalım.', style: TextStyle(fontSize: 40, height: 1.1, fontWeight: FontWeight.w700, color: ink)),
         const SizedBox(height: 14),

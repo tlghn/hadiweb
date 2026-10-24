@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+  <script>
+    // HADİ: pencere/alt sayfa geri tuşu (core/web_history_web.dart). Bu dinleyici Flutter motorundan ÖNCE kaydolur;
+    // Dart tarafının kancası true dönerse popstate motora ve yönlendiriciye hiç ulaşmaz.
+    window.__hadiPopHooks = [];
+    window.addEventListener('popstate', function (e) {
+      var h = window.__hadiPopHooks;
+      for (var i = 0; i < h.length; i++) { try { if (h[i]()) { e.stopImmediatePropagation(); return; } } catch (_) {} }
+    }, true);
+  </script>
   <base href="$FLUTTER_BASE_HREF">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
