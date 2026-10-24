@@ -20,10 +20,15 @@ class WebFrame extends StatelessWidget {
   static const double desktopMin = 1100;
   static const double columnWidth = 480;
 
+  /// Uygulama ağacının sabit anahtarı: pencere boyutu değişip düzen (tam ekran ↔ kart ↔ masaüstü) değişince uygulama
+  /// yeniden kurulmasın (yönlendirici baştan başlayıp ana sayfaya atmasın); GlobalKey ile durum korunarak taşınır.
+  static final GlobalKey _appKey = GlobalKey(debugLabel: 'hadi-app');
+
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
     final size = mq.size;
+    final child = KeyedSubtree(key: _appKey, child: this.child);
     if (size.width < phoneMax) return child;
     final dark = mq.platformBrightness == Brightness.dark;
     final desktop = size.width >= desktopMin;
