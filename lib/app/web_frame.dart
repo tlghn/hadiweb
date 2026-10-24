@@ -5,6 +5,7 @@ import 'package:hadi/widgets/hadi_logo_animation.dart' show HadiLogoAnimation;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'pwa.dart';
+import 'package:hadi/core/immersive.dart';
 
 /// Telefon genişliğinin altında (< 640 px) uygulama tam ekran. Daha geniş ekranda uygulama, okunur bir sütunda
 /// (en çok 480 px) yumuşak gölgeli bir kart olarak ortalanır; masaüstü genişliğinde (≥ 1100 px) solda HADİ tanıtımı ve
@@ -25,11 +26,17 @@ class WebFrame extends StatelessWidget {
   static final GlobalKey _appKey = GlobalKey(debugLabel: 'hadi-app');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ValueListenableBuilder<bool>(
+        // Tam ekran içerik (ör. kitap filmi) çerçevesiz, bütün pencerede çizilir.
+        valueListenable: appImmersive,
+        builder: (context, immersive, _) => _build(context, immersive),
+      );
+
+  Widget _build(BuildContext context, bool immersive) {
     final mq = MediaQuery.of(context);
     final size = mq.size;
     final child = KeyedSubtree(key: _appKey, child: this.child);
-    if (size.width < phoneMax) return child;
+    if (immersive || size.width < phoneMax) return child;
     final dark = mq.platformBrightness == Brightness.dark;
     final desktop = size.width >= desktopMin;
     final vMargin = size.height >= 760 ? 24.0 : 0.0;
