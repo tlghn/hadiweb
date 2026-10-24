@@ -26,6 +26,10 @@
 /hadi_build.txt
   ! Cache-Control
   Cache-Control: no-store
+# Tarayıcı bildirimleri service worker'ı: her açılışta güncel sürüm (Firebase Messaging; kendi kapsamında çalışır).
+/firebase-messaging-sw.js
+  ! Cache-Control
+  Cache-Control: no-cache
 /assets/*
   ! Cache-Control
   Cache-Control: no-cache

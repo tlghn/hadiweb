@@ -36,6 +36,13 @@ foreach ($f in @("build\web\index.html", "build\web\flutter_bootstrap.js")) {
   $t = [IO.File]::ReadAllText((Join-Path $root $f)); [IO.File]::WriteAllText((Join-Path $root $f), $t.Replace("__HADI_BUILD__", $stamp))
 }
 [IO.File]::WriteAllText((Join-Path $root "build\web\hadi_build.txt"), $stamp)
+# Tarayıcı bildirimleri (web push): service worker'a Firebase yapılandırması yazılır (web_config.json; gizli değildir).
+$swp = Join-Path $root "build\web\firebase-messaging-sw.js"
+if (Test-Path $swp) {
+  $t = [IO.File]::ReadAllText($swp)
+  $t = $t.Replace("__FB_API_KEY__", $wc.FB_API_KEY).Replace("__FB_SENDER_ID__", $wc.FB_SENDER_ID).Replace("__FB_APP_ID__", $wc.FB_APP_ID)
+  [IO.File]::WriteAllText($swp, $t)
+}
 
 # 3) Pakete kulüp sitesi sayfaları (.well-known dahil; uygulamanın dosyalarıyla çakışmaz)
 Copy-Item -Recurse -Force "site\*" "build\web\"
