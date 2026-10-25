@@ -50,7 +50,20 @@ const headGain = (clip) => (clip in HEAD_GAIN ? HEAD_GAIN[clip] : CALM.test(clip
 // (onaylama, baş sallama, etrafa bakma, başı eğme) 32, gövde duruşu değişimi (yatma, kalkma, eğilme, diz çökme) 60.
 const HEAD_GEST = /^(nod|head_shake|look_around|head_down|think)$/;
 const HEAD_BODY = /^(fall|lie|lie_idle|get_up|stand_up|sit|sit_ground|kneel|kneel_idle|bow|pray|pick_up)$/;
-const HEAD_SLEW = { calm: 12, gest: 32, body: 60 };
+const HEAD_SLEW = { calm: 12, gest: 32, emo: 12, body: 60 };
+// Duygu klipleri (gülme, omuz silkme, öfke…): gövde sert oynar; baş jest sınırıyla izler.
+const HEAD_EMO = /^(laugh|cry|cry_face|scared|upset|angry_gesture|shrug|happy|cheer|clap)/;
+// 25 Ekim (kurucu: "başlar hâlâ tam sabit değil, baş hareketleri daha yumuşak olmalı"): son aşama baş dengeleyicisi.
+// Başın GÖVDEYE (köke) göre yönü kritik sönümlü yayla (ω=7 rad/sn) ve bileşke hız sınırıyla izlenir: sakin/bakış ≤18°/sn,
+// baş jesti ≤45°/sn, duygu klibi ≤30°/sn, duruş değişimi (eğilme, oturma, düşme) ≤120°/sn. Gövdeyi sarsan klip (gülme,
+// omuz silkme, geçiş) başı savurmaz — gerçek insan gibi baş sabit kalır, boyun telafi eder.
+const HEAD_STAB = { calm: 18, gest: 45, emo: 30, body: 120 };
+const HEAD_STAB_W = 7;
+// Boştaki kol (etkileşimde kullanılmayan el): kemik başına güçlü alçak geçiren (τ) + hız sınırı (rad/sn).
+const CALM_ARM_TAU = 0.35, CALM_ARM_VMAX = 1.2;
+// Göğüs/omurga: klip geçişlerinde (ör. öfke → omuz silkme) gövde tek karede ~70° sıçrayabiliyordu (558°/sn ölçüldü):
+// omurga kemiği başına hız sınırı (rad/sn); duruş değişiminde (eğilme, oturma, düşme) daha geniş.
+const SPINE_VMAX = { calm: 1.6, gest: 1.6, emo: 2.0, body: 4.0 };
 const EXPR_ALIAS = { happy: 'smile', joy: 'smile', scared: 'fear', afraid: 'fear', surprised: 'surprise', anger: 'angry', mad: 'angry', crying: 'cry', thinking: 'think', worried: 'sad', calm: 'neutral' };
 const EXPR_PREFIX =['', 'expr_', 'ex_', 'exp_', 'face_', 'expression_'];
 const VIS_PREFIX = ['', 'viseme_', 'vis_', 'v_', 'viseme-'];
@@ -102,6 +115,47 @@ function liveName(name, live) {
   return /^(expr|ex|exp|face|expression|viseme|vis|v)[_-]/i.test(name);
 }
 
+/** Fırınlanmış konumlar P için normal düzeltmesi: N += n(P) − n(taban), n = konuma göre kaynaklı alan ağırlıklı normal. */
+function bakeNormalFix(index, pos, P, N, n) {
+  const key = new Map();
+  const wid = new Int32Array(n);
+  let m = 0;
+  for (let i = 0; i < n; i++) {
+    const k = pos.getX(i) + ',' + pos.getY(i) + ',' + pos.getZ(i);
+    let j = key.get(k);
+    if (j === undefined) { j = m++; key.set(k, j); }
+    wid[i] = j;
+  }
+  const A = new Float64Array(m * 3), B = new Float64Array(m * 3);
+  const ix = index.array, cnt = index.count;
+  const O = new Float64Array(9), Q = new Float64Array(9);
+  for (let f = 0; f + 2 < cnt; f += 3) {
+    const a = ix[f], b = ix[f + 1], c = ix[f + 2];
+    O[0] = pos.getX(a); O[1] = pos.getY(a); O[2] = pos.getZ(a);
+    O[3] = pos.getX(b); O[4] = pos.getY(b); O[5] = pos.getZ(b);
+    O[6] = pos.getX(c); O[7] = pos.getY(c); O[8] = pos.getZ(c);
+    for (let k = 0; k < 3; k++) { Q[k] = P[a * 3 + k]; Q[3 + k] = P[b * 3 + k]; Q[6 + k] = P[c * 3 + k]; }
+    for (const [S, T] of [[O, A], [Q, B]]) {
+      const ux = S[3] - S[0], uy = S[4] - S[1], uz = S[5] - S[2];
+      const vx = S[6] - S[0], vy = S[7] - S[1], vz = S[8] - S[2];
+      const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      for (const v of [wid[a], wid[b], wid[c]]) { T[v * 3] += nx; T[v * 3 + 1] += ny; T[v * 3 + 2] += nz; }
+    }
+  }
+  for (let j = 0; j < m; j++) {
+    const la = Math.hypot(A[j * 3], A[j * 3 + 1], A[j * 3 + 2]), lb = Math.hypot(B[j * 3], B[j * 3 + 1], B[j * 3 + 2]);
+    if (!(la > 0) || !(lb > 0)) { A[j * 3] = A[j * 3 + 1] = A[j * 3 + 2] = 0; B[j * 3] = B[j * 3 + 1] = B[j * 3 + 2] = 0; continue; }
+    for (let k = 0; k < 3; k++) { B[j * 3 + k] /= lb; A[j * 3 + k] = B[j * 3 + k] - A[j * 3 + k] / la; }
+  }
+  for (let i = 0; i < n; i++) {
+    const j = wid[i] * 3;
+    const l = Math.hypot(N[i * 3], N[i * 3 + 1], N[i * 3 + 2]) || 1;
+    // sarım yönü normalin tersiyse (içe bakan yüz) fark da ters çevrilir
+    const sg = N[i * 3] * B[j] + N[i * 3 + 1] * B[j + 1] + N[i * 3 + 2] * B[j + 2] - (N[i * 3] * A[j] + N[i * 3 + 1] * A[j + 1] + N[i * 3 + 2] * A[j + 2]) < 0 ? -1 : 1;
+    N[i * 3] = N[i * 3] / l + sg * A[j]; N[i * 3 + 1] = N[i * 3 + 1] / l + sg * A[j + 1]; N[i * 3 + 2] = N[i * 3 + 2] / l + sg * A[j + 2];
+  }
+}
+
 /** Gövde morph'larını fırınlar; canlı (ifade/visem) olanları bırakır. Fırınlanmış konum dizisini döndürür. */
 function bakeMesh(mesh, weights, live) {
   const g0 = mesh.geometry;
@@ -125,10 +179,12 @@ function bakeMesh(mesh, weights, live) {
   const mp = g0.morphAttributes.position, mn = g0.morphAttributes.normal;
   const rel = g.morphTargetsRelative;
   const keep = [];
+  let baked = false;
   for (const [name, idx] of Object.entries(dict)) {
     if (liveName(name, live)) { keep.push([name, idx]); continue; }
     const w = weights[name] || 0;
     if (!w) continue;
+    baked = true;
     const a = mp[idx];
     for (let i = 0; i < n; i++) {
       P[i * 3] += w * (a.getX(i) - (rel ? 0 : pos.getX(i)));
@@ -144,6 +200,10 @@ function bakeMesh(mesh, weights, live) {
       }
     }
   }
+  // Normal hedefi taşımayan ağlar (giysi, iç giysi, saç…): taban normali nötr bedene (cinsiyet 0.5, yarı kadın göğsü)
+  // göredir; biçim değişince gölgelendirme eski biçimi gösterirdi (erkek gömleğinde "göğüs" gölgesi). Normal, fırınlanan
+  // biçimden yeniden hesaplanan normal farkı kadar düzeltilir (UV dikişleri konuma göre kaynaklı: dikiş izi olmaz).
+  if (N && baked && !(mn && mn.length) && g0.index) bakeNormalFix(g0.index, pos, P, N, n);
   if (N) for (let i = 0; i < n; i++) {
     const l = Math.hypot(N[i * 3], N[i * 3 + 1], N[i * 3 + 2]) || 1;
     N[i * 3] /= l; N[i * 3 + 1] /= l; N[i * 3 + 2] /= l;
@@ -459,24 +519,41 @@ export class Actor {
     for (const it of list) {
       if (it.weight <= 0.001) continue;
       g += headGain(it.clip) * it.weight; wsum += it.weight;
-      if (it.weight > 0.2) { if (HEAD_BODY.test(it.clip)) mode = 'body'; else if (mode === 'calm' && HEAD_GEST.test(it.clip)) mode = 'gest'; }
+      if (it.weight > 0.2) {
+        if (HEAD_BODY.test(it.clip)) mode = 'body';
+        else if (mode !== 'body' && HEAD_GEST.test(it.clip)) mode = 'gest';
+        else if (mode === 'calm' && HEAD_EMO.test(it.clip)) mode = 'emo';
+      }
     }
     g = wsum > 0 ? g / Math.max(1, wsum) : 0;
     this._headMode = mode;
     for (const x of [this.bones.neck, this.bones.head]) { const q = this.rest.get(x); if (q && x) x.quaternion.slerp(q, 1 - g); }
     // Etkileşim (yönetmenden): el hedefe uzanır (kol IK), hayvan başını oyuncuya çevirir.
     const R = list.reach;
-    if (R && R.w > 0.001) {
-      if (this.kind === 'human') {
-        if (R.r && R.r.w > 0.001) this.reachArm('r', R.r.p, R.r.w);
-        if (R.l && R.l.w > 0.001) this.reachArm('l', R.l.p, R.l.w);
-      } else if (R.look) this.lookToward(R.look, R.w);
+    // Etkileşimde kullanılmayan el sakin kalır (filterHead'de güçlü süzgeç): kurucu, "tımarlarken diğer kol sallanıyor".
+    this._calmArm = null;
+    this._reachOn = !!(R && R.w > 0.001);
+    if (R && R.w > 0.05 && this.kind === 'human') {
+      if (R.r && !R.l) this._calmArm = 'l';
+      else if (R.l && !R.r) this._calmArm = 'r';
+      else if (R.l && R.l.pole && this._restFail?.l) this._calmArm = 'l'; // dinlenecek yer yetişmiyor: kol yanda sakin
     }
+    // İnsanda kol IK süzgeçten SONRA uygulanır (filterHead → _applyReach): omurga süzgeci omzu geciktirince el hedeften kaymaz.
+    this._pendReach = R && R.w > 0.001 && this.kind === 'human' ? R : null;
+    if (R && R.w > 0.001 && this.kind !== 'human' && R.look) this.lookToward(R.look, R.w);
+  }
+
+  _applyReach() {
+    const R = this._pendReach;
+    this._pendReach = null;
+    if (!R) return;
+    if (R.r && R.r.w > 0.001) this.reachArm('r', R.r.p, R.r.w, R.r.pole ? R.r : null);
+    if (R.l && R.l.w > 0.001) this.reachArm('l', R.l.p, R.l.w, R.l.pole ? R.l : null);
   }
 
   /** Kol IK (iki kemik, analitik): elin kökü (hand_X) dünya noktası p'ye; w karışım (0..1). Dirsek klibin büküm düzleminde
    * kalır (klip kolu düz tutuyorsa dirsek aşağı-geri bükülür); erişilemeyen hedefte kol hedefe doğru uzanır. */
-  reachArm(side, p, w) {
+  reachArm(side, p, w, o = null) {
     const arm = (this._arm = this._arm || {});
     const B = arm[side] || (arm[side] = {
       up: findBone(this.model, new RegExp(`^upperarm_${side}$`, 'i')),
@@ -485,6 +562,7 @@ export class Actor {
     });
     if (!B.up || !B.lo || !B.hand) return;
     const k = Math.min(1, Math.max(0, w));
+    if (o && o.pole) { this._reachPole(B, side, p, k, o); return; }
     const qU0 = _qa.copy(B.up.quaternion).clone(), qL0 = B.lo.quaternion.clone();
     this.root.updateMatrixWorld(true);
     const a = B.up.getWorldPosition(new THREE.Vector3()), b = B.lo.getWorldPosition(new THREE.Vector3()), c = B.hand.getWorldPosition(new THREE.Vector3());
@@ -512,6 +590,105 @@ export class Actor {
       B.lo.quaternion.copy(qL0.slerp(B.lo.quaternion, k));
     }
     B.up.updateMatrixWorld(true);
+  }
+
+  /** Kutuplu kol IK (dinlenen el): dirsek yönü kutup vektöründen (klipten bağımsız — kol sallanmaz), el hedefte; o.palm
+   * verilirse avuç o yöne (yüzeye) bakar, parmaklar o.fingers doğrultusunda, o.curl kadar gevşek kıvrık. */
+  _reachPole(B, side, p, k0, o) {
+    let k = k0;
+    if (!B.fing) {
+      B.mid = B.hand.children.find((x) => x.isBone && /^middle_01/i.test(x.name)) || null;
+      B.thumb = B.hand.children.find((x) => x.isBone && /^thumb_01/i.test(x.name)) || null;
+      B.fing = [];
+      for (const f of ['index', 'middle', 'ring', 'pinky']) {
+        const ch = [];
+        for (let j = 1; j <= 3; j++) { const x = findBone(this.model, new RegExp(`^${f}_0${j}_${side}$`, 'i')); if (x) ch.push([x, [0.6, 1, 0.7][j - 1]]); }
+        B.fing.push(...ch);
+      }
+    }
+    const bones = [B.up, B.lo, B.hand, ...B.fing.map((x) => x[0])];
+    const q0 = bones.map((x) => x.quaternion.clone());
+    this.root.updateMatrixWorld(true);
+    const V3 = THREE.Vector3;
+    const a = B.up.getWorldPosition(new V3()), b = B.lo.getWorldPosition(new V3()), c = B.hand.getWorldPosition(new V3());
+    const lab = a.distanceTo(b), lbc = b.distanceTo(c);
+    if (lab < 1e-4 || lbc < 1e-4) return;
+    let u = p.clone().sub(a);
+    // Yetişmeyen hedef (çocuk, at uzak): kol havada uzanmaz — yanda doğal sarkar (dirsek hafif bükük, avuç baldıra dönük,
+    // kök uzayında sabit: gövde oynasa da kol sallanmaz). Histerezisli (>0,95 bırak, <0,85 yeniden dayan).
+    const ratio = u.length() / (lab + lbc);
+    const RF = (this._restFail = this._restFail || {});
+    if (ratio > 0.95) RF[side] = true; else if (ratio < 0.85) RF[side] = false;
+    if (RF[side]) {
+      const ry = this.root.rotation.y;
+      const fw = new V3(Math.sin(ry), 0, Math.cos(ry)), lf = new V3(Math.cos(ry), 0, -Math.sin(ry)).multiplyScalar(side === 'l' ? 1 : -1);
+      p = a.clone().addScaledVector(new V3(0, -1, 0), (lab + lbc) * 0.93).addScaledVector(fw, 0.05).addScaledVector(lf, 0.04);
+      o = { pole: fw.clone().negate().addScaledVector(lf, 0.3), palm: lf.clone().negate(), fingers: new V3(0, -1, 0).addScaledVector(fw, 0.15), curl: 0.25 };
+      u = p.clone().sub(a);
+    }
+    const d = Math.min(Math.max(u.length(), Math.abs(lab - lbc) + 1e-3), (lab + lbc) * 0.995);
+    u.normalize();
+    const x = (lab * lab - lbc * lbc + d * d) / (2 * d), hh = Math.sqrt(Math.max(0, lab * lab - x * x));
+    const pl = o.pole.clone().addScaledVector(u, -o.pole.dot(u));
+    if (pl.lengthSq() < 1e-6) pl.set(0, -1, 0).addScaledVector(u, u.y);
+    pl.normalize();
+    const E = a.clone().addScaledVector(u, x).addScaledVector(pl, hh);
+    rotateWorld(B.up, _q.setFromUnitVectors(b.clone().sub(a).normalize(), E.clone().sub(a).normalize()));
+    const b2 = B.lo.getWorldPosition(new V3()), c2 = B.hand.getWorldPosition(new V3());
+    const P = a.clone().addScaledVector(u, d);
+    rotateWorld(B.lo, _q.setFromUnitVectors(c2.sub(b2).normalize(), P.sub(b2).normalize()));
+    if (o.palm && B.mid && B.thumb) {
+      const h = B.hand.getWorldPosition(new V3());
+      const f0 = B.mid.getWorldPosition(new V3()).sub(h).normalize();
+      const t0 = B.thumb.getWorldPosition(new V3()).sub(h).normalize();
+      const pn = side === 'l' ? new V3().crossVectors(t0, f0) : new V3().crossVectors(f0, t0); // avuç içi normali
+      pn.addScaledVector(f0, -pn.dot(f0)).normalize();
+      const nP = o.palm.clone().normalize();
+      const nF = (o.fingers ? o.fingers.clone() : new V3(0, 1, 0)).addScaledVector(nP, -(o.fingers ? o.fingers.dot(nP) : nP.y)).normalize();
+      const q1 = new THREE.Quaternion().setFromUnitVectors(f0, nF);
+      const p1 = pn.clone().applyQuaternion(q1);
+      p1.addScaledVector(nF, -p1.dot(nF)).normalize();
+      const ang = Math.atan2(new V3().crossVectors(p1, nP).dot(nF), p1.dot(nP));
+      rotateWorld(B.hand, new THREE.Quaternion().setFromAxisAngle(nF, ang).multiply(q1));
+      // Gevşek parmaklar: avuca doğru hafif kıvrım (eklem başına ~curl, uçlara doğru azalır).
+      if (o.curl) {
+        const ax = new V3().crossVectors(nF, nP).normalize();
+        for (const [bn, kk] of B.fing) rotateWorld(bn, _q.setFromAxisAngle(ax, o.curl * kk));
+      }
+    }
+    if (k < 1) bones.forEach((x, i) => x.quaternion.copy(q0[i].slerp(x.quaternion, k)));
+    B.up.updateMatrixWorld(true);
+  }
+
+  /** Son aşama baş dengeleyicisi (bkz. HEAD_STAB): başın köke göre yönü kritik sönümlü, hız sınırlı yayla izlenir.
+   * dt: film saniyesi (kare atlamasında en çok 0,25 sn alt adımlarla — sıçrama yok); snap: arama/kesme. */
+  stabilizeHead(dt, snap) {
+    const head = this.bones?.head;
+    if (!head || !head.parent || this.kind !== 'human') return;
+    this.root.updateMatrixWorld(true);
+    const qr = this.root.getWorldQuaternion(new THREE.Quaternion());
+    const qt = qr.clone().invert().multiply(head.getWorldQuaternion(new THREE.Quaternion()));
+    const S = this._hst;
+    if (!S || snap || !(dt > 0)) { this._hst = { q: qt, w: new THREE.Vector3() }; return; }
+    const vmax = THREE.MathUtils.degToRad(HEAD_STAB[this._headMode] || HEAD_STAB.calm), W = HEAD_STAB_W;
+    const e = new THREE.Vector3(), qe = new THREE.Quaternion(), dq = new THREE.Quaternion();
+    for (let left = Math.min(dt, 0.25); left > 1e-6; ) {
+      const h = Math.min(left, 1 / 60);
+      left -= h;
+      qe.copy(S.q).invert().premultiply(qt); // qt · q⁻¹ (kök çerçevesinde hata)
+      if (qe.w < 0) { qe.x = -qe.x; qe.y = -qe.y; qe.z = -qe.z; qe.w = -qe.w; }
+      const s = Math.sqrt(Math.max(0, 1 - qe.w * qe.w));
+      const an = 2 * Math.atan2(s, qe.w);
+      if (s > 1e-7) e.set(qe.x, qe.y, qe.z).multiplyScalar(an / s); else e.set(0, 0, 0);
+      S.w.multiplyScalar(1 - 2 * W * h).addScaledVector(e, W * W * h);
+      const sp = S.w.length();
+      if (sp > vmax) S.w.multiplyScalar(vmax / sp);
+      const a = Math.min(sp, vmax) * h;
+      if (a > 1e-9) { dq.setFromAxisAngle(e.copy(S.w).normalize(), a); S.q.premultiply(dq).normalize(); }
+    }
+    const pw = head.parent.getWorldQuaternion(new THREE.Quaternion());
+    head.quaternion.copy(pw.invert().multiply(qr.multiply(S.q)));
+    head.updateMatrixWorld(true);
   }
 
   /** Hayvan: boyun/baş dünya dikey ekseninde hedefe döner (en çok ~30°, boyun ve başa paylaştırılır). */
@@ -551,6 +728,9 @@ export class Actor {
     }
     const h = snap || !(dt > 0) ? 0 : Math.min(0.1, dt);
     const lim = new Set([this.bones?.neck, this.bones?.head].filter(Boolean));
+    const ca = this._calmArm ? (this._cab || (this._cab = {}))[this._calmArm] || (this._cab[this._calmArm] = new Set(this._fb.map((x) => x[0]).filter((x) => new RegExp(`_${this._calmArm}$`, 'i').test(x.name) && /^(clavicle|upperarm|lowerarm|hand|index|middle|ring|pinky|thumb)/i.test(x.name)))) : null;
+    const avmax = CALM_ARM_VMAX * h;
+    const svmax = (SPINE_VMAX[this._headMode] || SPINE_VMAX.calm) * h;
     const vmax = THREE.MathUtils.degToRad(HEAD_SLEW[this._headMode] || HEAD_SLEW.calm) * h;
     for (const [x, tau] of this._fb) {
       let q = F.get(x);
@@ -561,9 +741,19 @@ export class Actor {
         _qs.copy(q).slerp(x.quaternion, 1 - Math.exp(-h / tau));
         const ang = q.angleTo(_qs);
         if (ang > vmax && ang > 1e-6) q.slerp(_qs, vmax / ang); else q.copy(_qs);
+      } else if (/^spine/i.test(x.name)) {
+        _qs.copy(q).slerp(x.quaternion, 1 - Math.exp(-h / tau));
+        const ang = q.angleTo(_qs);
+        if (ang > svmax && ang > 1e-6) q.slerp(_qs, svmax / ang); else q.copy(_qs);
+      } else if (ca && ca.has(x)) {
+        // Boştaki kol: yavaş süzgeç + hız sınırı (klibin kol savurması görünmez, poz korunur).
+        _qs.copy(q).slerp(x.quaternion, 1 - Math.exp(-h / CALM_ARM_TAU));
+        const ang = q.angleTo(_qs);
+        if (ang > avmax && ang > 1e-6) q.slerp(_qs, avmax / ang); else q.copy(_qs);
       } else q.slerp(x.quaternion, 1 - Math.exp(-h / tau));
       x.quaternion.copy(q);
     }
+    this._applyReach();
   }
 
   clipFor(name) {
@@ -673,6 +863,31 @@ function modestyOutfit(rig, def) {
   }
 }
 function hashStr(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0) / 4294967296; }
+
+/** Kolsuz giysi + kol gizleme (25 Ekim, kurucu karesi: "eller havada, kol yok"): giysi kol bölgelerini (upperarm/lowerarm)
+ * gizliyor ama kendi ağı kolları örtmüyorsa (ör. outfit_worker: kolsuz tulum, hide listesinde kollar var), gizlenen kol
+ * ağları geri açılır ve giysinin kumaşıyla (uzun kollu iç gömlek gibi) örtülür — el bileğe bağlı kalır, ten görünmez. */
+function sleeveFix(model, rig, rec) {
+  const arms = (rec.hidden || []).filter((m) => /^(upperarm|lowerarm)$/.test(m.userData?.region || m.parent?.userData?.region || ''));
+  if (!arms.length) return;
+  model.updateMatrixWorld(true);
+  const ob = new THREE.Box3();
+  for (const m of rec.meshes || []) if (m.isMesh) ob.union(skinnedWorldBox(m, 5));
+  for (const m of arms) {
+    const ab = skinnedWorldBox(m, 3);
+    if (ob.isEmpty() || ab.isEmpty()) continue;
+    // Kolun yanal (x) uzanımının ne kadarını giysi kutusu kapsıyor (bağ pozunda kollar yana açık).
+    const span = (Math.max(Math.abs(ab.min.x), Math.abs(ab.max.x)) - Math.min(Math.abs(ab.min.x), Math.abs(ab.max.x))) || 1e-6;
+    const reach = Math.max(Math.abs(ob.min.x), Math.abs(ob.max.x));
+    const inner = Math.min(Math.abs(ab.min.x), Math.abs(ab.max.x));
+    const cover = Math.max(0, Math.min(1, (reach - inner) / span));
+    if (cover > 0.6) continue;
+    const src = (rec.meshes || []).find((x) => x.isMesh && x.material && !Array.isArray(x.material));
+    m.visible = true;
+    if (src) { m.material = src.material.clone(); m.userData.sleeve = true; }
+    rec.hidden = rec.hidden.filter((x) => x !== m);
+  }
+}
 
 /** Bağlanma pozunda (ya da şimdiki pozda) mesh köşelerinin dünya konumları üzerinden kutu: deriyi kemiklerle dönüştürür. */
 function skinnedWorldBox(mesh, step = 3) {
@@ -864,7 +1079,8 @@ async function buildHumanA(get, cat, def, animClips) {
       if (skinned) {
         // Şapka saçı gizlerse (hidesHair) altındaki kısa saç karakterin saç rengini alır (kel değilse).
         const hc = def.hair && typeof def.hair === 'object' ? def.hair.color : null;
-        rig.attach(ps, { tint: color || undefined, tint2: typeof spec === 'object' ? spec.color2 : undefined, hairTint: slot === 'hat' && def.hair && def.hair !== 'bald' && def.hair?.id !== 'bald' ? hc || '#2a1e18' : undefined });
+        const rec = rig.attach(ps, { tint: color || undefined, tint2: typeof spec === 'object' ? spec.color2 : undefined, hairTint: slot === 'hat' && def.hair && def.hair !== 'bald' && def.hair?.id !== 'bald' ? hc || '#2a1e18' : undefined });
+        if (slot === 'outfit' && rec) sleeveFix(model, rig, rec);
         const loose = [];
         ps.traverse((o) => { if (o.isBone && !(o.parent && o.parent.isBone)) loose.push(o); });
         for (const b of loose) b.removeFromParent(); // parçanın kendi iskeleti artık kullanılmıyor (kare maliyeti)

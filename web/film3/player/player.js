@@ -375,6 +375,7 @@ class Player {
     }
     this.look.setEnv({ time: sc.time || 'day', weather: sc.weather || 'clear', light: sc.light, interior: w?.interior, particles: sc.particles, hdri: this._hdriFor(w, sc) });
     this._practical(w, sc);
+    this._notes(w, sc);
     this.look.alphaCoverage(this.look.scene);
     this.cur = si;
     this.stats.cuts++;
@@ -455,6 +456,44 @@ class Player {
       l.userData.i0 = l.intensity;
     }
     this._flicker = w._lights.filter((l) => l.userData.flicker);
+  }
+
+  /**
+   * Storyboard yönetmen notları (sunucu: books_film3_storyboard.ts › lookOf; 26 Ekim): sis rengi/yoğunluğu, anahtar ışık çarpanı,
+   * pozlama, renk derecelendirmesi ve sahneye özgü pratik ışıklar (ocak, lamba, mum, fener — spot noktasında, titreşimli).
+   * Alanlar yoksa hiçbir şey değişmez (eski filmler aynı görünür).
+   */
+  _notes(w, sc) {
+    const L = sc.light || {}, look = this.look;
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, Number(v)));
+    if (typeof L.fogColor === 'string' && /^#[0-9a-f]{6}$/i.test(L.fogColor) && look.scene.fog) {
+      look.scene.fog.color.set(L.fogColor);
+      if (w?.interior && look.scene.background?.isColor) look.scene.background.set(L.fogColor);
+    }
+    if (Number.isFinite(L.fogDensity) && look.scene.fog) look.scene.fog.density = clamp(L.fogDensity, 0, 0.05);
+    if (Number.isFinite(L.key) && look.sun) look.sun.intensity *= clamp(L.key, 0.3, 1.6);
+    if (Number.isFinite(L.exposure)) look.renderer.toneMappingExposure *= clamp(L.exposure, 0.6, 1.6);
+    if (sc.grade && look.grade) {
+      const g = sc.grade;
+      look.grade = { sat: clamp(g.sat ?? look.grade.sat, 0.6, 1.3), warm: clamp(g.warm ?? look.grade.warm, -0.4, 0.4), contrast: clamp(g.contrast ?? look.grade.contrast, 0.9, 1.25) };
+    }
+    const old = this._noteLights || [];
+    for (const l of old) l.removeFromParent();
+    if (old.length) this._flicker = (this._flicker || []).filter((l) => !old.includes(l));
+    this._noteLights = [];
+    if (!w || !Array.isArray(sc.practicals)) return;
+    const H = { fire: 0.45, candle: 1.0, lantern: 1.2, torch: 1.7, lamp: 1.6 };
+    for (const P of sc.practicals.slice(0, 4)) {
+      const sp = P.spot && w.spots[P.spot];
+      const at = sp ? (sp.isVector3 ? sp : sp.p).clone() : w.center.clone();
+      at.y += H[P.kind] ?? 1.4;
+      const l = new THREE.PointLight(/^#[0-9a-f]{6}$/i.test(P.color || '') ? P.color : '#ffc27a', clamp(P.i ?? 1, 0.1, 2) * (w.interior ? 6 : 10), w.interior ? 6 : 10, 1.8);
+      l.position.copy(at);
+      l.userData.i0 = l.intensity;
+      w.group.add(l);
+      this._noteLights.push(l);
+      if (P.flicker) (this._flicker = this._flicker || []).push(l);
+    }
   }
 
   _prop(A, id) {
@@ -692,7 +731,10 @@ class Player {
     // Kare aralığı (film saati): baş/bakış yayları ve süzgeçler için; arama, kesme ya da duraklatmada anında yerleşir.
     const dt = this._evT == null ? 0 : t - this._evT;
     this._evT = t;
-    if (!(dt > 0) || dt > 0.25 || this._evPlan !== plan) snap = true;
+    // Kare atlaması (kesmede gölge/odak yeniden kurulurken telefonda 0,3–0,8 sn olabiliyor) oturtma sayılmaz: çözücüler
+    // (baş yayı, dengeleyici, süzgeçler) kısıtlı adımla devam eder — kesmenin ilk karesinde baş sıçramaz. Gerçek atlama
+    // (arama, sahne değişimi, >1 sn) anında yerleşir.
+    if (!(dt > 0) || dt > 1 || this._evPlan !== plan) snap = true;
     this._evPlan = plan;
     for (const id of plan.ids) { const A = this.actors.get(id); A._pl = plan.placement(id, t, A.root.position); }
     this._separate(plan, t);

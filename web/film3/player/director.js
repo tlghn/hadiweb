@@ -468,11 +468,24 @@ export class ScenePlan {
       }
       if (it.spec.reach === 'stroke') {
         // Kaşağı dairesel sürülür (tık… tık… tık… bir saat gibi): ~1,1 Hz, böğür boyunca.
+        const c0 = c.clone();
         const ph = u * Math.PI * 2 * 1.1;
         c.addScaledVector(f, 0.085 * Math.cos(ph)).y += 0.06 * Math.sin(ph);
-        const l = A.root.position.clone().addScaledVector(side, -(it.spec.gap + 0.12) + 0.05).addScaledVector(aR, -0.24);
-        l.y = c.y + 0.14 - 0.06 * Math.sin(ph);
-        out.l = { p: l, w: w * 0.75 };
+        // Boştaki (sol) el atın üstünde DİNLENİR (25 Ekim, kurucu: "tımarlarken diğer kol sallanıyor"): sabit nokta
+        // (kaşağının yanında, omuz hizasının ~20 cm altı), avuç böğre dönük, parmaklar yukarı-öne, gevşek; dirsek aşağı-dışa
+        // (kutup) — klipten bağımsız, kol kıpırdamaz. Bilek yüzeyden ~3 cm açıkta (avuç yüzeye oturur).
+        const aL = aR.clone(), aF = V(Math.sin(ay), 0, Math.cos(ay)); // aR = (cos, 0, −sin): +Z'ye bakan oyuncunun SOL yanı (sol omuz bu yanda)
+        const fing = V(0, 0.8, 0).addScaledVector(aL, 0.6).normalize();
+        // Yüzey: atın orta çizgisinden böğür yarı genişliği kadar dışarı (oyuncunun sol omzu hizasında).
+        // Yer: kaşağının değdiği yüzey derinliğinde (atın ekseni boyunca) sol omzun hizasında, omzun ~15–20 cm altında —
+        // kolun rahat yettiği yer; yetişmiyorsa (çocuk, at uzak) Actor kolu yanda sakin bırakır.
+        const sh = A.root.position.clone().addScaledVector(aL, 0.18);
+        // Omuzdan ileri, kaşağının değdiği yüzey düzlemine (normali side) kadar.
+        const den = aF.dot(side);
+        const tt = Math.abs(den) > 0.2 ? THREE.MathUtils.clamp(c0.clone().sub(sh).dot(side) / den, 0.1, 0.6) : 0.35;
+        const l = sh.clone().addScaledVector(aF, tt).addScaledVector(side, 0.02);
+        l.y = shY; // shY (göz×0,82) gerçek omuzdan ~15–20 cm aşağıda: el omzun biraz altında, kol rahat yetişir
+        out.l = { p: l, w, pole: V(0, -1, 0).addScaledVector(aL, 0.7).addScaledVector(aF, -0.35).normalize(), palm: side.clone().negate(), fingers: fing, curl: 0.12 };
       }
       if (it.spec.reach === 'chest') out.l = { p: c.clone().addScaledVector(aR, -0.3), w };
     } else {
@@ -679,7 +692,10 @@ function rotateBoneWorld(bone, qDelta) {
  * dt: film saniyesi, snap: arama/kesme (anında yerleşir). */
 const LOOK_DEAD = THREE.MathUtils.degToRad(4);
 // 25 Ekim: ω 3→2,4 ve hız sınırı eksen başına değil BİLEŞKE (yaw+pitch) 22°/sn (eskiden eksen başına 35 → ~50°/sn).
-const LOOK_W = 2.4, LOOK_VMAX = THREE.MathUtils.degToRad(22);
+// 25 Ekim (2): ω 2,4→2,0, bakış dönüşü ≤16°/sn; dönüş baş/boyun/üst göğse 60/25/15 paylaştırılır (yalnız baş dönmez,
+// doğal görünür) ve en sonda Actor.stabilizeHead başı gövdeye göre ≤18°/sn (jestte ≤45°/sn) sınırlar.
+const LOOK_W = 2.0, LOOK_VMAX = THREE.MathUtils.degToRad(16);
+const LOOK_SPLIT = [0.15, 0.25, 0.6]; // üst göğüs, boyun, baş
 export function applyHead(A, yaw0, lookAt, extra, weight = 0.75, dt = 0, snap = true) {
   const head = A.bones.head, neck = A.bones.neck;
   if (!head) return;
@@ -708,14 +724,19 @@ export function applyHead(A, yaw0, lookAt, extra, weight = 0.75, dt = 0, snap = 
   }
   const dy = H.y + (extra.yaw || 0);
   const dp = H.p + (extra.pitch || 0);
-  if (Math.abs(dy) < 1e-4 && Math.abs(dp) < 1e-4) return;
-  const right = V(Math.cos(yaw0), 0, -Math.sin(yaw0)); // aktörün sağ ekseni (bakış +Z)
-  const split = neck ? [[neck, 0.4], [head, 0.6]] : [[head, 1]];
-  for (const [b, k] of split) {
-    const q = new THREE.Quaternion().setFromAxisAngle(UP, dy * k).multiply(new THREE.Quaternion().setFromAxisAngle(right, dp * k));
-    rotateBoneWorld(b, q);
+  if (Math.abs(dy) >= 1e-4 || Math.abs(dp) >= 1e-4) {
+    const right = V(Math.cos(yaw0), 0, -Math.sin(yaw0)); // aktörün sağ ekseni (bakış +Z)
+    // Etkileşimde (el IK ile hedefte) göğüs dönmez: el hedeften kaymaz.
+    const chest = !A._reachOn && neck && neck.parent && neck.parent.isBone && /spine|chest/i.test(neck.parent.name) ? neck.parent : null;
+    const split = neck ? (chest ? [[chest, LOOK_SPLIT[0]], [neck, LOOK_SPLIT[1]], [head, LOOK_SPLIT[2]]] : [[neck, 0.4], [head, 0.6]]) : [[head, 1]];
+    for (const [b, k] of split) {
+      const q = new THREE.Quaternion().setFromAxisAngle(UP, dy * k).multiply(new THREE.Quaternion().setFromAxisAngle(right, dp * k));
+      rotateBoneWorld(b, q);
+    }
+    for (const e of A.bones.eyes) rotateBoneWorld(e, new THREE.Quaternion().setFromAxisAngle(UP, dy * 0.3));
   }
-  for (const e of A.bones.eyes) rotateBoneWorld(e, new THREE.Quaternion().setFromAxisAngle(UP, dy * 0.3));
+  // Son aşama: başın gövdeye göre hızı sınırlanır, kritik sönümlü (klip/geçiş sarsıntısı başa geçmez).
+  if (A.stabilizeHead) A.stabilizeHead(dt, snap);
 }
 
 /** Boşta baş salınımı: ≤ ~1,5° genlik, 0,08–0,22 Hz (nefes ritminde, kişiye göre evreli). */
@@ -756,6 +777,32 @@ export class CameraDirector {
     this.focus = 3;
     this.closeup = false;
     this.shotKey = '';
+  }
+
+  /** Tek kişilik planda kadraj kusuru (yoksa null): özne dışındaki bir insanın gövdesi (göğüs/kalça) kadrajda ama gözleri
+   * dışarıda (başsız gövde — yetişkinin beli/kasığı), ya da kamera onun kişisel alanında (minD). Dönen: {id, why}. */
+  _frameBad(plan, pos, look, fovDeg, aspect, subj, minD, skip = null, mg = 1) {
+    const f = look.clone().sub(pos).normalize();
+    const r = V().crossVectors(f, UP).normalize(), u = V().crossVectors(r, f);
+    const tv = Math.tan(THREE.MathUtils.degToRad(fovDeg) / 2), th = tv * aspect;
+    const pr = (p) => { const d = p.clone().sub(pos), z = d.dot(f); return z < 0.1 ? null : [d.dot(r) / (z * th), d.dot(u) / (z * tv)]; };
+    const inF = (q, mx, my) => q && Math.abs(q[0]) <= mx && Math.abs(q[1]) <= my;
+    // Öznenin kendisi: kamera kişisel alanında olmasın.
+    for (const id of plan.ids) {
+      const X = plan.actors.get(id);
+      if (X.kind !== 'human') continue;
+      const R = X.root.position, eh = X._eyeS ? X._eyeS.y : X.eyeH;
+      const s = THREE.MathUtils.clamp((pos.y - R.y) / Math.max(0.3, eh), 0, 1);
+      const dAx = Math.hypot(pos.x - R.x, pos.z - R.z);
+      if (dAx < (X === subj ? minD : Math.max(0.8, minD - 0.2)) && s > 0) return { id, why: 'near' };
+      if (X === subj || id === skip) continue;
+      const eye = R.clone().setY(R.y + eh);
+      const qe = pr(eye), qc = pr(R.clone().setY(R.y + eh * 0.8)), qh = pr(R.clone().setY(R.y + eh * 0.56));
+      // mg > 1: seçimde pay bırakılır (çekim boyunca kamera yayı/kerteriz kayması ve oyuncu kıpırdaması kadrajı bozmasın).
+      const body = inF(qc, mg, mg) || inF(qh, mg, mg);
+      if (body && !inF(qe, 0.95 / mg, 0.9 / mg)) return { id, why: 'headless' };
+    }
+    return null;
   }
 
   anchor(A, part = 'head') {
@@ -1015,8 +1062,8 @@ export class CameraDirector {
       ids.length = 0;
       ids.push(IT.who, IT.target, ...rest);
     }
-    const A = plan.actors.get(ids[0]);
-    const B = ids[1] ? plan.actors.get(ids[1]) : null;
+    let A = plan.actors.get(ids[0]);
+    let B = ids[1] ? plan.actors.get(ids[1]) : null;
     const p = clamp01((t - shot.t) / Math.max(0.5, shot.d || 4));
     const e = p * p * (3 - 2 * p) * 0.6 + p * 0.4;
     let type = shot.type || 'wide';
@@ -1024,10 +1071,15 @@ export class CameraDirector {
     if (type === 'two' || type === 'twoshot' || type === 'two-shot') type = 'two_shot'; // senaryo adı: "two"
     // Omuz üstü, dinleyen konuşandan çok uzunsa (yetişkin–çocuk) dinleyenin gövdesi kadrajı kaplar: karşı açıdan yakın plan.
     if (type === 'ots' && B && A.kind === 'human' && B.kind === 'human' && Math.abs(B.eyeH - A.eyeH) > 0.25) type = 'close';
+    // Ek çekim (insert, ellere yakın): baş kadraj dışında kalır — en çok 2,5 sn; uzun ek çekimin kalanı orta plan.
+    if (type === 'insert' && !IT && (shot.d || 0) > 3 && t - shot.t > 2.5) type = 'medium';
     if (IT && type !== 'wide' && type !== 'establishing' && type !== 'pov') {
       // Yakın plan → ikili etkileşim planı; el işi (tımar, yemleme) uzun yakın plansa ikinci yarısı ellere yakın plan.
       const s0 = Math.max(shot.t, IT.arrive), left = shot.t + (shot.d || 4) - s0;
-      const hands = IT.spec.hands && (type === 'insert' || (type === 'close' && left > 4 && t - s0 > left * 0.5));
+      // 25 Ekim (kurucu: "kamera geride durması gerekirken çok yakın"): eylem (tımar, verme) geniş planda kalır; ellere
+      // yakın plan yalnızca senaryo açıkça ek çekim (insert) istediyse.
+      void left;
+      const hands = IT.spec.hands && type === 'insert';
       type = hands ? 'inter_hands' : 'inter';
     }
     const side = world.side.clone();
@@ -1053,177 +1105,237 @@ export class CameraDirector {
     const hfov = (f) => 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(f) / 2) * Math.max(0.5, cam.aspect));
     const fitDist = (r, f) => r / Math.sin(Math.min(hfov(f), THREE.MathUtils.degToRad(f)) / 2);
     const facing = (X) => V(Math.sin(X.root.rotation.y), 0, Math.cos(X.root.rotation.y));
-    switch (type) {
-      case 'close':
-      case 'insert': {
-        // Yakın plan: kamera GÖZ hizasında (aşağıdan bakmaz), gözler kadrajın üst üçte birinde, başın üstünde boşluk; özne
-        // baktığı yönün tersindeki üçte birde (bakış payı).
-        const s = sOf(A);
-        const eye = this.anchor(A, type === 'insert' ? 'hands' : 'head');
-        let dir, gaze = null;
-        const gid = plan.gazeTarget(ids[0], t, plan.lineAt(t));
-        const other = B || (gid ? plan.actors.get(gid) : null);
-        if (other && other !== A) {
-          const toO = other.root.position.clone().sub(A.root.position).setY(0).normalize();
-          const n = axisSide(A.root.position, other.root.position);
-          dir = toO.clone().multiplyScalar(Math.cos(0.62)).addScaledVector(n, Math.sin(0.62)).normalize();
-          gaze = toO;
-        } else {
-          dir = facing(A).addScaledVector(side, 0.45).setY(0).normalize();
-        }
-        const H = (type === 'insert' ? 0.34 : 0.5) * s * (A.kind === 'animal' ? 2.4 : 1);
-        const dist = frameDist(H);
-        pos.copy(eye).addScaledVector(dir, dist);
-        if (type === 'insert') pos.y += 0.3;
-        look.copy(eye);
-        if (type === 'close') {
-          pos.y = eye.y + 0.01;
-          look.y = eye.y - H / 6;
-          if (gaze) {
-            const r = V(-dir.z, 0, dir.x); // kameranın sağı (kameradan özneye bakarken)
-            look.addScaledVector(r, Math.sign(gaze.dot(r)) * (H * cam.aspect) / 6);
+    const compose = (type) => {
+      switch (type) {
+        case 'close':
+        case 'insert': {
+          // Yakın plan: kamera GÖZ hizasında (aşağıdan bakmaz), gözler kadrajın üst üçte birinde, başın üstünde boşluk; özne
+          // baktığı yönün tersindeki üçte birde (bakış payı).
+          const s = sOf(A);
+          const eye = this.anchor(A, type === 'insert' ? 'hands' : 'head');
+          let dir, gaze = null;
+          const gid = plan.gazeTarget(ids[0], t, plan.lineAt(t));
+          const other = B || (gid ? plan.actors.get(gid) : null);
+          if (other && other !== A) {
+            const toO = other.root.position.clone().sub(A.root.position).setY(0).normalize();
+            const n = axisSide(A.root.position, other.root.position);
+            dir = toO.clone().multiplyScalar(Math.cos(0.62)).addScaledVector(n, Math.sin(0.62)).normalize();
+            gaze = toO;
+          } else {
+            dir = facing(A).addScaledVector(side, 0.45).setY(0).normalize();
           }
-        }
-        this.focus = dist;
-        break;
-      }
-      case 'medium': {
-        // Orta plan (bel üstü): kamera göz ile göğüs arası yükseklikte, gözler üst üçte birde.
-        const s = sOf(A);
-        const eye = this.anchor(A, 'head');
-        let dir = facing(A).addScaledVector(side, 0.6).setY(0).normalize();
-        if (B) dir = axisSide(A.root.position, B.root.position).addScaledVector(facing(A), 0.5).normalize();
-        const H = (A.kind === 'animal' ? 1.9 : 1.0) * s;
-        const dist = frameDist(H);
-        pos.copy(eye).addScaledVector(dir, dist);
-        pos.y = eye.y - 0.08 * s;
-        look.copy(eye);
-        look.y = eye.y - H / 6;
-        if (B) {
-          const toB = B.root.position.clone().sub(A.root.position).setY(0).normalize();
-          const r = V(-dir.z, 0, dir.x);
-          look.addScaledVector(r, Math.sign(toB.dot(r)) * (H * cam.aspect) / 7);
-        }
-        this.focus = dist;
-        break;
-      }
-      case 'two_shot': {
-        const P = A.root.position, Q = (B || plan.actors.get(plan.ids.find((x) => x !== ids[0]) || ids[0])).root.position;
-        const n = axisSide(P, Q);
-        const c = P.clone().add(Q).multiplyScalar(0.5);
-        const h = (this.anchor(A, 'chest').y + (B ? this.anchor(B, 'chest').y : this.anchor(A, 'chest').y)) / 2;
-        const dist = fitDist(P.distanceTo(Q) * 0.5 + 0.7, fov) * 0.9;
-        pos.copy(c).addScaledVector(n, dist).setY(h + 0.1);
-        look.copy(c).setY(h);
-        this.focus = dist;
-        break;
-      }
-      case 'ots': {
-        // Omuz üstü: kamera dinleyenin omzunun arkasında ve yanında (ön plan omzu kadrajın en çok ~%30'u), yükseklik iki göz
-        // hizası arasında (çocuk dinleyende kamera yetişkine aşağıdan bakmaz); konuşan karşı üçte birde, gözleri üst üçte birde.
-        const L = B || plan.actors.get(plan.gazeTarget(ids[0], t, plan.lineAt(t)) || '') || null;
-        const eye = this.anchor(A, 'head');
-        if (!L || L === A) { pos.copy(eye).addScaledVector(facing(A), 1.2); look.copy(eye); this.focus = 1.2; break; }
-        const le = this.anchor(L, 'head');
-        const ax = eye.clone().sub(le).setY(0).normalize();
-        const n = axisSide(le, eye);
-        pos.copy(le).addScaledVector(ax, -1.15).addScaledVector(n, 0.62);
-        pos.y = Math.max(le.y + 0.02, eye.y - 0.06);
-        const H = 0.62 * sOf(A);
-        look.copy(eye);
-        look.y = eye.y - H / 6;
-        look.addScaledVector(n, -0.12);
-        // Ön plan omzu kadrajın kenarında, en çok ~%22 alan: omuz noktası ekranın dış %20'lik şeridine itilir.
-        {
-          const sh = le.clone().addScaledVector(V(0, -1, 0), 0.22 * sOf(L)).addScaledVector(n, 0.16);
-          const f = look.clone().sub(pos).normalize();
-          const r = V().crossVectors(f, UP).normalize();
-          const hf = Math.tan(THREE.MathUtils.degToRad(fov) / 2) * cam.aspect;
-          for (let it = 0; it < 6; it++) {
-            const q = sh.clone().sub(pos);
-            const x = q.dot(r) / Math.max(1e-3, q.dot(f)) / hf; // -1..1 yatay
-            if (Math.abs(x) >= 0.78) break;
-            const sgn = Math.sign(x) || 1;
-            look.addScaledVector(r, -sgn * 0.08 * pos.distanceTo(look));
-            f.copy(look).sub(pos).normalize();
-            r.crossVectors(f, UP).normalize();
+          // Kadraj yüksekliği: gözler üst üçte birde; başın tepesi (şapka dahil) + ~4 cm boşluk kadraja sığar (H/3 ≥ gereken).
+          const need = A.kind === 'human' ? (0.13 + (A.def?.hat ? 0.11 : 0)) * s + 0.04 : 0;
+          const H = type === 'insert' ? 0.34 * s * (A.kind === 'animal' ? 2.4 : 1) : Math.max(0.55 * s * (A.kind === 'animal' ? 2.4 : 1), need * 3);
+          const dist = Math.max(0.8, frameDist(H));
+          pos.copy(eye).addScaledVector(dir, dist);
+          if (type === 'insert') pos.y += 0.3;
+          look.copy(eye);
+          if (type === 'close') {
+            pos.y = eye.y + 0.01;
+            look.y = eye.y - H / 6;
+            if (gaze) {
+              const r = V(-dir.z, 0, dir.x); // kameranın sağı (kameradan özneye bakarken)
+              look.addScaledVector(r, Math.sign(gaze.dot(r)) * (H * cam.aspect) / 6);
+            }
           }
-        }
-        this.focus = pos.distanceTo(eye);
-        break;
-      }
-      case 'inter':
-      case 'inter_hands': {
-        // Etkileşim planı: hayvanda öne-yandan 3/4 (oyuncunun durduğu yanda, hayvanın başı tarafından: oyuncu profilden,
-        // eli hayvanın üstünde görünür); insanda konuşma ekseninin kamera tarafından ikili plan.
-        const W = plan.actors.get(IT.who), T = plan.actors.get(IT.target);
-        const live = plan._reach(IT, IT.who, Math.min(Math.max(t, IT.t0), IT.t1));
-        const cp = live?.r?.p ? live.r.p.clone() : W.root.position.clone().lerp(T.root.position, 0.5).setY(W.root.position.y + W.eyeH * 0.6);
-        let dir;
-        if (T.kind === 'animal') {
-          const ya = T.root.rotation.y;
-          const f = V(Math.sin(ya), 0, Math.cos(ya)), r = V(Math.cos(ya), 0, -Math.sin(ya)).multiplyScalar(IT.sgn);
-          dir = type === 'inter_hands' ? f.clone().addScaledVector(r, 0.5).normalize() : f.clone().multiplyScalar(IT.zone === 'head' ? 0.25 : 0.8).add(r).normalize();
-        } else dir = axisSide(W.root.position, T.root.position);
-        if (type === 'inter_hands') {
-          const H = 0.62;
-          const dist = frameDist(H);
-          look.copy(cp);
-          pos.copy(cp).addScaledVector(dir, dist);
-          pos.y = cp.y + 0.28;
           this.focus = dist;
           break;
         }
-        const box = new THREE.Box3();
-        box.expandByPoint(W.root.position).expandByPoint(this.anchor(W, 'head').add(V(0, 0.12, 0))).expandByPoint(cp);
-        if (T.kind === 'animal') {
-          // Hayvanın başı ve temas bölgesi (tüm gövde değil: kadraj insanı küçültmesin).
-          box.expandByPoint(this.anchor(T, 'head'));
-          box.expandByPoint(T.root.position.clone().setY(T.root.position.y + (T.height || 1.6) * 0.55));
-        } else box.expandByPoint(this.anchor(T, 'head').add(V(0, 0.12, 0))).expandByPoint(T.root.position);
-        const c = box.getCenter(V());
-        const r = Math.max(0.9, box.getSize(V()).length() * 0.5);
-        const dist = Math.max(2.2, fitDist(r * 1.05, fov));
-        pos.copy(c).addScaledVector(dir, dist);
-        // Hafif yukarıdan (göz hizasının biraz üstü): önde masa/çit/sedir varsa onların üstünden görür.
-        pos.y = Math.max(c.y + 0.35 + dist * 0.05, box.max.y - 0.1);
-        look.copy(c);
-        this.focus = dist;
-        break;
-      }
-      case 'pov': {
-        const head = this.anchor(A, 'head');
-        pos.copy(head).addScaledVector(facing(A), 0.12);
-        look.copy(B ? this.anchor(B, 'head') : head.clone().addScaledVector(facing(A), 5));
-        this.focus = pos.distanceTo(look);
-        break;
-      }
-      case 'establishing': {
-        // Sahne kitinin tasarlanmış kuruluş açısı (B: camera/look) varsa o — ağaçların ardında kalmaz.
-        if (world.it?.camera && world.it?.look && !world.interior) {
-          pos.fromArray(world.it.camera);
-          look.fromArray(world.it.look);
+        case 'medium': {
+          // Orta plan (bel üstü): kamera göz ile göğüs arası yükseklikte, gözler üst üçte birde.
+          const s = sOf(A);
+          const eye = this.anchor(A, 'head');
+          let dir = facing(A).addScaledVector(side, 0.6).setY(0).normalize();
+          if (B) dir = axisSide(A.root.position, B.root.position).addScaledVector(facing(A), 0.5).normalize();
+          const H = (A.kind === 'animal' ? 1.9 : 1.0) * s;
+          const dist = Math.max(1.2, frameDist(H));
+          pos.copy(eye).addScaledVector(dir, dist);
+          pos.y = eye.y - 0.08 * s;
+          look.copy(eye);
+          look.y = eye.y - H / 6;
+          if (B) {
+            const toB = B.root.position.clone().sub(A.root.position).setY(0).normalize();
+            const r = V(-dir.z, 0, dir.x);
+            look.addScaledVector(r, Math.sign(toB.dot(r)) * (H * cam.aspect) / 7);
+          }
+          this.focus = dist;
+          break;
+        }
+        case 'two_shot': {
+          // İkili plan (25 Ekim): iki baş da boşluğuyla, alt kenar en çok dizde (yetişkin–çocukta yetişkin bel hizasından
+          // kesilmez); kamera alçak gözün biraz üstünde (çocuğa tepeden, yetişkine kasıktan bakmaz).
+          const Bx = B || plan.actors.get(plan.ids.find((x) => x !== ids[0]) || ids[0]);
+          const P = A.root.position, Q = Bx.root.position;
+          const n = axisSide(P, Q);
+          const c = P.clone().add(Q).multiplyScalar(0.5);
+          const eA = this.anchor(A, 'head'), eB = this.anchor(Bx, 'head');
+          const hum = (X) => X.kind === 'human';
+          const top = Math.max(eA.y + (hum(A) ? 0.17 + (A.def?.hat ? 0.11 : 0) : 0.3), eB.y + (hum(Bx) ? 0.17 + (Bx.def?.hat ? 0.11 : 0) : 0.3));
+          const bot = Math.min(P.y, Q.y) + 0.38;
+          const vf = THREE.MathUtils.degToRad(fov);
+          const half = P.distanceTo(Q) * 0.5 + 0.45;
+          const dist = Math.max(2.2, ((top - bot) / 2) / Math.tan(vf / 2) * 1.06, half / Math.tan(hfov(fov) / 2) * 1.06);
+          const lowEye = Math.min(hum(A) ? eA.y : 9, hum(Bx) ? eB.y : 9);
+          const cy = (top + bot) / 2;
+          pos.copy(c).addScaledVector(n, dist).setY(Math.max(cy, Math.min(lowEye < 9 ? lowEye + 0.05 : cy, cy + 0.4)));
+          look.copy(c).setY(cy);
+          this.focus = dist;
+          break;
+        }
+        case 'ots': {
+          // Omuz üstü: kamera dinleyenin omzunun arkasında ve yanında (ön plan omzu kadrajın en çok ~%30'u), yükseklik iki göz
+          // hizası arasında (çocuk dinleyende kamera yetişkine aşağıdan bakmaz); konuşan karşı üçte birde, gözleri üst üçte birde.
+          const L = B || plan.actors.get(plan.gazeTarget(ids[0], t, plan.lineAt(t)) || '') || null;
+          const eye = this.anchor(A, 'head');
+          if (!L || L === A) { pos.copy(eye).addScaledVector(facing(A), 1.2); look.copy(eye); this.focus = 1.2; break; }
+          const le = this.anchor(L, 'head');
+          const ax = eye.clone().sub(le).setY(0).normalize();
+          const n = axisSide(le, eye);
+          pos.copy(le).addScaledVector(ax, -1.15).addScaledVector(n, 0.62);
+          pos.y = Math.max(le.y + 0.02, eye.y - 0.06);
+          const H = 0.62 * sOf(A);
+          look.copy(eye);
+          look.y = eye.y - H / 6;
+          look.addScaledVector(n, -0.12);
+          // Ön plan omzu kadrajın kenarında, en çok ~%22 alan: omuz noktası ekranın dış %20'lik şeridine itilir.
+          {
+            const sh = le.clone().addScaledVector(V(0, -1, 0), 0.22 * sOf(L)).addScaledVector(n, 0.16);
+            const f = look.clone().sub(pos).normalize();
+            const r = V().crossVectors(f, UP).normalize();
+            const hf = Math.tan(THREE.MathUtils.degToRad(fov) / 2) * cam.aspect;
+            for (let it = 0; it < 6; it++) {
+              const q = sh.clone().sub(pos);
+              const x = q.dot(r) / Math.max(1e-3, q.dot(f)) / hf; // -1..1 yatay
+              if (Math.abs(x) >= 0.78) break;
+              const sgn = Math.sign(x) || 1;
+              look.addScaledVector(r, -sgn * 0.08 * pos.distanceTo(look));
+              f.copy(look).sub(pos).normalize();
+              r.crossVectors(f, UP).normalize();
+            }
+          }
+          this.focus = pos.distanceTo(eye);
+          break;
+        }
+        case 'inter':
+        case 'inter_hands': {
+          // Etkileşim planı: hayvanda öne-yandan 3/4 (oyuncunun durduğu yanda, hayvanın başı tarafından: oyuncu profilden,
+          // eli hayvanın üstünde görünür); insanda konuşma ekseninin kamera tarafından ikili plan.
+          const W = plan.actors.get(IT.who), T = plan.actors.get(IT.target);
+          const live = plan._reach(IT, IT.who, Math.min(Math.max(t, IT.t0), IT.t1));
+          const cp = live?.r?.p ? live.r.p.clone() : W.root.position.clone().lerp(T.root.position, 0.5).setY(W.root.position.y + W.eyeH * 0.6);
+          let dir;
+          if (T.kind === 'animal') {
+            const ya = T.root.rotation.y;
+            const f = V(Math.sin(ya), 0, Math.cos(ya)), r = V(Math.cos(ya), 0, -Math.sin(ya)).multiplyScalar(IT.sgn);
+            dir = type === 'inter_hands' ? f.clone().addScaledVector(r, 0.5).normalize() : f.clone().multiplyScalar(IT.zone === 'head' ? 0.25 : 0.8).add(r).normalize();
+          } else dir = axisSide(W.root.position, T.root.position);
+          if (type === 'inter_hands') {
+            const H = 0.62;
+            const dist = frameDist(H);
+            look.copy(cp);
+            pos.copy(cp).addScaledVector(dir, dist);
+            pos.y = cp.y + 0.28;
+            this.focus = dist;
+            break;
+          }
+          const box = new THREE.Box3();
+          box.expandByPoint(W.root.position).expandByPoint(this.anchor(W, 'head').add(V(0, 0.12, 0))).expandByPoint(cp);
+          if (T.kind === 'animal') {
+            // Hayvanın başı ve temas bölgesi (tüm gövde değil: kadraj insanı küçültmesin).
+            box.expandByPoint(this.anchor(T, 'head'));
+            box.expandByPoint(T.root.position.clone().setY(T.root.position.y + (T.height || 1.6) * 0.55));
+          } else box.expandByPoint(this.anchor(T, 'head').add(V(0, 0.12, 0))).expandByPoint(T.root.position);
+          const c = box.getCenter(V());
+          const r = Math.max(0.9, box.getSize(V()).length() * 0.5);
+          const dist = Math.max(2.2, fitDist(r * 1.05, fov));
+          pos.copy(c).addScaledVector(dir, dist);
+          // Hafif yukarıdan (göz hizasının biraz üstü): önde masa/çit/sedir varsa onların üstünden görür.
+          pos.y = Math.max(c.y + 0.35 + dist * 0.05, box.max.y - 0.1);
+          look.copy(c);
+          this.focus = dist;
+          break;
+        }
+        case 'pov': {
+          const head = this.anchor(A, 'head');
+          pos.copy(head).addScaledVector(facing(A), 0.12);
+          look.copy(B ? this.anchor(B, 'head') : head.clone().addScaledVector(facing(A), 5));
           this.focus = pos.distanceTo(look);
           break;
         }
-        const { c, r } = groupFit(plan.ids.length ? plan.ids : ids, 1.4);
-        const R = Math.max(world.radius * 0.9, fitDist(r, fov));
-        pos.copy(c).addScaledVector(side, R * 0.85).setY(Math.max(6.5, R * 0.55));
-        look.copy(c).setY(1.0);
-        this.focus = R;
-        break;
-      }
-      default: { // wide
-        const { c, r } = groupFit(ids, 1.15);
-        const dist = Math.max(3.2, fitDist(r, fov));
-        let dir = side.clone();
-        if (ids.length >= 2) {
-          const P = plan.actors.get(ids[0]).root.position, Q = plan.actors.get(ids[1]).root.position;
-          dir = axisSide(P, Q).addScaledVector(side, 0.6).normalize();
+        case 'establishing': {
+          // Sahne kitinin tasarlanmış kuruluş açısı (B: camera/look) varsa o — ağaçların ardında kalmaz.
+          if (world.it?.camera && world.it?.look && !world.interior) {
+            pos.fromArray(world.it.camera);
+            look.fromArray(world.it.look);
+            this.focus = pos.distanceTo(look);
+            break;
+          }
+          const { c, r } = groupFit(plan.ids.length ? plan.ids : ids, 1.4);
+          const R = Math.max(world.radius * 0.9, fitDist(r, fov));
+          pos.copy(c).addScaledVector(side, R * 0.85).setY(Math.max(6.5, R * 0.55));
+          look.copy(c).setY(1.0);
+          this.focus = R;
+          break;
         }
-        pos.copy(c).addScaledVector(dir, dist).setY(c.y + 0.9 + dist * 0.12);
-        look.copy(c).setY(c.y + 0.1);
-        this.focus = dist;
+        default: { // wide
+          const { c, r } = groupFit(ids, 1.15);
+          const dist = Math.max(3.2, fitDist(r, fov));
+          let dir = side.clone();
+          if (ids.length >= 2) {
+            const P = plan.actors.get(ids[0]).root.position, Q = plan.actors.get(ids[1]).root.position;
+            dir = axisSide(P, Q).addScaledVector(side, 0.6).normalize();
+          }
+          pos.copy(c).addScaledVector(dir, dist).setY(c.y + 0.9 + dist * 0.12);
+          look.copy(c).setY(c.y + 0.1);
+          this.focus = dist;
+        }
+      }
+    };
+    compose(type);
+    // Tek kişilik plan (yakın / orta / omuz üstü / ek) kadraj denetimi (25 Ekim, kurucu: çocuğun göz hizasındaki kamera
+    // yetişkinin belini/kasığını çekiyordu): başka bir oyuncunun gövdesi kadrajda ama başı dışarıdaysa ya da kamera onun kişisel
+    // alanındaysa (yakın <0,8 m, orta <1,2 m) kamera özne çevresinde döndürülerek temiz açı aranır; yoksa ikisini baştan
+    // ayağa (en az dizden yukarı) gösteren ikili plana genişlenir. Karar çekim başında verilir, sn'de bir yeniden denetlenir.
+    if ((type === 'close' || type === 'medium' || type === 'insert' || type === 'ots') && A.kind === 'human') {
+      const fk = `${plan.scene._i}:${shot.t}:${type}:${A.id}`;
+      let F = this._fr;
+      const pivot = this.anchor(A, 'head');
+      const turn = (ang) => {
+        const P2 = pos.clone().sub(pivot).applyAxisAngle(UP, ang).add(pivot);
+        const L2 = look.clone().sub(pivot).applyAxisAngle(UP, ang).add(pivot);
+        return [P2, L2];
+      };
+      const minD = type === 'medium' ? 1.2 : 0.8;
+      const skip = type === 'ots' ? (B ? B.id : plan.gazeTarget(ids[0], t, plan.lineAt(t))) : null; // omuz üstünde ön plandaki dinleyen
+      if (!F || F.k !== fk || this.snap) {
+        F = this._fr = { k: fk, off: 0, wide: null, tc: t };
+        let found = false, worst = null;
+        for (const a of [0, 0.3, -0.3, 0.6, -0.6, 0.9, -0.9, 1.25, -1.25]) {
+          const bad = this._frameBad(plan, ...turn(a), fov, cam.aspect, A, minD, skip, 1.2);
+          if (!bad) { F.off = a; found = true; break; }
+          if (!worst) worst = bad;
+        }
+        if (!found) F.wide = worst.id;
+      } else if (!F.wide && t - F.tc > 0.25) {
+        // Çekim içinde ¼ sn'de bir: GERÇEK kamera (yay + kerteriz sonrası) kadrajı bozulduysa açı aranmaz (kamera savrulmaz),
+        // ikili plana geçilir (bir kesme) ve çekim sonuna dek öyle kalır.
+        F.tc = t;
+        const live = this._pos && this._look ? this._frameBad(plan, this._pos, this._look, fov, cam.aspect, A, minD, skip) : null;
+        const bad = live || this._frameBad(plan, ...turn(F.off), fov, cam.aspect, A, minD, skip);
+        if (bad) F.wide = bad.id;
+      }
+      if (F.wide && plan.actors.get(F.wide)) {
+        type = 'two_shot';
+        B = plan.actors.get(F.wide);
+        ids.length = 0;
+        ids.push(A.id, B.id);
+        fov = lensFov(LENS.two_shot, cam.aspect);
+        compose(type);
+      } else if (F.off) {
+        const [P2, L2] = turn(F.off);
+        pos.copy(P2);
+        look.copy(L2);
       }
     }
     // Yakın / orta / omuz üstü: kameranın özneye göre yönü (kerteriz) çekim başında kilitlenir, en çok 8°/sn kayar —
@@ -1318,7 +1430,10 @@ export class CameraDirector {
       (X._camP || (X._camP = V())).copy(P0);
     }
     this._vSub = this._vSub == null ? vSub : this._vSub + (vSub - this._vSub) * Math.min(1, dt * 3);
-    if (!changed && !this.snap && this._pos && dt > 0 && dt < 0.25) {
+    // Kare atlamasında (≤1 sn, telefonda kesme anında olabiliyor) kamera oturtulmaz; yaylar 1/30 sn alt adımlarla ilerler.
+    if (!changed && !this.snap && this._pos && dt > 0 && dt < 1) for (let left = dt; left > 1e-6; ) {
+      const dt = Math.min(left, 1 / 30);
+      left -= dt;
       const fixedLeg = type === 'wide' || type === 'establishing' || type === 'two_shot' || type === 'inter';
       const vcap = CAM_VMAX + (fixedLeg ? 0 : this._vSub * 1.1); // geniş planda ayak sabit: özne hızı eklenmez
       const spring = (cur, vel, tgt) => {
@@ -1341,7 +1456,8 @@ export class CameraDirector {
         const qs = new THREE.Quaternion().slerp(q, wcap / ang);
         this._look.copy(this._pos).addScaledVector(d0.applyQuaternion(qs), L1);
       }
-    } else {
+    }
+    else {
       this._pos = pos.clone();
       this._look = look.clone();
       this._vp = V();
