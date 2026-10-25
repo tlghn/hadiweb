@@ -21,6 +21,17 @@ export const EXPR_FALLBACK = {
   think: {},
 };
 const CALM = /^(idle|wait|listen|walk|run|march|sneak|carry|talk_gesture|sit_idle|idle_hands|idle_arms)/;
+// Hareket yakalama kliplerinin baş/boyun izleri ham (CMU): yüksek frekanslı titreme, döngü dikişinde sıçrama (≤1500°/sn)
+// ve duygu kliplerinde (gülme, ağlama, korku) sürekli baş sallama taşır — "kafalar hiç durmuyor" şikâyetinin ana nedeni.
+// Baş/boyun klipten yalnızca bu kazançla alınır (0 = boyun ebeveynine göre dinlenme pozu, gövdeyle birlikte gider);
+// baş hareketi senaryo isterse (nod / head_shake / look_around…) ve yalnızca o beat süresince gelir.
+const HEAD_GAIN = {
+  nod: 0.7, head_shake: 0.6, look_around: 0.6, head_down: 0.8, think: 0.35, bow: 0.6, pray: 0.5,
+  cry: 0.22, cry_face: 0.35, laugh: 0.2, happy: 0.15, scared: 0.2, upset: 0.2, angry_gesture: 0.15, shrug: 0.25,
+  fall: 0.6, lie: 0.6, lie_idle: 0.6, get_up: 0.5, stand_up: 0.4, sit: 0.4, sit_ground: 0.4, kneel: 0.4, kneel_idle: 0.4,
+  pick_up: 0.4, drink: 0.4, eat: 0.3, dig: 0.3, sweep: 0.3, write_board: 0.3, hold_baby: 0.3, comb_horse: 0.25,
+};
+const headGain = (clip) => (clip in HEAD_GAIN ? HEAD_GAIN[clip] : CALM.test(clip) ? 0 : 0.15);
 const EXPR_ALIAS = { happy: 'smile', joy: 'smile', scared: 'fear', afraid: 'fear', surprised: 'surprise', anger: 'angry', mad: 'angry', crying: 'cry', thinking: 'think', worried: 'sad', calm: 'neutral' };
 const EXPR_PREFIX =['', 'expr_', 'ex_', 'exp_', 'face_', 'expression_'];
 const VIS_PREFIX = ['', 'viseme_', 'vis_', 'v_', 'viseme-'];
@@ -424,9 +435,28 @@ export class Actor {
     this.mixer.update(0);
     // Sakin kliplerde (bekleme, yürüme, konuşma jesti) hareket yakalamanın baş/boyun salınımı yumuşatılır: bakışı yönetmen
     // verir (yakın planda başın kendiliğinden yukarı bakması tuhaf durur).
-    let calm = 0;
-    for (const it of list) if (CALM.test(it.clip)) calm += it.weight;
-    if (calm > 0.01) for (const x of [this.bones.neck, this.bones.head]) { const q = this.rest.get(x); if (q) x.quaternion.slerp(q, 0.7 * Math.min(1, calm)); }
+    let g = 0, wsum = 0;
+    for (const it of list) { if (it.weight <= 0.001) continue; g += headGain(it.clip) * it.weight; wsum += it.weight; }
+    g = wsum > 0 ? g / Math.max(1, wsum) : 0;
+    for (const x of [this.bones.neck, this.bones.head]) { const q = this.rest.get(x); if (q && x) x.quaternion.slerp(q, 1 - g); }
+  }
+
+  /** Klip pozunu zamanda süzer (kemik başına tek kutuplu alçak geçiren): ham hareket yakalamanın titremesi, tek karelik
+   * sıçramaları (ör. idle'da 2,4. sn'de omurgada ~3°) ve döngü dikişleri görünmez. Omurga/boyun/baş τ≈80 ms (onaylama ve
+   * baş sallama ≈1–1,5 Hz korunur), diğer kemikler τ≈40 ms (tokat, el sallama keskin kalır). snap: arama/kesme — anında. */
+  filterHead(dt, snap) {
+    const F = this._hf || (this._hf = new Map());
+    if (!this._fb) {
+      this._fb = [];
+      this.model.traverse((o) => { if (o.isBone) this._fb.push([o, /spine|neck|head|clavicle|chest/i.test(o.name) ? 0.08 : 0.04]); });
+    }
+    const h = snap || !(dt > 0) ? 0 : Math.min(0.1, dt);
+    for (const [x, tau] of this._fb) {
+      let q = F.get(x);
+      if (!q) { q = x.quaternion.clone(); F.set(x, q); }
+      if (!h) q.copy(x.quaternion); else q.slerp(x.quaternion, 1 - Math.exp(-h / tau));
+      x.quaternion.copy(q);
+    }
   }
 
   clipFor(name) {

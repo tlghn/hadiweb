@@ -1,7 +1,9 @@
 // HADİ Film v3 — oynatıcı (webview / iframe içinde). Sözleşme: film3_spec §5.
 //   Giriş (postMessage ya da window.HadiFilm3.cmd): {type:"load", catalog, film, cast, start, quality, subs, audioBase?, aspect?,
-//     placeholders?} · play · pause · seek {t} · rate {r} · quality {low|mid|high|auto} · subs {on}
-//   Çıkış: ready {dur} · progress {t,dur} · ended · error {msg} · needAsset {pct} · state {playing} · quality {q} · tap
+//     placeholders?, narration?} · play · pause · seek {t} · rate {r} · quality {low|mid|high|auto} · subs {on} · narration {on}
+//   (narration: "Anlatıcı sesi" — kapalıyken bölüm sesinin anlatı bölütleri susar; konuşmalar, müzik, efekt ve sahneler sürer)
+//   Çıkış: ready {dur, audio:'chapter'|'lines'|'none', narration} · progress {t,dur} · ended · error {msg} · needAsset {pct}
+//     · state {playing, buffering?} · quality {q} · narration {on} · tap
 //   Uygulamada (webview) çıkış HadiBridge.postMessage(JSON) ile, web'de (iframe) parent.postMessage ile gider.
 // Ana saat WebAudio'dur (audio.js); her kare t'ye göre değerlendirilir (director.js). Varlıklar Cache Storage'da (assets.js).
 import * as THREE from 'three';
@@ -9,7 +11,7 @@ import { AssetStore } from './assets.js';
 import { FilmAudio } from './audio.js';
 import { Look, QUALITY } from './fx.js';
 import { buildHuman, buildAnimal, findPart } from './character.js';
-import { prepareFilm, sceneAt, ScenePlan, CameraDirector, applyHead, blinkAt, visemeWeightsAt } from './director.js';
+import { prepareFilm, sceneAt, ScenePlan, CameraDirector, applyHead, idleSway, blinkAt, visemeWeightsAt } from './director.js';
 import { placeholderCatalog, placeholderGltf } from './placeholder.js';
 
 const $ = (id) => document.getElementById(id);
@@ -219,7 +221,8 @@ class Player {
       this._activate(sceneAt(this.film, this.audio.time()), false);
       this.dirty = true;
       this.ready = true;
-      post('ready', { dur: this.film.dur, scenes: this.film.scenes.map((s) => ({ i: s.i, t0: s.t0, t1: s.t1, title: s.title || '' })) });
+      if (msg.narration !== undefined) this.audio.setNarration(msg.narration !== false);
+      post('ready', { audio: this.audio.ch?.has ? 'chapter' : this.events.some((e) => e.bus === 'voice') ? 'lines' : 'none', narration: this.audio.narration, dur: this.film.dur, scenes: this.film.scenes.map((s) => ({ i: s.i, t0: s.t0, t1: s.t1, title: s.title || '' })) });
       if (msg.autoplay) this.play();
     } catch (e) {
       console.error(e);
@@ -287,6 +290,12 @@ class Player {
 
   _audioEvents() {
     const ev = [];
+    // v2: bölümün TEK sesi (sesli kitap) ana saattir; parça adresleri imzalı gelir (ya da audioBase'e göre).
+    const au = this.film.audio && this.film.audio.src === 'audiobook' ? this.film.audio : null;
+    const chFetch = (u) => (this.assets && u.startsWith(this.assets.base) ? this.assets.bytes(u) : fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }));
+    this.audio.setChapter(au, au ? au.parts.map((p) => this._resolveAudio(p.url)) : null, chFetch);
+    this.audio.onState = (st) => post('state', { playing: this.audio.playing, buffering: st === 'buffering' });
+    this.cues = (this.film.cues || []).map((c, i) => ({ ...c, id: 'c' + i })).sort((a, b) => a.t - b.t);
     for (const l of this.film.lines) {
       const url = this._resolveAudio(l.audio);
       if (!url) continue;
@@ -515,7 +524,7 @@ class Player {
   }
 
   _chip() {
-    const needs = this.events?.length || this.musicOf?.some(Boolean);
+    const needs = this.events?.length || this.musicOf?.some(Boolean) || this.audio.ch?.has;
     this.chip.style.display = this.audio.playing && needs && !this.audio.unlocked ? 'block' : 'none';
   }
 
@@ -528,6 +537,7 @@ class Player {
       case 'seek': this.seek(m.t); break;
       case 'rate': this.setRate(m.r); break;
       case 'quality': this.setQuality(m.q || m.quality); break;
+      case 'narration': this.audio.setNarration(m.on !== false); post('narration', { on: this.audio.narration }); break;
       case 'subs': this.subs = !!m.on; this._subText = null; this.subsEl.style.display = this.subs ? '' : 'none'; break;
       case 'stats': post('stats', { ...this.stats, q: this.look.qname, pr: this.look.renderer.getPixelRatio() }); break;
       default: break;
@@ -551,8 +561,9 @@ class Player {
     if (si !== this.cur) this._activate(si, playing);
     this.lastT = t;
     const plan = this.plans.get(si);
-    this._evaluate(plan, t);
-    this.cam.snap = !playing || this._seeked;
+    const snap = !playing || this._seeked;
+    this._evaluate(plan, t, snap);
+    this.cam.snap = snap;
     this._wasSeek = this._seeked;
     this._seeked = false;
     const { changed } = this.cam.update(plan, t, plan.world);
@@ -571,8 +582,11 @@ class Player {
     this._wasSeek = false;
     // Ses
     const line = plan.lineAt(t);
-    this.audio.update(t, this.events, this.musicOf[si], !!line);
-    this._subtitle(line);
+    // Müzik, ses duyulurken kısılır: v2'de konuşma bölütü ya da (açıksa) anlatı; v1'de replik.
+    const seg = this.audio.ch ? this.audio.segAt(t) : null;
+    const speaking = this.audio.ch?.has ? !!seg && (seg.kind === 'say' || this.audio.narration) : !!line;
+    this.audio.update(t, this.events, this.musicOf[si], speaking);
+    this._subtitle(this._cueAt(t) || line);
     this._fade(t, si);
     const flow = plan.world.it?.water?.flow || [0, 0, 1];
     for (const m of plan.world.water || []) if (m.normalMap) m.normalMap.offset.set(t * 0.035 * (flow[0] || 0.3), t * 0.035 * (flow[2] || 1));
@@ -640,9 +654,14 @@ class Player {
     }
   }
 
-  _evaluate(plan, t) {
+  _evaluate(plan, t, snap = true) {
     const tmp = new THREE.Vector3();
     const line = plan.lineAt(t);
+    // Kare aralığı (film saati): baş/bakış yayları ve süzgeçler için; arama, kesme ya da duraklatmada anında yerleşir.
+    const dt = this._evT == null ? 0 : t - this._evT;
+    this._evT = t;
+    if (!(dt > 0) || dt > 0.25 || this._evPlan !== plan) snap = true;
+    this._evPlan = plan;
     for (const id of plan.ids) { const A = this.actors.get(id); A._pl = plan.placement(id, t, A.root.position); }
     this._separate(plan);
     // Zemine bas: oturma kaldırması (spot y) korunur, üstüne zeminin yüksekliği eklenir.
@@ -656,10 +675,29 @@ class Player {
       const A = this.actors.get(id);
       const pl = A._pl;
       A.root.rotation.y = pl.yaw;
-      const expr = plan.exprAt(id, t);
+      const expr = A._expr = plan.exprAt(id, t);
       const sad = (expr.sad || 0) + (expr.cry || 0) > 0.5;
       A.pose(plan.clipsAt(id, t, A, sad));
+      if (A.kind === 'human') A.filterHead(dt, snap);
       this._prop(A, plan.propAt(id, t));
+    }
+    // Göz noktası (kökten, zamanda süzülmüş τ≈0,35 sn): bakış hedefi ve kamera kadrajı bunu kullanır, kemik sallantısını değil.
+    for (const id of plan.ids) {
+      const A = this.actors.get(id);
+      const E = A.bones?.eyes?.length ? A.bones.eyes : A.bones?.head ? [A.bones.head] : null;
+      if (!E || A.kind !== 'human') continue;
+      A.root.updateMatrixWorld(true);
+      tmp.set(0, 0, 0);
+      for (const e of E) tmp.add(e.getWorldPosition(new THREE.Vector3()));
+      tmp.multiplyScalar(1 / E.length).sub(A.root.position);
+      if (E.length === 1 && E[0] === A.bones.head) tmp.y += 0.07;
+      if (!A._eyeS || snap || A._eyeS.distanceTo(tmp) > 0.8) A._eyeS = tmp.clone();
+      else A._eyeS.lerp(tmp, 1 - Math.exp(-dt / 0.35));
+    }
+    for (const id of plan.ids) {
+      const A = this.actors.get(id);
+      const pl = A._pl;
+      const expr = A._expr || {};
       // Baş: bakış + (klipte yoksa) baş sallama / onaylama
       const extra = { yaw: 0, pitch: 0 };
       const tr = plan.tracks.get(id);
@@ -667,13 +705,23 @@ class Player {
         if (c.t > t) break;
         if (t >= c.t + c.d) continue;
         const u = t - c.t, env = Math.min(1, u / 0.2) * Math.min(1, (c.t + c.d - t) / 0.3);
-        if (c.clip === 'head_shake' && !A.actions.has('head_shake')) extra.yaw += 0.38 * Math.sin(u * Math.PI * 2 * 1.8) * env;
-        if (c.clip === 'nod' && !A.actions.has('nod')) extra.pitch += 0.25 * Math.max(0, Math.sin(u * Math.PI * 2 * 1.4)) * env;
-        if (c.clip === 'look_around' && !A.actions.has('look_around')) extra.yaw += 0.6 * Math.sin(u * 1.6) * env;
+        // Yordamsal yedek (klip yoksa): sakin, yalnızca beat süresince.
+        if (c.clip === 'head_shake' && !A.actions.has('head_shake')) extra.yaw += 0.2 * Math.sin(u * Math.PI * 2 * 1.2) * env;
+        if (c.clip === 'nod' && !A.actions.has('nod')) extra.pitch += 0.14 * Math.max(0, Math.sin(u * Math.PI * 2 * 1.0)) * env;
+        if (c.clip === 'look_around' && !A.actions.has('look_around')) extra.yaw += 0.5 * Math.sin(u * 1.2) * env;
+      }
+      // Boşta çok hafif salınım (≤ ~1,5°, < 0,25 Hz) ve repliğin başında küçük bir vurgu (≈1,5° öne).
+      const sw = idleSway(id, t);
+      extra.yaw += sw.yaw;
+      extra.pitch += sw.pitch;
+      if (line && line.who === id) {
+        const u = t - line.t;
+        extra.pitch += THREE.MathUtils.degToRad(1.5) * Math.min(1, u / 0.25) * Math.max(0, 1 - Math.max(0, u - 0.45) / 0.5);
       }
       const gz = plan.gazeTarget(id, t, line);
-      const look = gz && gz !== id ? this.cam.anchor(this.actors.get(gz), 'head') : null;
-      if (A.kind === 'human' && !this.noHead) applyHead(A, pl.yaw, look, extra, pl.moving ? 0.35 : 0.75);
+      const G = gz && gz !== id ? this.actors.get(gz) : null;
+      const look = G ? (G._eyeS ? G.root.position.clone().add(G._eyeS) : this.cam.anchor(G, 'head')) : null;
+      if (A.kind === 'human' && !this.noHead) applyHead(A, pl.yaw, look, extra, pl.moving ? 0.35 : 0.75, dt, snap);
       // Yüz
       if (A.faces.length) {
         const b = blinkAt(id, t);
@@ -685,6 +733,16 @@ class Player {
       }
       void tmp;
     }
+  }
+
+  /** v2 altyazı: bölümün tüm metni (anlatı + konuşma) sesin kelime zamanlarıyla (film.cues). */
+  _cueAt(t) {
+    const C = this.cues;
+    if (!C || !C.length) return null;
+    let lo = 0, hi = C.length - 1;
+    while (lo < hi) { const m = (lo + hi + 1) >> 1; if (C[m].t <= t) lo = m; else hi = m - 1; }
+    const c = C[lo];
+    return t >= c.t && t < c.t + c.d ? c : null;
   }
 
   _subtitle(line) {
@@ -750,6 +808,6 @@ window.addEventListener('unhandledrejection', (e) => { if (!player.ready) post('
 if (params.get('demo') || params.get('film')) {
   const filmUrl = params.get('film') || 'demo.json';
   const cat = params.get('catalog');
-  player.load({ type: 'load', film: filmUrl, catalog: cat || (params.get('demo') ? 'placeholder' : undefined), demo: true, start: +params.get('t') || 0, autoplay: params.get('auto') === '1', quality: params.get('q') || undefined });
+  player.load({ type: 'load', film: filmUrl, catalog: cat || (params.get('demo') ? 'placeholder' : undefined), demo: true, start: +params.get('t') || 0, autoplay: params.get('auto') === '1', quality: params.get('q') || undefined, audioBase: params.get('audioBase') || undefined, narration: params.get('narr') !== '0' });
 }
 post('boot');

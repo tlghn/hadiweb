@@ -300,7 +300,26 @@ export class ScenePlan {
   }
 
   /** Bir aktörün baktığı yer (konuşan, face hedefi). */
-  gazeTarget(id, t, line) {
+  /** Kararlı bakış hedefi: ham hedef (_gazeRaw) en az GAZE_HOLD sn sürmedikçe baş ona dönmez — kısa replikler ve
+   * art arda konuşan değişimleri başları sağa sola savurmaz (eskiden her replikte 40–50°/sn'lik dönüş, dinleyenler
+   * zamanının ~%40'ında baş çeviriyordu). Durumsuz: yalnızca t'ye bakar (seek doğru), 0,1 sn ızgarada önbellekli. */
+  gazeTarget(id, t, line, depth = 0) {
+    const G = 0.1, HOLD = 0.7;
+    const raw = (tt) => {
+      const M = this._gzM || (this._gzM = new Map());
+      const k = id + '|' + Math.round(tt / G);
+      if (!M.has(k)) { if (M.size > 20000) M.clear(); M.set(k, this._gazeRaw(id, tt, this.lineAt(tt))); }
+      return M.get(k);
+    };
+    const cur = this._gazeRaw(id, t, line);
+    const t0 = this.scene.t0 ?? 0;
+    let s0 = Math.floor(t / G) * G;
+    while (s0 - G >= t0 && t - s0 < HOLD && raw(s0 - G) === cur) s0 -= G;
+    if (t - s0 >= HOLD || s0 - G < t0 || depth > 4) return cur;
+    return this.gazeTarget(id, s0 - G, this.lineAt(s0 - G), depth + 1);
+  }
+
+  _gazeRaw(id, t, line) {
     if (line && line.who !== id && this.tracks.has(line.who)) return line.who;
     const sc = this.scene;
     let tgt = null;
@@ -338,30 +357,58 @@ function rotateBoneWorld(bone, qDelta) {
   bone.updateMatrixWorld(true);
 }
 
-/** Bakış (yaw/pitch, aktörün önüne göre), baş sallama / onaylama (klipte yoksa yordamsal). */
-export function applyHead(A, yaw0, lookAt, extra, weight = 0.75) {
+/** Bakış (yaw/pitch, aktörün önüne göre), baş sallama / onaylama (klipte yoksa yordamsal).
+ * Bakış DURUMLU ve sakindir: hedef açı ölü bölgeli (küçük kaymalar hedefi değiştirmez), baş kritik sönümlü yayla
+ * (ω≈3 rad/sn, ≤35°/sn) döner; hedef noktası çağıranın verdiği SABİT göz noktasıdır (karşıdakinin animasyonla oynayan
+ * baş kemiği değil) — baş başı izleyip titremez. extra: {yaw, pitch} yumuşak ek (boşta salınım, vurgu, yordamsal jest);
+ * dt: film saniyesi, snap: arama/kesme (anında yerleşir). */
+const LOOK_DEAD = THREE.MathUtils.degToRad(4);
+const LOOK_W = 3.0, LOOK_VMAX = THREE.MathUtils.degToRad(35);
+export function applyHead(A, yaw0, lookAt, extra, weight = 0.75, dt = 0, snap = true) {
   const head = A.bones.head, neck = A.bones.neck;
   if (!head) return;
   A.root.updateMatrixWorld(true);
-  let dy = 0, dp = 0;
+  let ty = 0, tp = 0;
   if (lookAt) {
-    head.getWorldPosition(_va);
+    if (A._eyeS) _va.copy(A.root.position).add(A._eyeS); else head.getWorldPosition(_va);
     _vb.copy(lookAt).sub(_va);
     const yaw = Math.atan2(_vb.x, _vb.z);
     const hor = Math.hypot(_vb.x, _vb.z);
-    dy = THREE.MathUtils.clamp(angDiff(yaw0, yaw), -1.1, 1.1) * weight;
-    dp = THREE.MathUtils.clamp(-Math.atan2(_vb.y, hor), -0.45, 0.5) * weight;
+    ty = THREE.MathUtils.clamp(angDiff(yaw0, yaw), -1.1, 1.1) * weight;
+    tp = THREE.MathUtils.clamp(-Math.atan2(_vb.y, hor), -0.45, 0.5) * weight;
   }
-  dy += extra.yaw || 0;
-  dp += extra.pitch || 0;
+  const H = A._look || (A._look = { y: ty, p: tp, vy: 0, vp: 0, hy: ty, hp: tp });
+  // Ölü bölge: hedef ancak belirgin değişince (>4°) güncellenir.
+  if (snap || Math.abs(ty - H.hy) > LOOK_DEAD || Math.abs(tp - H.hp) > LOOK_DEAD || (!lookAt && (H.hy || H.hp))) { H.hy = ty; H.hp = tp; }
+  if (snap || !(dt > 0)) { H.y = H.hy; H.p = H.hp; H.vy = H.vp = 0; }
+  else {
+    const h = Math.min(dt, 0.1);
+    for (const [k, v] of [['y', 'vy'], ['p', 'vp']]) {
+      const x = H[k], tgt = k === 'y' ? H.hy : H.hp;
+      let vel = H[v] + (-2 * LOOK_W * H[v] - LOOK_W * LOOK_W * (x - tgt)) * h;
+      vel = THREE.MathUtils.clamp(vel, -LOOK_VMAX, LOOK_VMAX);
+      H[v] = vel;
+      H[k] = x + vel * h;
+    }
+  }
+  const dy = H.y + (extra.yaw || 0);
+  const dp = H.p + (extra.pitch || 0);
   if (Math.abs(dy) < 1e-4 && Math.abs(dp) < 1e-4) return;
   const right = V(Math.cos(yaw0), 0, -Math.sin(yaw0)); // aktörün sağ ekseni (bakış +Z)
   const split = neck ? [[neck, 0.4], [head, 0.6]] : [[head, 1]];
   for (const [b, k] of split) {
-    const q = new THREE.Quaternion().setFromAxisAngle(UP, dy * k).multiply(new THREE.Quaternion().setFromAxisAngle(right, -dp * k * -1));
+    const q = new THREE.Quaternion().setFromAxisAngle(UP, dy * k).multiply(new THREE.Quaternion().setFromAxisAngle(right, dp * k));
     rotateBoneWorld(b, q);
   }
   for (const e of A.bones.eyes) rotateBoneWorld(e, new THREE.Quaternion().setFromAxisAngle(UP, dy * 0.3));
+}
+
+/** Boşta baş salınımı: ≤ ~1,5° genlik, 0,08–0,22 Hz (nefes ritminde, kişiye göre evreli). */
+export function idleSway(id, t) {
+  const h = hash(id), D = Math.PI / 180;
+  const yaw = D * (1.1 * Math.sin(2 * Math.PI * (0.09 + h * 0.04) * t + h * 17) + 0.4 * Math.sin(2 * Math.PI * 0.21 * t + h * 5));
+  const pitch = D * (0.8 * Math.sin(2 * Math.PI * (0.13 + h * 0.05) * t + h * 11));
+  return { yaw, pitch };
 }
 
 export function blinkAt(id, t) {
@@ -384,6 +431,10 @@ function lensFov(mm, aspect) {
   return THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(h / 2) / Math.max(0.5, aspect)));
 }
 
+const CAM_VMAX = 0.3; // m/sn (kaydırma)
+const CAM_WMAX = THREE.MathUtils.degToRad(10); // rad/sn (çevirme)
+const CAM_W = 1.8; // takip yayı (rad/sn)
+
 export class CameraDirector {
   constructor(camera) {
     this.camera = camera;
@@ -402,6 +453,14 @@ export class CameraDirector {
     const k = part === 'head' ? 1 : part === 'chest' ? 0.8 : part === 'hands' ? 0.58 : 0.55;
     // Başın gerçek yeri (oturma, diz çökme, eğilme…): kemikten, yumuşatılarak; yoksa sabit göz yüksekliği.
     const hb = A.bones?.head;
+    if (A._eyeS) {
+      // Oynatıcının karede bir kez güncellediği, zamanda süzülmüş göz noktası (kökten): baş kemiğinin anlık sallantısı
+      // kadraja geçmez.
+      if (part === 'head') return p.add(A._eyeS);
+      p.y += A._eyeS.y * k;
+      if (part === 'hands') p.addScaledVector(V(Math.sin(A.root.rotation.y), 0, Math.cos(A.root.rotation.y)), 0.28);
+      return p;
+    }
     if (hb) {
       // "head" = GÖZ hizası (göz kemikleri varsa onların ortası): kadraj gözlere göre kurulur.
       const E = A.bones.eyes;
@@ -429,7 +488,15 @@ export class CameraDirector {
   /** Kamera ile bakış noktası arasında başka oyuncu ya da sahne duvarı varsa: kamerayı bakış noktası çevresinde döndürerek
    * açık bir açı arar (çekim başına ve 0,6 sn'de bir), bulamazsa engelin önüne çeker. */
   _clear(plan, world, pos, look, ids, key, t) {
-    if (this._occKey !== key || Math.abs(t - this._occT) > 0.6) {
+    // Çekim başında tam arama; çekim içinde 1 sn'de bir yalnızca seçili açının hâlâ açık olup olmadığına bakılır (açı
+    // gereksiz yere değişip kamera yeniden kadraj aramaz — histerezis).
+    const fresh = this._occKey !== key;
+    if (!fresh && Math.abs(t - this._occT) > 1.0) {
+      this._occT = t;
+      const off = pos.clone().sub(look).applyAxisAngle(UP, this._occAng || 0).multiplyScalar(this._occPull || 1);
+      if (this._blocked(plan, world, look, look.clone().add(off), ids)) this._occKey = null;
+    }
+    if (this._occKey !== key) {
       this._occKey = key;
       this._occT = t;
       this._occAng = 0;
@@ -504,17 +571,102 @@ export class CameraDirector {
 
   /** Bu sahnenin bu anındaki çekim (film çekimi ya da otomatik). */
   shotAt(plan, t) {
-    const S = plan.scene.shots;
+    const cur = this._explicitAt(plan, t);
+    if (cur) return cur;
+    // Otomatik: sahne başına bir kez planlanır (en kısa çekim ~3 sn; kısa replikler birleşir).
+    const A = this._autoPlan(plan);
+    for (let i = A.length - 1; i >= 0; i--) if (t >= A[i].t) return A[i];
+    return A[0] || this._rawAuto(plan, t);
+  }
+
+  _explicitAt(plan, t) {
     let cur = null;
-    for (const s of S) { if (s.t > t) break; if (t < s.t + (s.d || 0)) cur = s; }
-    if (cur && cur.type !== 'auto') return cur;
-    // Otomatik
+    for (const s of this._explicit(plan)) { if (s.t > t) break; if (t < s.t + (s.d || 0)) cur = s; }
+    return cur && cur.type !== 'auto' ? cur : null;
+  }
+
+  /** Senaryonun çekimleri, kurgu temizliğiyle (sahne başına bir kez): art arda aynı plan (tür + hedef + hareket) tek
+   * çekim olur (aynı kadraja "kesme" yok); bitişik komşusu olan 2,5 sn'den kısa çekim komşusuna katılır (kısa replik
+   * başına bir kesme yok). Komşusuz kısa çekimler olduğu gibi kalır. */
+  _explicit(plan) {
+    if (plan._explShots) return plan._explShots;
+    const MIN = 2.5, GAP = 0.08;
+    const WIDTH = (ty) => ({ establishing: 6, wide: 5, two_shot: 4, two: 4, medium: 3, ots: 2, close: 1, insert: 0 })[ty] ?? 3;
+    const L = plan.scene.shots.map((x) => ({ ...x })).sort((a, b) => a.t - b.t);
+    const end = (x) => x.t + (x.d || 0);
+    const same = (a, b) => a.type === b.type && [].concat(a.target).join(',') === [].concat(b.target).join(',') && (a.move || 'static') === (b.move || 'static');
+    const adj = (a, b) => a && b && a.type !== 'auto' && b.type !== 'auto' && b.t - end(a) < GAP && b.t >= a.t;
+    for (let i = 0; i + 1 < L.length; ) {
+      if (adj(L[i], L[i + 1]) && same(L[i], L[i + 1])) { L[i].d = Math.max(end(L[i]), end(L[i + 1])) - L[i].t; L.splice(i + 1, 1); } else i++;
+    }
+    for (let guard = 0; guard < 500; guard++) {
+      let k = -1, best = MIN;
+      for (let i = 0; i < L.length; i++) {
+        if (L[i].type === 'auto' || !((L[i].d || 0) < best)) continue;
+        if (adj(L[i - 1], L[i]) || adj(L[i], L[i + 1])) { best = L[i].d || 0; k = i; }
+      }
+      if (k < 0) break;
+      const pv = adj(L[k - 1], L[k]) ? L[k - 1] : null, nx = adj(L[k], L[k + 1]) ? L[k + 1] : null;
+      const keep = pv && (!nx || (pv.d || 0) <= (nx.d || 0)) ? pv : nx;
+      // Birleşen çekim ikisinden GENİŞ olanın kadrajını alır (yürüyüş/eylem kadrajda kalsın, kamera koşmasın).
+      if (WIDTH(L[k].type) > WIDTH(keep.type)) { keep.type = L[k].type; keep.target = L[k].target; keep.move = L[k].move; }
+      if (keep === pv) pv.d = end(L[k]) - pv.t;
+      else { nx.d = end(nx) - L[k].t; nx.t = L[k].t; }
+      L.splice(k, 1);
+    }
+    plan._explShots = L;
+    return L;
+  }
+
+  /** Senaryonun çekim vermediği aralıklar için otomatik çekim dizisi: 0,1 sn adımla ham öneriler, aynı öneriler tek çekim;
+   * MIN_SHOT'tan kısa çekimler komşusuyla birleşir (iki farklı konuşan → sabit iki kişilik plan). Diyalog sabit çekimle. */
+  _autoPlan(plan) {
+    if (plan._autoShots) return plan._autoShots;
+    const MIN_SHOT = 3;
+    const sc = plan.scene, segs = [];
+    let gap = 0, prevExplicit = true;
+    for (let t = sc.t0; t < sc.t1; t += 0.1) {
+      if (this._explicitAt(plan, t)) { prevExplicit = true; continue; }
+      if (prevExplicit) { gap++; prevExplicit = false; }
+      const r = this._rawAuto(plan, t);
+      const key = `${r.type}|${[].concat(r.target).join(',')}|${r.t}`;
+      const last = segs[segs.length - 1];
+      if (last && last.gap === gap && last.key === key) last.t1 = t + 0.1;
+      else segs.push({ gap, key, t0: t, t1: t + 0.1, shot: r });
+    }
+    const merge = (a, b) => {
+      const L = a.t1 - a.t0 >= b.t1 - b.t0 ? a : b;
+      const ta = [].concat(a.shot.target)[0], tb = [].concat(b.shot.target)[0];
+      let shot = { ...L.shot };
+      const dlg = (x) => x.shot.type === 'close' || x.shot.type === 'ots';
+      if (dlg(a) && dlg(b) && ta !== tb) shot = { type: 'two_shot', target: [ta, tb], move: 'static' };
+      else if (a.shot.type === 'wide' || b.shot.type === 'wide') shot = { type: 'wide', target: [...new Set([...[].concat(a.shot.target), ...[].concat(b.shot.target)])], move: 'static' };
+      return { gap: a.gap, key: a.key + '+' + b.key, t0: a.t0, t1: b.t1, shot };
+    };
+    for (let guard = 0; guard < 400; guard++) {
+      let k = -1, best = MIN_SHOT;
+      for (let i = 0; i < segs.length; i++) {
+        const d = segs[i].t1 - segs[i].t0;
+        const hasN = (segs[i - 1] && segs[i - 1].gap === segs[i].gap) || (segs[i + 1] && segs[i + 1].gap === segs[i].gap);
+        if (d < best && hasN) { best = d; k = i; }
+      }
+      if (k < 0) break;
+      const pv = segs[k - 1] && segs[k - 1].gap === segs[k].gap ? segs[k - 1] : null;
+      const nx = segs[k + 1] && segs[k + 1].gap === segs[k].gap ? segs[k + 1] : null;
+      if (pv && (!nx || pv.t1 - pv.t0 <= nx.t1 - nx.t0)) segs.splice(k - 1, 2, merge(pv, segs[k]));
+      else segs.splice(k, 2, merge(segs[k], nx));
+    }
+    plan._autoShots = segs.map((g) => ({ ...g.shot, t: +g.t0.toFixed(2), d: +(g.t1 - g.t0).toFixed(2), _auto: true }));
+    return plan._autoShots;
+  }
+
+  _rawAuto(plan, t) {
     const line = plan.lineAt(t);
     if (line && plan.tracks.has(line.who)) {
       const idx = plan.lines.indexOf(line);
       const listener = plan.gazeTarget(line.who, t, line);
       const ots = listener && (line.d || 0) > 2.6 && idx % 3 === 2;
-      return { t: line.t, d: line.d, type: ots ? 'ots' : 'close', target: listener ? [line.who, listener] : line.who, move: (line.d || 0) > 3 ? 'dolly_in' : 'static', _auto: true };
+      return { t: line.t, d: line.d, type: ots ? 'ots' : 'close', target: listener ? [line.who, listener] : line.who, move: 'static', _auto: true };
     }
     for (const id of plan.ids) {
       const tr = plan.tracks.get(id);
@@ -523,8 +675,8 @@ export class CameraDirector {
     }
     const humans = plan.ids.filter((id) => plan.actors.get(id).kind === 'human');
     const t0 = plan.scene.t0;
-    const k = Math.floor((t - t0) / 7);
-    return { t: t0 + k * 7, d: 7, type: humans.length === 2 && k % 2 ? 'two_shot' : 'wide', target: plan.ids, move: k % 2 ? 'orbit' : 'dolly_in', _auto: true };
+    const k = Math.floor((t - t0) / 8);
+    return { t: t0 + k * 8, d: 8, type: humans.length === 2 && k % 2 ? 'two_shot' : 'wide', target: plan.ids, move: k % 2 ? 'static' : 'dolly_in', _auto: true };
   }
 
   /** Kamerayı t anına göre yerleştirir. Dönen: {key, closeup, focus}. */
@@ -539,6 +691,7 @@ export class CameraDirector {
     const e = p * p * (3 - 2 * p) * 0.6 + p * 0.4;
     let type = shot.type || 'wide';
     if (type === 'over_shoulder') type = 'ots';
+    if (type === 'two' || type === 'twoshot' || type === 'two-shot') type = 'two_shot'; // senaryo adı: "two"
     // Omuz üstü, dinleyen konuşandan çok uzunsa (yetişkin–çocuk) dinleyenin gövdesi kadrajı kaplar: karşı açıdan yakın plan.
     if (type === 'ots' && B && A.kind === 'human' && B.kind === 'human' && Math.abs(B.eyeH - A.eyeH) > 0.25) type = 'close';
     const side = world.side.clone();
@@ -698,35 +851,67 @@ export class CameraDirector {
         this.focus = dist;
       }
     }
-    // Hareketler
+    // Yakın / orta / omuz üstü: kameranın özneye göre yönü (kerteriz) çekim başında kilitlenir, en çok 8°/sn kayar —
+    // özne dönünce ya da yürürken yön değiştirince kamera onun çevresinde savrulmaz.
+    if (type === 'medium' || type === 'close' || type === 'insert' || type === 'ots') {
+      const bk = `${plan.scene._i}:${shot.t}:${type}`;
+      const o = pos.clone().sub(look);
+      const th = Math.atan2(o.x, o.z);
+      if (this._bKey !== bk || this.snap || this._bTh == null) { this._bKey = bk; this._bTh = th; this._bT = t; }
+      else {
+        const step = THREE.MathUtils.degToRad(8) * Math.max(0, t - this._bT);
+        this._bT = t;
+        this._bTh += THREE.MathUtils.clamp(angDiff(this._bTh, th), -step, step);
+        pos.copy(look).add(o.applyAxisAngle(UP, angDiff(th, this._bTh)));
+      }
+    }
+    // Geniş / kuruluş / iki kişilik planlarda kamera ayağı çekim başındaki yerinde durur (özne yürüse de kamera onunla
+    // birlikte kaymaz, yalnızca yavaşça çevrilir); kadraj gerekirse en çok 0,2 m/sn sürüklenir.
+    if (type === 'wide' || type === 'establishing' || type === 'two_shot') {
+      const wk = `${plan.scene._i}:${shot.t}:${type}`;
+      if (this._wKey !== wk || this.snap || !this._wPos) { this._wKey = wk; this._wPos = pos.clone(); this._wT = t; }
+      else {
+        const dd = pos.clone().sub(this._wPos);
+        const lim = 0.2 * Math.max(0, t - this._wT);
+        if (dd.length() > lim) dd.setLength(lim);
+        pos.copy(this._wPos).add(dd);
+      }
+    }
+    // Hareketler — sinema hızında: kaydırma (dolly/crane/track) ≤ 0,3 m/sn, çevirme (pan/orbit) ≤ 10°/sn. Genlik çekim
+    // süresine göre kısılır (yumuşatılmış eğrinin tepe hızı ortalamanın ~1,3 katı); kısa çekimde hareket küçülür.
     const mv = shot.move || 'static';
     const off = pos.clone().sub(look);
     const seed = hash(String(shot.t));
     const yawRot = (ang) => off.applyAxisAngle(UP, ang);
+    const D = Math.max(0.5, shot.d || 4), PEAK = 1.3;
+    const maxLin = (CAM_VMAX * D) / PEAK, maxAng = (CAM_WMAX * D) / PEAK;
+    const R = Math.max(0.3, off.length());
     switch (mv) {
-      case 'dolly_in': off.multiplyScalar(1.22 - 0.3 * e); break;
-      case 'dolly_out': off.multiplyScalar(0.92 + 0.3 * e); break;
-      case 'orbit': yawRot((seed > 0.5 ? 1 : -1) * (-0.22 + 0.44 * e)); break;
-      case 'crane': off.y += 2.2 * (1 - e) - 0.2; break;
+      case 'dolly_in': { const a = Math.min(0.3, maxLin / R); off.multiplyScalar(1 + 0.73 * a - a * e); break; }
+      case 'dolly_out': { const a = Math.min(0.3, maxLin / R); off.multiplyScalar(1 - 0.27 * a + a * e); break; }
+      case 'orbit': { const a = Math.min(0.44, maxAng, maxLin / Math.max(0.3, Math.hypot(off.x, off.z))); yawRot((seed > 0.5 ? 1 : -1) * (-a / 2 + a * e)); break; }
+      case 'crane': { const a = Math.min(2.2, maxLin); off.y += a * (1 - e) - 0.2 * (a / 2.2); break; }
       case 'pan':
       case 'pan_r':
       case 'pan_l': {
         const dir = mv === 'pan_l' ? -1 : 1;
         const right = V(off.z, 0, -off.x).normalize();
-        look.addScaledVector(right, dir * (-0.5 + e) * Math.min(1.6, off.length() * 0.18));
+        const W = Math.min(1.6, R * 0.18, maxAng * R, maxLin);
+        look.addScaledVector(right, dir * (-0.5 + e) * W);
         break;
       }
       case 'track': {
         const right = V(off.z, 0, -off.x).normalize();
-        pos.addScaledVector(right, (-0.25 + 0.5 * e));
+        const W = Math.min(0.5, maxLin);
+        pos.addScaledVector(right, (-0.5 + e) * W);
         break;
       }
       default: break;
     }
     if (mv !== 'track') pos.copy(look).add(off);
-    // El kamerası ya da durağanda hafif nefes.
-    const hk = mv === 'handheld' ? 0.6 : 0.12;
-    const tt = t * 1.0;
+    // El kamerası ya da durağanda hafif nefes (yavaş, milimetrik).
+    const hk = mv === 'handheld' ? 0.5 : 0.1;
+    const tt = t * 0.6;
     pos.x += hk * 0.018 * (Math.sin(tt * 1.3 + seed * 9) + 0.5 * Math.sin(tt * 2.7));
     pos.y += hk * 0.012 * Math.sin(tt * 1.7 + seed * 5);
     look.x += hk * 0.01 * Math.sin(tt * 0.9 + 2);
@@ -746,13 +931,46 @@ export class CameraDirector {
     }
     const key = `${plan.scene._i}:${shot.t}:${type}:${ids.join(',')}`;
     const changed = key !== this.shotKey;
-    // Yumuşak takip: aynı çekim içinde kamera hedefi yumuşakça izler; kesmede ve duraklatmada anında yerleşir.
-    if (!changed && !this.snap && this._pos) {
-      this._pos.lerp(pos, 0.12);
-      this._look.lerp(look, 0.16);
+    // Ağır takip: aynı çekim içinde kamera ve bakış noktası kritik sönümlü yayla (ω≈1,8 rad/sn) izler; hız sınırı
+    // 0,3 m/sn + öznenin kendi hızı, bakış yönü dönüşü ≤ 10°/sn + öznenin açısal hızı (savrulma yok). Kesmede, aramada ve
+    // duraklatmada anında yerleşir. dt film saatinden (kare hızından bağımsız).
+    const dt = this._t == null ? 0 : t - this._t;
+    this._t = t;
+    let vSub = 0;
+    for (const id of ids) {
+      const X = plan.actors.get(id), P0 = X.root.position;
+      if (X._camP && dt > 0) vSub = Math.max(vSub, Math.hypot(P0.x - X._camP.x, P0.z - X._camP.z) / dt);
+      (X._camP || (X._camP = V())).copy(P0);
+    }
+    this._vSub = this._vSub == null ? vSub : this._vSub + (vSub - this._vSub) * Math.min(1, dt * 3);
+    if (!changed && !this.snap && this._pos && dt > 0 && dt < 0.25) {
+      const fixedLeg = type === 'wide' || type === 'establishing' || type === 'two_shot';
+      const vcap = CAM_VMAX + (fixedLeg ? 0 : this._vSub * 1.1); // geniş planda ayak sabit: özne hızı eklenmez
+      const spring = (cur, vel, tgt) => {
+        const a = tgt.clone().sub(cur).multiplyScalar(CAM_W * CAM_W).addScaledVector(vel, -2 * CAM_W);
+        vel.addScaledVector(a, dt);
+        if (vel.length() > vcap) vel.setLength(vcap);
+        cur.addScaledVector(vel, dt);
+      };
+      const d0 = this._look.clone().sub(this._pos).normalize();
+      spring(this._pos, this._vp, pos);
+      spring(this._look, this._vl, look);
+      // Bakış yönü açısal sınırı
+      const d1 = this._look.clone().sub(this._pos);
+      const L1 = d1.length();
+      d1.multiplyScalar(1 / Math.max(1e-4, L1));
+      const wcap = (CAM_WMAX + this._vSub / Math.max(0.8, L1)) * dt;
+      const ang = Math.acos(THREE.MathUtils.clamp(d0.dot(d1), -1, 1));
+      if (ang > wcap) {
+        const q = new THREE.Quaternion().setFromUnitVectors(d0, d1);
+        const qs = new THREE.Quaternion().slerp(q, wcap / ang);
+        this._look.copy(this._pos).addScaledVector(d0.applyQuaternion(qs), L1);
+      }
     } else {
       this._pos = pos.clone();
       this._look = look.clone();
+      this._vp = V();
+      this._vl = V();
     }
     cam.position.copy(this._pos);
     cam.lookAt(this._look);

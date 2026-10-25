@@ -1,6 +1,6 @@
 {
- "v": 20,
- "built": "2026-10-25T03:16:52.575Z",
+ "v": 21,
+ "built": "2026-10-25T03:59:38.481Z",
  "human": {
   "url": "human.glb",
   "morphs": [
@@ -581,11 +581,11 @@
    "mac_f_baby": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -603,11 +603,11 @@
    "mac_f_child": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -629,11 +629,11 @@
    "mac_f_young": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -655,11 +655,11 @@
    "mac_f_old": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -677,11 +677,11 @@
    "mac_m_baby": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -699,11 +699,11 @@
    "mac_m_child": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -725,11 +725,11 @@
    "mac_m_young": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -751,11 +751,11 @@
    "mac_m_old": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -773,11 +773,11 @@
    "mac_weight_hi_f_child": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -809,11 +809,11 @@
    "mac_weight_lo_f_child": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -845,11 +845,11 @@
    "mac_weight_hi_f_young": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -881,11 +881,11 @@
    "mac_weight_lo_f_young": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -917,11 +917,11 @@
    "mac_weight_hi_f_old": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -949,11 +949,11 @@
    "mac_weight_lo_f_old": {
     "gender": [
      [
-      0,
+      0.1,
       1
      ],
      [
-      1,
+      0.9,
       0
      ]
     ],
@@ -981,11 +981,11 @@
    "mac_weight_hi_m_child": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -1017,11 +1017,11 @@
    "mac_weight_lo_m_child": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -1053,11 +1053,11 @@
    "mac_weight_hi_m_young": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -1089,11 +1089,11 @@
    "mac_weight_lo_m_young": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -1125,11 +1125,11 @@
    "mac_weight_hi_m_old": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -1157,11 +1157,11 @@
    "mac_weight_lo_m_old": {
     "gender": [
      [
-      0,
+      0.1,
       0
      ],
      [
-      1,
+      0.9,
       1
      ]
     ],
@@ -1186,7 +1186,17 @@
      ]
     ]
    },
-   "mac_muscle_hi_child": {
+   "mac_muscle_hi_f_child": {
+    "gender": [
+     [
+      0.1,
+      1
+     ],
+     [
+      0.9,
+      0
+     ]
+    ],
     "age": [
      [
       0,
@@ -1212,7 +1222,17 @@
      ]
     ]
    },
-   "mac_muscle_lo_child": {
+   "mac_muscle_lo_f_child": {
+    "gender": [
+     [
+      0.1,
+      1
+     ],
+     [
+      0.9,
+      0
+     ]
+    ],
     "age": [
      [
       0,
@@ -1238,7 +1258,17 @@
      ]
     ]
    },
-   "mac_muscle_hi_young": {
+   "mac_muscle_hi_f_young": {
+    "gender": [
+     [
+      0.1,
+      1
+     ],
+     [
+      0.9,
+      0
+     ]
+    ],
     "age": [
      [
       0.1875,
@@ -1264,7 +1294,17 @@
      ]
     ]
    },
-   "mac_muscle_lo_young": {
+   "mac_muscle_lo_f_young": {
+    "gender": [
+     [
+      0.1,
+      1
+     ],
+     [
+      0.9,
+      0
+     ]
+    ],
     "age": [
      [
       0.1875,
@@ -1290,7 +1330,17 @@
      ]
     ]
    },
-   "mac_muscle_hi_old": {
+   "mac_muscle_hi_f_old": {
+    "gender": [
+     [
+      0.1,
+      1
+     ],
+     [
+      0.9,
+      0
+     ]
+    ],
     "age": [
      [
       0.5,
@@ -1312,7 +1362,225 @@
      ]
     ]
    },
-   "mac_muscle_lo_old": {
+   "mac_muscle_lo_f_old": {
+    "gender": [
+     [
+      0.1,
+      1
+     ],
+     [
+      0.9,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_m_child": {
+    "gender": [
+     [
+      0.1,
+      0
+     ],
+     [
+      0.9,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_m_child": {
+    "gender": [
+     [
+      0.1,
+      0
+     ],
+     [
+      0.9,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_m_young": {
+    "gender": [
+     [
+      0.1,
+      0
+     ],
+     [
+      0.9,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_m_young": {
+    "gender": [
+     [
+      0.1,
+      0
+     ],
+     [
+      0.9,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_m_old": {
+    "gender": [
+     [
+      0.1,
+      0
+     ],
+     [
+      0.9,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_m_old": {
+    "gender": [
+     [
+      0.1,
+      0
+     ],
+     [
+      0.9,
+      1
+     ]
+    ],
     "age": [
      [
       0.5,
@@ -3359,7 +3627,7 @@
   ],
   "rig": "human_rig.js",
   "notes": "Morph değerleri 0..1, nötr 0.5. Hedef ağırlığı = Π pl(param, anahtarlar) (targets). Cinsiyet için kadın 0.0–0.1, erkek 0.9–1.0 kullan; yaş için ageYears tablosunu kullan. İfade/visem: units ağırlıkları = Σ tarif × ağırlık (en çok 1). Göz kırpma blink_l/blink_r. Eklemler: scene.userData.film3.jointDeltas[hedef][kemik] (metre) × ağırlık. Yüz birimleri yaşla ölçeklenir: u_mouth_* birim ağırlığı × pl(age, unitScaleByAge) (göz/kaş/çene birimleri ölçeklenmez). Göz rengi: rig.setEyes(eyeColors[ad]). Kemik adları mpfb2 game_engine + jaw, eye_l, eye_r. Y yukarı, +Z ileri, metre, ayak y=0.",
-  "assetsHash": "c3661dc51282"
+  "assetsHash": "35fab0f2d3d8"
  },
  "parts": {
   "hair": [
