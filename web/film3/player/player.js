@@ -3,7 +3,8 @@
 //     placeholders?, narration?} · play · pause · seek {t} · rate {r} · quality {low|mid|high|auto} · subs {on} · narration {on}
 //   (narration: "Anlatıcı sesi" — kapalıyken bölüm sesinin anlatı bölütleri susar; konuşmalar, müzik, efekt ve sahneler sürer)
 //   Çıkış: ready {dur, audio:'chapter'|'lines'|'none', narration} · progress {t,dur} · ended · error {msg} · needAsset {pct}
-//     · state {playing, buffering?} · quality {q} · narration {on} · tap
+//     · state {playing, buffering?} · quality {q} · narration {on} · tap · audioError {part, err} (bölüm sesi çalınamıyor;
+//     part −1: adresler imzasız)
 //   Uygulamada (webview) çıkış HadiBridge.postMessage(JSON) ile, web'de (iframe) parent.postMessage ile gider.
 // Ana saat WebAudio'dur (audio.js); her kare t'ye göre değerlendirilir (director.js). Varlıklar Cache Storage'da (assets.js).
 import * as THREE from 'three';
@@ -63,6 +64,13 @@ class Player {
     this.noHead = params.get('nohead') === '1'; // tanı: bakış katmanı kapalı
     window.addEventListener('resize', () => this.layout());
     document.addEventListener('pointerdown', () => { this.audio.unlock().then(() => this._chip()); post('tap'); }, { passive: true });
+    // Dokunmatikte pointerdown kullanıcı etkinleştirmesi SAYILMAZ (Chrome: pointerup/touchend/click sayılır): ses bağlamı
+    // ilk dokunuşta açılamıyordu. Bu olaylarda da denenir (bağlam açıksa işlem yapmaz).
+    for (const ev of ['pointerup', 'touchend', 'click', 'keydown']) {
+      document.addEventListener(ev, () => { if (!this.audio.unlocked) this.audio.unlock().then(() => this._chip()); }, { passive: true, capture: true });
+    }
+    // Ses planlaması kareden bağımsız da sürer (ağır karede / gölgelendirici derlenirken bölüm sesi ve müzik kesilmesin).
+    setInterval(() => this._audioTick(false), 150);
     document.addEventListener('visibilitychange', () => { if (document.hidden && this.audio.playing) { this.pause(); this._hiddenPause = true; } });
     this.layout();
     requestAnimationFrame((ts) => this.frame(ts));
@@ -294,7 +302,15 @@ class Player {
     const au = this.film.audio && this.film.audio.src === 'audiobook' ? this.film.audio : null;
     const chFetch = (u) => (this.assets && u.startsWith(this.assets.base) ? this.assets.bytes(u) : fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }));
     this.audio.setChapter(au, au ? au.parts.map((p) => this._resolveAudio(p.url)) : null, chFetch);
-    this.audio.onState = (st) => post('state', { playing: this.audio.playing, buffering: st === 'buffering' });
+    this.audio.onState = (st, info) => {
+      if (st === 'audioError') { console.error('[film3] bölüm sesi parçası çalınamıyor', info); post('audioError', info || {}); return; }
+      post('state', { playing: this.audio.playing, buffering: st === 'buffering' });
+    };
+    if (au && au.parts?.length && !this.audio.ch?.has) {
+      // Sunucu parça adreslerini imzalamadıysa (depolama yolu geldi) bölüm sesi çalınamaz: sessiz film yerine açıkça bildirilir.
+      console.error('[film3] bölüm sesi adresleri yok (imzasız depolama yolu?)', au.parts.map((p) => p.url));
+      post('audioError', { part: -1, err: 'unsigned' });
+    }
     this.cues = (this.film.cues || []).map((c, i) => ({ ...c, id: 'c' + i })).sort((a, b) => a.t - b.t);
     for (const l of this.film.lines) {
       const url = this._resolveAudio(l.audio);
@@ -582,10 +598,7 @@ class Player {
     this._wasSeek = false;
     // Ses
     const line = plan.lineAt(t);
-    // Müzik, ses duyulurken kısılır: v2'de konuşma bölütü ya da (açıksa) anlatı; v1'de replik.
-    const seg = this.audio.ch ? this.audio.segAt(t) : null;
-    const speaking = this.audio.ch?.has ? !!seg && (seg.kind === 'say' || this.audio.narration) : !!line;
-    this.audio.update(t, this.events, this.musicOf[si], speaking);
+    this._audioTick(true, t, si, line);
     this._subtitle(this._cueAt(t) || line);
     this._fade(t, si);
     const flow = plan.world.it?.water?.flow || [0, 0, 1];
@@ -596,6 +609,23 @@ class Player {
     this._perf(ts);
     if (playing && ts - this._lastProg > 250) { this._lastProg = ts; post('progress', { t, dur: this.film.dur }); }
     if (!playing) post('progress', { t, dur: this.film.dur });
+  }
+
+  /** Ses planlaması: her karede ve (kare gecikirse) 150 ms'lik zamanlayıcıyla. */
+  _audioTick(fromFrame, t, si, line) {
+    if (!this.film || !this.ready || !this.audio.playing) return;
+    const now = performance.now();
+    if (!fromFrame && now - (this._audioAt || 0) < 120) return;
+    this._audioAt = now;
+    if (t == null) {
+      t = Math.min(this.audio.time(), this.film.dur);
+      si = sceneAt(this.film, t);
+      line = this.plans.get(si)?.lineAt(t) || null;
+    }
+    // Müzik, ses duyulurken kısılır: v2'de konuşma bölütü ya da (açıksa) anlatı; v1'de replik.
+    const seg = this.audio.ch ? this.audio.segAt(t) : null;
+    const speaking = this.audio.ch?.has ? !!seg && (seg.kind === 'say' || this.audio.narration) : !!line;
+    this.audio.update(t, this.events, this.musicOf?.[si] ?? null, speaking);
   }
 
   /** Sahne zemininin (x,z)'deki yüksekliği: yukarıdan aşağı ışın, yatay yüzeylerin ilki (önbellekli 20 cm ızgara). */
@@ -706,9 +736,9 @@ class Player {
         if (t >= c.t + c.d) continue;
         const u = t - c.t, env = Math.min(1, u / 0.2) * Math.min(1, (c.t + c.d - t) / 0.3);
         // Yordamsal yedek (klip yoksa): sakin, yalnızca beat süresince.
-        if (c.clip === 'head_shake' && !A.actions.has('head_shake')) extra.yaw += 0.2 * Math.sin(u * Math.PI * 2 * 1.2) * env;
-        if (c.clip === 'nod' && !A.actions.has('nod')) extra.pitch += 0.14 * Math.max(0, Math.sin(u * Math.PI * 2 * 1.0)) * env;
-        if (c.clip === 'look_around' && !A.actions.has('look_around')) extra.yaw += 0.5 * Math.sin(u * 1.2) * env;
+        if (c.clip === 'head_shake' && !A.actions.has('head_shake')) extra.yaw += 0.1 * Math.sin(u * Math.PI * 2 * 0.9) * env;
+        if (c.clip === 'nod' && !A.actions.has('nod')) extra.pitch += 0.09 * Math.max(0, Math.sin(u * Math.PI * 2 * 0.8)) * env;
+        if (c.clip === 'look_around' && !A.actions.has('look_around')) extra.yaw += 0.3 * Math.sin(u * 0.9) * env;
       }
       // Boşta çok hafif salınım (≤ ~1,5°, < 0,25 Hz) ve repliğin başında küçük bir vurgu (≈1,5° öne).
       const sw = idleSway(id, t);
@@ -718,7 +748,7 @@ class Player {
         const u = t - line.t;
         extra.pitch += THREE.MathUtils.degToRad(1.5) * Math.min(1, u / 0.25) * Math.max(0, 1 - Math.max(0, u - 0.45) / 0.5);
       }
-      const gz = plan.gazeTarget(id, t, line);
+      const gz = this._gazeHold(A, plan, plan.gazeTarget(id, t, line), t, snap);
       const G = gz && gz !== id ? this.actors.get(gz) : null;
       const look = G ? (G._eyeS ? G.root.position.clone().add(G._eyeS) : this.cam.anchor(G, 'head')) : null;
       if (A.kind === 'human' && !this.noHead) applyHead(A, pl.yaw, look, extra, pl.moving ? 0.35 : 0.75, dt, snap);
@@ -733,6 +763,23 @@ class Player {
       }
       void tmp;
     }
+  }
+
+  /**
+   * Bakış hedefi tutma (25 Ekim, gerçek film ölçümü): dinleyenin başı her replikte konuşana dönüyordu (Kaşağı'da Hasan 120 sn'de
+   * 22 kez; en kısa tutma 0,03 sn). Yeni hedef ancak (1) mevcut hedefe en az GAZE_HOLD sn bakılmışsa ve (2) yeni hedef
+   * GAZE_SETTLE sn kesintisiz istenmişse alınır. Hedef sahneden çıktıysa hemen bırakılır; arama/kesmede (snap) doğrudan.
+   */
+  _gazeHold(A, plan, want, t, snap) {
+    const HOLD = 1.6, SETTLE = 0.4;
+    want = want || null;
+    let S = A._gz;
+    if (snap || !S || S.plan !== plan || t < S.since) { A._gz = { plan, id: want, since: t, cand: want, candT: t }; return want; }
+    if (S.id && !plan.ids.includes(S.id)) { S.id = want; S.since = t; }
+    if (want === S.id) { S.cand = want; S.candT = t; return S.id; }
+    if (S.cand !== want) { S.cand = want; S.candT = t; }
+    if (t - S.since >= HOLD && t - S.candT >= SETTLE) { S.id = want; S.since = t; }
+    return S.id;
   }
 
   /** v2 altyazı: bölümün tüm metni (anlatı + konuşma) sesin kelime zamanlarıyla (film.cues). */

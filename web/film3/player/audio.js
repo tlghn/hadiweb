@@ -118,6 +118,14 @@ export class FilmAudio {
       this._c0 = this._nowOf(src);
       this._src = src;
       this._chFresh = true;
+      this._hold0 = true;
+    }
+    if (this._hold0 && src === 'ctx' && this.ch?.has) {
+      // Bölüm sesi henüz planlanmadı (oynat/atla/ses açıldıktan sonraki ilk planlama yapılmadı: ilk kareler gölgelendirici
+      // derlerken ana iş parçacığı meşgul olabilir): saat ilerlemez, anlatının başı atlanmaz.
+      this._c0 = this._nowOf(src);
+      this._lastT = this._t0;
+      return this._t0;
     }
     this._lastT = this._t0 + (this._nowOf(src) - this._c0) * this.rate;
     if (this._stallAt != null && this._lastT >= this._stallAt) {
@@ -144,6 +152,7 @@ export class FilmAudio {
     this._t0 = this._lastT = this._tA = t;
     this._c0 = this._nowOf(this._src);
     this._chFresh = true;
+    this._hold0 = true; // ilk _chTick'e kadar saat durur (yalnızca bölüm sesi varken ve ses açıkken)
   }
 
   play() { if (!this.playing) { this._anchor(this._t0); this.playing = true; } }
@@ -236,6 +245,7 @@ export class FilmAudio {
     this._fetcher = fetcher || null;
     this._chBytes = new Map(); // parça → Promise<ArrayBuffer|null>
     this._chDec = new Map(); // parça → AudioBuffer | Promise | null
+    this._chFail = new Map(); // parça → {n, at, err} (yeniden deneme)
     this._chFresh = true;
     this.waiting = false;
     if (this.ch && this.ch.has && this.ctx && !this.chain) this.chain = new VoiceChain(this.ctx, this.voice);
@@ -272,7 +282,7 @@ export class FilmAudio {
     if (!this._chBytes.has(i)) {
       const f = this._fetcher || ((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }));
       this._chBytes.set(i, Promise.race([Promise.resolve().then(() => f(p.url)), new Promise((_, rej) => setTimeout(() => rej(new Error('zaman aşımı')), 30000))])
-        .catch((e) => { console.warn('[film3] bölüm sesi parçası yüklenemedi', i, e); return null; }));
+        .catch((e) => { console.warn('[film3] bölüm sesi parçası yüklenemedi', i, e); this._failed(i, e); return null; }));
     }
     return this._chBytes.get(i);
   }
@@ -283,16 +293,31 @@ export class FilmAudio {
     if (!bytes) { this._chDec.set(i, null); return null; }
     const p = bytes.then(async (ab) => {
       if (!ab) return null;
-      try { return await this.ctx.decodeAudioData(ab.slice(0)); } catch (e) { console.warn('[film3] bölüm sesi çözülemedi', i, e); return null; }
+      try { return await this.ctx.decodeAudioData(ab.slice(0)); } catch (e) { console.warn('[film3] bölüm sesi çözülemedi', i, e); this._failed(i, e); return null; }
     }).then((buf) => { if (this._chDec.get(i) === p) this._chDec.set(i, buf); return buf; });
     this._chDec.set(i, p);
     return p;
+  }
+
+  /**
+   * Parça indirilemedi/çözülemedi: 2, 4 sn sonra yeniden denenir (en çok 3 deneme; denerken saat bekler — sessiz film yerine
+   * "yükleniyor"). Üçüncüden sonra parça sessiz geçer ve oynatıcıya bildirilir (onState 'audioError').
+   */
+  _failed(i, e) {
+    const F = this._chFail || (this._chFail = new Map());
+    const f = F.get(i) || { n: 0, at: 0 };
+    f.n++; f.at = performance.now(); f.err = String(e && e.message ? e.message : e);
+    F.set(i, f);
+    if (f.n >= 3 && this.onState) this.onState('audioError', { part: i, err: f.err });
   }
 
   /** Bellek penceresi: [i−1, i+2] çözülür, [i, i+4] indirilir; uzaktaki çözülmüş parçalar bırakılır (uzun bölümde bellek). */
   _window(i) {
     if (!this.ch?.has || !this.ctx) return;
     const n = this.ch.parts.length;
+    for (const [k, f] of this._chFail || []) {
+      if (f.n < 3 && this._chDec.get(k) === null && performance.now() - f.at > 2000 * f.n) { this._chBytes.delete(k); this._chDec.delete(k); }
+    }
     for (let k = i; k < Math.min(n, i + 5); k++) this._fetchPart(k);
     for (let k = Math.max(0, i - 1); k < Math.min(n, i + 3); k++) this._decodePart(k);
     for (const k of [...this._chDec.keys()]) if (k < i - 2 || k > i + 3) this._chDec.delete(k);
@@ -300,7 +325,13 @@ export class FilmAudio {
   }
 
   _partBuf(i) { const b = this._chDec.get(i); return b && !(b instanceof Promise) ? b : null; }
-  _partPending(i) { return this._chDec.get(i) instanceof Promise; }
+  /** Parça bekleniyor: indiriliyor/çözülüyor ya da başarısız olup yeniden denenecek (saat bekler). */
+  _partPending(i) {
+    const d = this._chDec.get(i);
+    if (d instanceof Promise) return true;
+    const f = this._chFail?.get(i);
+    return d === null && !!f && f.n < 3 && !!this.ch?.parts[i]?.url;
+  }
 
   _fxOf(seg) { return seg && seg.kind === 'say' ? this.ch.fx[seg.who] || null : null; }
   _gateOf(seg) { return seg && seg.kind === 'narr' && !this.narration ? 0 : 1; }
@@ -351,6 +382,7 @@ export class FilmAudio {
       }
     }
     this._chFresh = false;
+    this._hold0 = false; // planlama yapıldı: saat sürer
     // Ses dilimleri: parça × bekleme aralıkları, boşluksuz (ardışık dilimler örnek doğruluğunda uç uca).
     this._stallAt = null;
     for (const pc of ch.pieces) {

@@ -11,6 +11,7 @@ import * as SkeletonUtils from './addons/utils/SkeletonUtils.js';
 import { HumanRig, ageToValue } from './human_rig.js';
 
 const _v = new THREE.Vector3(), _q = new THREE.Quaternion(), _m = new THREE.Matrix4();
+const _qs = new THREE.Quaternion();
 
 export const EXPR_FALLBACK = {
   cry: { sad: 1, blink_l: 0.35, blink_r: 0.35 },
@@ -25,13 +26,20 @@ const CALM = /^(idle|wait|listen|walk|run|march|sneak|carry|talk_gesture|sit_idl
 // ve duygu kliplerinde (gülme, ağlama, korku) sürekli baş sallama taşır — "kafalar hiç durmuyor" şikâyetinin ana nedeni.
 // Baş/boyun klipten yalnızca bu kazançla alınır (0 = boyun ebeveynine göre dinlenme pozu, gövdeyle birlikte gider);
 // baş hareketi senaryo isterse (nod / head_shake / look_around…) ve yalnızca o beat süresince gelir.
+// 25 Ekim (gerçek film ölçümü, Kaşağı): baş jestleri 0,6–0,8 kazançla 70–140°/sn (head_shake, head_down), duygu klipleri
+// (gülme 0,2) 130°/sn'ye çıkıyordu → kazançlar yarıya yakın indirildi; hız ayrıca filterHead'de sınırlanır (HEAD_SLEW).
 const HEAD_GAIN = {
-  nod: 0.7, head_shake: 0.6, look_around: 0.6, head_down: 0.8, think: 0.35, bow: 0.6, pray: 0.5,
-  cry: 0.22, cry_face: 0.35, laugh: 0.2, happy: 0.15, scared: 0.2, upset: 0.2, angry_gesture: 0.15, shrug: 0.25,
+  nod: 0.45, head_shake: 0.35, look_around: 0.35, head_down: 0.5, think: 0.2, bow: 0.5, pray: 0.4,
+  cry: 0.1, cry_face: 0.15, laugh: 0.08, happy: 0.06, scared: 0.08, upset: 0.08, angry_gesture: 0.06, shrug: 0.1,
   fall: 0.6, lie: 0.6, lie_idle: 0.6, get_up: 0.5, stand_up: 0.4, sit: 0.4, sit_ground: 0.4, kneel: 0.4, kneel_idle: 0.4,
-  pick_up: 0.4, drink: 0.4, eat: 0.3, dig: 0.3, sweep: 0.3, write_board: 0.3, hold_baby: 0.3, comb_horse: 0.25,
+  pick_up: 0.3, drink: 0.3, eat: 0.2, dig: 0.2, sweep: 0.2, write_board: 0.2, hold_baby: 0.2, comb_horse: 0.12,
 };
-const headGain = (clip) => (clip in HEAD_GAIN ? HEAD_GAIN[clip] : CALM.test(clip) ? 0 : 0.15);
+const headGain = (clip) => (clip in HEAD_GAIN ? HEAD_GAIN[clip] : CALM.test(clip) ? 0 : 0.06);
+// Baş/boyun kemiği başına en çok açısal hız (°/sn, klipten gelen poz): sakin 12 (baş+boyun ≤ ~24), senaryodaki baş jesti
+// (onaylama, baş sallama, etrafa bakma, başı eğme) 32, gövde duruşu değişimi (yatma, kalkma, eğilme, diz çökme) 60.
+const HEAD_GEST = /^(nod|head_shake|look_around|head_down|think)$/;
+const HEAD_BODY = /^(fall|lie|lie_idle|get_up|stand_up|sit|sit_ground|kneel|kneel_idle|bow|pray|pick_up)$/;
+const HEAD_SLEW = { calm: 12, gest: 32, body: 60 };
 const EXPR_ALIAS = { happy: 'smile', joy: 'smile', scared: 'fear', afraid: 'fear', surprised: 'surprise', anger: 'angry', mad: 'angry', crying: 'cry', thinking: 'think', worried: 'sad', calm: 'neutral' };
 const EXPR_PREFIX =['', 'expr_', 'ex_', 'exp_', 'face_', 'expression_'];
 const VIS_PREFIX = ['', 'viseme_', 'vis_', 'v_', 'viseme-'];
@@ -436,8 +444,14 @@ export class Actor {
     // Sakin kliplerde (bekleme, yürüme, konuşma jesti) hareket yakalamanın baş/boyun salınımı yumuşatılır: bakışı yönetmen
     // verir (yakın planda başın kendiliğinden yukarı bakması tuhaf durur).
     let g = 0, wsum = 0;
-    for (const it of list) { if (it.weight <= 0.001) continue; g += headGain(it.clip) * it.weight; wsum += it.weight; }
+    let mode = 'calm';
+    for (const it of list) {
+      if (it.weight <= 0.001) continue;
+      g += headGain(it.clip) * it.weight; wsum += it.weight;
+      if (it.weight > 0.2) { if (HEAD_BODY.test(it.clip)) mode = 'body'; else if (mode === 'calm' && HEAD_GEST.test(it.clip)) mode = 'gest'; }
+    }
     g = wsum > 0 ? g / Math.max(1, wsum) : 0;
+    this._headMode = mode;
     for (const x of [this.bones.neck, this.bones.head]) { const q = this.rest.get(x); if (q && x) x.quaternion.slerp(q, 1 - g); }
   }
 
@@ -451,10 +465,18 @@ export class Actor {
       this.model.traverse((o) => { if (o.isBone) this._fb.push([o, /spine|neck|head|clavicle|chest/i.test(o.name) ? 0.08 : 0.04]); });
     }
     const h = snap || !(dt > 0) ? 0 : Math.min(0.1, dt);
+    const lim = new Set([this.bones?.neck, this.bones?.head].filter(Boolean));
+    const vmax = THREE.MathUtils.degToRad(HEAD_SLEW[this._headMode] || HEAD_SLEW.calm) * h;
     for (const [x, tau] of this._fb) {
       let q = F.get(x);
       if (!q) { q = x.quaternion.clone(); F.set(x, q); }
-      if (!h) q.copy(x.quaternion); else q.slerp(x.quaternion, 1 - Math.exp(-h / tau));
+      if (!h) q.copy(x.quaternion);
+      else if (lim.has(x)) {
+        // Baş/boyun: alçak geçiren + hız sınırı (klip geçişleri ve jestler başı savurmaz).
+        _qs.copy(q).slerp(x.quaternion, 1 - Math.exp(-h / tau));
+        const ang = q.angleTo(_qs);
+        if (ang > vmax && ang > 1e-6) q.slerp(_qs, vmax / ang); else q.copy(_qs);
+      } else q.slerp(x.quaternion, 1 - Math.exp(-h / tau));
       x.quaternion.copy(q);
     }
   }

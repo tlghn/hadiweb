@@ -363,7 +363,8 @@ function rotateBoneWorld(bone, qDelta) {
  * baş kemiği değil) — baş başı izleyip titremez. extra: {yaw, pitch} yumuşak ek (boşta salınım, vurgu, yordamsal jest);
  * dt: film saniyesi, snap: arama/kesme (anında yerleşir). */
 const LOOK_DEAD = THREE.MathUtils.degToRad(4);
-const LOOK_W = 3.0, LOOK_VMAX = THREE.MathUtils.degToRad(35);
+// 25 Ekim: ω 3→2,4 ve hız sınırı eksen başına değil BİLEŞKE (yaw+pitch) 22°/sn (eskiden eksen başına 35 → ~50°/sn).
+const LOOK_W = 2.4, LOOK_VMAX = THREE.MathUtils.degToRad(22);
 export function applyHead(A, yaw0, lookAt, extra, weight = 0.75, dt = 0, snap = true) {
   const head = A.bones.head, neck = A.bones.neck;
   if (!head) return;
@@ -383,13 +384,12 @@ export function applyHead(A, yaw0, lookAt, extra, weight = 0.75, dt = 0, snap = 
   if (snap || !(dt > 0)) { H.y = H.hy; H.p = H.hp; H.vy = H.vp = 0; }
   else {
     const h = Math.min(dt, 0.1);
-    for (const [k, v] of [['y', 'vy'], ['p', 'vp']]) {
-      const x = H[k], tgt = k === 'y' ? H.hy : H.hp;
-      let vel = H[v] + (-2 * LOOK_W * H[v] - LOOK_W * LOOK_W * (x - tgt)) * h;
-      vel = THREE.MathUtils.clamp(vel, -LOOK_VMAX, LOOK_VMAX);
-      H[v] = vel;
-      H[k] = x + vel * h;
-    }
+    let vy = H.vy + (-2 * LOOK_W * H.vy - LOOK_W * LOOK_W * (H.y - H.hy)) * h;
+    let vp = H.vp + (-2 * LOOK_W * H.vp - LOOK_W * LOOK_W * (H.p - H.hp)) * h;
+    const sp = Math.hypot(vy, vp);
+    if (sp > LOOK_VMAX) { vy *= LOOK_VMAX / sp; vp *= LOOK_VMAX / sp; }
+    H.vy = vy; H.vp = vp;
+    H.y += vy * h; H.p += vp * h;
   }
   const dy = H.y + (extra.yaw || 0);
   const dp = H.p + (extra.pitch || 0);
