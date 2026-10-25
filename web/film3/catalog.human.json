@@ -3070,6 +3070,7 @@
     "u_eyebrows_left_up": 0.15,
     "u_eyebrows_right_up": 0.15,
     "u_mouth_parling": 0.3,
+    "u_mouth_elevation": 0.4,
     "u_jaw_drop": 0.33,
     "u_mouth_open": 0.36,
     "u_mouth_pursing": 0.084
@@ -3146,6 +3147,7 @@
     "u_eyebrows_left_down": 0.6,
     "u_eyebrows_right_down": 0.6,
     "u_mouth_retraction": 0.21,
+    "u_mouth_elevation": 0.3,
     "u_nose_left_dilatation": 0.5,
     "u_nose_right_dilatation": 0.5,
     "u_neck_platysma": 0.6,
@@ -3215,18 +3217,21 @@
     "u_mouth_open": 0.12
    },
    "aa": {
+    "u_mouth_elevation": 0.25,
     "u_jaw_drop": 0.55,
     "u_mouth_open": 0.6,
     "u_mouth_pursing": 0.14
    },
    "E": {
     "u_mouth_retraction": 0.3,
+    "u_mouth_elevation": 0.3,
     "u_jaw_drop": 0.275,
     "u_mouth_open": 0.3,
     "u_mouth_pursing": 0.07
    },
    "I": {
     "u_mouth_retraction": 0.42,
+    "u_mouth_elevation": 0.25,
     "u_jaw_drop": 0.11,
     "u_mouth_open": 0.12,
     "u_mouth_pursing": 0.028
@@ -3353,7 +3358,7 @@
   ],
   "rig": "human_rig.js",
   "notes": "Morph değerleri 0..1, nötr 0.5. Hedef ağırlığı = Π pl(param, anahtarlar) (targets). Cinsiyet için kadın 0.0–0.1, erkek 0.9–1.0 kullan; yaş için ageYears tablosunu kullan. İfade/visem: units ağırlıkları = Σ tarif × ağırlık (en çok 1). Göz kırpma blink_l/blink_r. Eklemler: scene.userData.film3.jointDeltas[hedef][kemik] (metre) × ağırlık. Yüz birimleri yaşla ölçeklenir: u_mouth_* birim ağırlığı × pl(age, unitScaleByAge) (göz/kaş/çene birimleri ölçeklenmez). Göz rengi: rig.setEyes(eyeColors[ad]). Kemik adları mpfb2 game_engine + jaw, eye_l, eye_r. Y yukarı, +Z ileri, metre, ayak y=0.",
-  "assetsHash": "6ca7ac28a74f"
+  "assetsHash": "c3661dc51282"
  },
  "parts": {
   "hair": [
