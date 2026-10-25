@@ -20,6 +20,32 @@ const HOLD = new Set(['sit', 'kneel', 'fall', 'lie']);
 const SAD = new Set(['sad', 'cry']);
 const FX = 0.35; // klip geçişi (sn)
 
+/**
+ * Etkileşimli eylemler (26 Ekim, kurucu: "atı tımar ediyor ama önünde at yok"). Hedefi olan her eylem SAHNELENİR: hedef
+ * (insan/hayvan) sahnede bulunur (yoksa kadrodan getirilir), oyuncu hedefin doğru yerine yürür (tımar: böğür, yem: baş önü,
+ * tokat: hayvanda sağrı / insanda yüz, sarılma: 0,4 m karşı), ona döner, gereken eşya elindedir, eli hedefe uzanır (kol IK),
+ * hedef tepki verir (at kıpırdamadan durur ve başını çevirir, tokat yiyen başını eğer, alan elini uzatır), kamera ikisini birlikte
+ * çeker (ikili plan; tımar/yemlemede ellere yakın plan).
+ *   tk: hedef türü (animal | human | any); zone: hayvanda yer (flank | rump | head); gap: hayvan yüzeyinden uzaklık (m);
+ *   hgap: insanla göğüs–göğüs uzaklığı; reach: el hedefi (stroke | hit | mid | chest); react: hedefin klibi; at: temas anı
+ *   (klip oranı); pass: eşya alıcıya geçer; hands: anlamlıysa ellere yakın plan.
+ */
+export const INTERACT = {
+  comb_horse: { tk: 'animal', zone: 'flank', gap: 0.3, hgap: 0.55, reach: 'stroke', prop: 'curry_comb', react: { animal: 'idle', human: null }, hands: true },
+  slap: { tk: 'any', zone: 'rump', gap: 0.32, hgap: 0.62, reach: 'hit', react: { animal: 'neigh', human: 'head_down' }, at: 0.42 },
+  hug: { tk: 'human', hgap: 0.4, react: { human: 'hug' } },
+  give: { tk: 'any', zone: 'head', gap: 0.45, hgap: 0.66, reach: 'mid', react: { human: 'take', animal: 'idle_headlow' }, at: 0.5, pass: true, hands: true },
+  take: { tk: 'human', hgap: 0.66, reach: 'mid', react: { human: 'give' }, at: 0.5, pass: 'back' },
+  handshake: { tk: 'human', hgap: 0.72, reach: 'mid', react: { human: 'handshake' } },
+  // "push" klibi ağır bir şeyi itmek: yalnızca senaryo açıkça hedef yazdıysa (yüz döndüğü kişiyi itmez).
+  push: { tk: 'any', zone: 'flank', gap: 0.3, hgap: 0.52, reach: 'chest', react: { human: 'upset', animal: null }, at: 0.3, explicit: true },
+};
+/** Türkçe/İngilizce eş anlamlar → etkileşim klibi (senaryoda bilinmeyen ad gelirse). */
+const INTERACT_ALIAS = { groom: 'comb_horse', brush: 'comb_horse', pet: 'comb_horse', stroke: 'comb_horse', feed: 'give', hand: 'give', embrace: 'hug' };
+const ARRIVE_GAP = 0.25;
+/** Yerinde yapılan sakin jestler (konuşurken el hareketi, bekleme, düşünme): oyuncuyu "meşgul" saymaz. */
+const CALM_CLIP = /^(idle|talk_gesture|look_around|think|nod|shrug|listen|wait|head_down|smile|happy)/; // varıştan sonra eyleme başlamadan önce kısa durak (sn)
+
 /** Filmi normalleştirir: sahneler t'ye göre, beat/shot sıralı, replikler id'yle, eksik visemler metinden. */
 export function prepareFilm(film) {
   const f = JSON.parse(JSON.stringify(film || {}));
@@ -28,6 +54,12 @@ export function prepareFilm(film) {
   f.scenes.forEach((s, i) => {
     s._i = i;
     s.beats = (s.beats || []).slice().sort((a, b) => a.t - b.t);
+    // Güvenlik ağı (eski senaryolar): etkileşim klibinin eşyası yoksa eklenir (oynatıcı eşyaları bu listeden yükler).
+    for (const b of s.beats) {
+      if (b.do && INTERACT_ALIAS[b.do]) b.do = INTERACT_ALIAS[b.do];
+      const spec = b.do ? INTERACT[b.do] : null;
+      if (spec?.prop && !b.prop && b.target === undefined) b.prop = spec.prop; // yeni senaryoda eşyayı sunucu yazar (okşamada yok)
+    }
     s.shots = (s.shots || []).slice().sort((a, b) => a.t - b.t);
     s.actors = s.actors || [];
     if (!(s.t1 > s.t0)) s.t1 = Math.max(s.t0 + 1, ...s.beats.map((b) => b.t + (b.d || 0)));
@@ -75,6 +107,15 @@ export class ScenePlan {
     const ids = new Set(sc.actors.map((a) => a.id));
     for (const b of sc.beats) if (b.who && this.actors.has(b.who)) ids.add(b.who);
     for (const l of this.lines) if (this.actors.has(l.who)) ids.add(l.who);
+    // Etkileşim hedefleri: senaryoda sahnede olmasa da kadrodaysa sahneye getirilir (havaya pandomim yok).
+    this.inter = [];
+    for (const b of sc.beats) {
+      b._tgt = null;
+      const spec = b.do ? INTERACT[b.do] : null;
+      if (!spec || !b.who || !this.actors.has(b.who)) continue;
+      b._tgt = this._interTarget(b, spec, ids);
+      if (b._tgt) ids.add(b._tgt);
+    }
     this.ids = [...ids].filter((id) => this.actors.has(id));
     const used = new Set();
     this.ids.forEach((id, i) => {
@@ -165,6 +206,8 @@ export class ScenePlan {
           const ft = b.face ? this._target(b.face, st, id) : b.to && this.actors.has(b.to) ? st.get(b.to)?.pos : null;
           if (ft) { const y2 = yawTo(s.pos, ft); tr.turns.push({ t0: t0 + dur, t1: t0 + dur + 0.5, y0: s.yaw, y1: y2 }); s.yaw = y2; }
         }
+      } else if (b._tgt && st.has(b._tgt) && A.kind === 'human') {
+        this._stage(b, id, A, s, tr, d, st, busy);
       } else {
         const ft = b.face ? this._target(b.face, st, id) : b.to ? this._target(b.to, st, id) : null;
         if (ft && ft.distanceTo(s.pos) > 0.2) {
@@ -182,8 +225,276 @@ export class ScenePlan {
       tr.clips.sort((a, b) => a.t - b.t);
       tr.turns.sort((a, b) => a.t0 - b.t0);
       tr.segs.sort((a, b) => a.t0 - b.t0);
+      tr.props.sort((a, b) => a.t - b.t);
     }
+    this.inter.sort((a, b) => a.t0 - b.t0);
     this.final = st;
+  }
+
+  // ---------------------------------------------------------------- etkileşim sahneleme
+
+  /** Etkileşimin hedefi: açık `target`, sonra face / to (tür uyuyorsa), sonra sahnedekiler, en son kadro (sahneye getirilir). */
+  _interTarget(b, spec, ids) {
+    const kindOk = (X) => spec.tk === 'any' || X.kind === spec.tk;
+    const ok = (x) => typeof x === 'string' && x !== b.who && this.actors.has(x) && kindOk(this.actors.get(x));
+    if (spec.explicit) return ok(b.target) ? b.target : null;
+    for (const x of [b.target, b.face, b.to]) if (ok(x)) return x;
+    // Tercih: tımarda at/eşek, "any" eylemde (tokat, verme) önce insan.
+    const rank = (x) => {
+      const X = this.actors.get(x);
+      if (spec.tk === 'animal') return /horse|donkey|mule/i.test(X.def?.animal || '') ? 0 : 1;
+      return X.kind === 'human' ? 0 : 1;
+    };
+    const pick = (list) => list.filter(ok).sort((a, z) => rank(a) - rank(z))[0] || null;
+    return pick([...ids]) || pick([...this.actors.keys()]);
+  }
+
+  /** Hayvanın gövde yarı genişliği (sınır kutusu bacak/kuyruk açıklığı içerebilir: sınırlanır). */
+  _halfW(T) { return THREE.MathUtils.clamp((T.width || 0.6) * 0.5, 0.2, 0.42); }
+
+  /** Duruş noktası ve yönü: hayvanda bölgeye göre (böğür / sağrı / baş önü) oyuncunun geldiği yanda (orası doluysa öbür
+   * yanda ya da biraz ileride); insanda karşısında. */
+  _geo(spec, A, T, apos, ts, st, self, tid) {
+    const p = ts.pos, ya = ts.yaw;
+    const f = V(Math.sin(ya), 0, Math.cos(ya)), r = V(Math.cos(ya), 0, -Math.sin(ya));
+    const taken = (q) => [...st].some(([oid, o]) => oid !== self && oid !== tid && o.pos.distanceTo(q) < 0.55);
+    // Duvar/çit dibi: o yanda oyuncuya ve kameraya yer yoksa öbür yan (at duvara yanaşık durabilir).
+    const walled = (from, dir, len) => {
+      const g = this.world.group;
+      if (!g) return false;
+      const ray = this._ray || (this._ray = new THREE.Raycaster());
+      for (const h of [0.5, 1.2]) {
+        ray.set(from.clone().setY(from.y + h), dir.clone().normalize());
+        ray.far = len;
+        for (const x of ray.intersectObject(g, true)) {
+          if (x.object.isPoints || x.object.isSprite || x.object.isSkinnedMesh) continue;
+          if (x.face && Math.abs(x.face.normal.y) > 0.8) continue;
+          return true;
+        }
+      }
+      return false;
+    };
+    if (T.kind === 'animal') {
+      const hw = this._halfW(T), L = T.length || 2;
+      const zone = spec.zone || 'flank';
+      const near = r.dot(apos.clone().sub(p)) >= 0 ? 1 : -1;
+      const make = (sgn, shift) => {
+        const side = r.clone().multiplyScalar(sgn);
+        let contact, stand;
+        if (zone === 'head') {
+          contact = p.clone().addScaledVector(f, L * 0.47);
+          stand = contact.clone().addScaledVector(f, spec.gap).addScaledVector(side, 0.32);
+        } else {
+          contact = p.clone().addScaledVector(f, (zone === 'rump' ? -0.28 * L : 0.06 * L) + shift).addScaledVector(side, hw);
+          stand = contact.clone().addScaledVector(side, spec.gap + 0.12);
+        }
+        stand.y = 0;
+        return { stand, yaw: yawTo(stand, contact), sgn, zone };
+      };
+      const opts = [[near, 0], [-near, 0], [near, 0.55], [near, -0.55], [-near, 0.55], [-near, -0.55]];
+      for (const pass of [0, 1]) for (const [sgn, sh] of opts) {
+        const g = make(sgn, sh);
+        if (taken(g.stand)) continue;
+        if (pass === 0 && zone !== 'head' && walled(g.stand, r.clone().multiplyScalar(sgn), 1.4)) continue;
+        return g;
+      }
+      return make(near, 0);
+    }
+    const dir = apos.clone().sub(p).setY(0);
+    if (dir.lengthSq() < 1e-4) dir.set(Math.sin(ya), 0, Math.cos(ya));
+    dir.normalize();
+    // İnsan: geldiği yönden karşısına; arada duvar/korkuluk ya da orada başkası varsa yan açılar denenir.
+    const hg = spec.hgap || 0.7;
+    for (const pass of [0, 1]) for (const a of [0, 0.6, -0.6, 1.2, -1.2, Math.PI]) {
+      const d2 = dir.clone().applyAxisAngle(UP, a);
+      const stand = p.clone().addScaledVector(d2, hg).setY(0);
+      if (taken(stand)) continue;
+      if (pass === 0 && walled(p.clone().setY(0), d2, hg + 0.25)) continue;
+      return { stand, yaw: yawTo(stand, p), sgn: 1, zone: 'front' };
+    }
+    const stand = p.clone().addScaledVector(dir, hg).setY(0);
+    return { stand, yaw: yawTo(stand, p), sgn: 1, zone: 'front' };
+  }
+
+  /** Bir oyuncunun t'den önce serbest kaldığı an (yumuşak jestler — konuşurken el hareketi — sayılmaz). */
+  _freeAt(tr, t, busy, id) {
+    let free = this.scene.t0;
+    for (const c of tr.clips) if (!c.soft && !c.react && !CALM_CLIP.test(c.clip) && c.t < t) free = Math.max(free, Math.min(c.t + c.d, t));
+    for (const g of tr.segs) if (g.t0 < t) free = Math.max(free, Math.min(g.t1, t));
+    return Math.max(free, Math.min(t, busy.get(id) || 0));
+  }
+
+  /** Yürüyüş ekler (yaklaşma): t0'dan, gerekirse koşarak. Dönen: varış anı. */
+  _walk(A, tr, s, to, t0, latest, busy, id) {
+    const dist = s.pos.distanceTo(to);
+    if (dist <= 0.12) return t0;
+    let clip = 'walk', sp = A.speeds[A.clipFor('walk')] || 1.25;
+    if (dist / sp > Math.max(0, latest - t0) + 1.5 && dist > 3.5) { const rs = A.speeds[A.clipFor('run')] || 3; if (rs > sp) { clip = 'run'; sp = rs; } }
+    const dur = Math.max(0.5, dist / sp);
+    const tw0 = Math.max(t0, latest - dur);
+    const yaw1 = yawTo(s.pos, to);
+    tr.turns.push({ t0: tw0, t1: tw0 + 0.35, y0: s.yaw, y1: yaw1 });
+    const seg = { t0: tw0, t1: tw0 + dur, from: s.pos.clone(), to: to.clone(), clip, speed: dist / dur };
+    tr.segs.push(seg);
+    tr.clips.push({ t: tw0, d: dur, clip, move: seg });
+    s.pos.copy(to);
+    s.yaw = yaw1;
+    busy.set(id, Math.max(busy.get(id) || 0, tw0 + dur));
+    return tw0 + dur;
+  }
+
+  /** Etkileşim beat'ini sahneler: yaklaşma (gerekirse hedef insan karşılamaya gelir), hedefe dönüş, eylem klibi, hedefin
+   * tepkisi, eşya geçişi. Döngülü el işi (tımar) oyuncunun bir sonraki eylemine kadar sürer (en çok 12 sn). */
+  _stage(b, id, A, s, tr, d, st, busy) {
+    const spec = INTERACT[b.do], tid = b._tgt, T = this.actors.get(tid), ts = st.get(tid), ttr = this.tracks.get(tid);
+    const freeA = this._freeAt(tr, b.t, busy, id);
+    let tc = Math.max(b.t, freeA), arrive = tc;
+    // İnsan hedef daha önce boşa çıktıysa (ör. çocuk bekliyor, Dadaruh tımar ediyor) hedef gelir; değilse oyuncu gider.
+    const freeT = T.kind === 'human' ? this._freeAt(ttr, b.t, busy, tid) : Infinity;
+    const far = s.pos.distanceTo(ts.pos) - (spec.hgap || 0.7);
+    let geo;
+    if (T.kind === 'human' && far > 0.3 && freeT + 0.5 < freeA) {
+      const meet = this._geo(spec, T, A, ts.pos, s, st, tid, id).stand;
+      arrive = this._walk(T, ttr, ts, meet, freeT, b.t, busy, tid);
+      tc = Math.max(tc, arrive + ARRIVE_GAP);
+      geo = { stand: s.pos.clone(), yaw: yawTo(s.pos, ts.pos), sgn: 1, zone: 'front' };
+    } else {
+      geo = this._geo(spec, A, T, s.pos, ts, st, id, tid);
+      if (s.pos.distanceTo(geo.stand) > 0.12) {
+        arrive = this._walk(A, tr, s, geo.stand, freeA, b.t, busy, id);
+        tc = Math.max(b.t, arrive + ARRIVE_GAP);
+      }
+    }
+    const tt0 = Math.max(arrive, tc - 0.45);
+    if (Math.abs(angDiff(s.yaw, geo.yaw)) > 0.05) tr.turns.push({ t0: tt0, t1: Math.max(tt0 + 0.35, tc), y0: s.yaw, y1: geo.yaw });
+    s.yaw = geo.yaw;
+    const name = A.clipFor(b.do);
+    const cd = A.clipDur(name);
+    const loop = A.loops && name in A.loops ? A.loops[name] : !ONCE.has(b.do);
+    let dc = loop ? Math.max(1.6, b.t + d - tc) : Math.max(1.2, Math.min(cd + 0.2, Math.max(b.t + d - tc, cd * 0.85)));
+    if (loop) {
+      // El işi bir sonraki eyleme (ya da konuşmaya) kadar sürer: "tık… tık… tık…" anlatılırken tımar ekranda kalır.
+      const next = this.scene.beats.find((x) => x !== b && x.who === id && x.t > b.t + 0.05 && (x.do || x.say));
+      const until = Math.min(next ? next.t : this.scene.t1, tc + 12);
+      dc = Math.max(dc, until - tc - 0.1);
+    }
+    tr.clips.push({ t: tc, d: dc, clip: b.do });
+    busy.set(id, Math.max(busy.get(id) || 0, tc));
+    const it = { who: id, target: tid, kind: b.do, spec, t0: tc, t1: tc + dc, arrive, cd: loop ? 1 : cd, sgn: geo.sgn, zone: geo.zone };
+    this.inter.push(it);
+    // Hedefin tepkisi (hedef o arada yürümüyorsa): insan oyuncuya döner; tepki klibi temas anında.
+    const moving = ttr.segs.some((g) => g.t0 < it.t1 && g.t1 > tc - 0.3);
+    if (!moving) {
+      if (T.kind === 'human') {
+        const y2 = yawTo(ts.pos, s.pos);
+        if (Math.abs(angDiff(ts.yaw, y2)) > 0.08) { ttr.turns.push({ t0: Math.max(this.scene.t0, tc - 0.6), t1: tc, y0: ts.yaw, y1: y2 }); ts.yaw = y2; }
+      }
+      const rc = spec.react?.[T.kind];
+      if (rc && T.actions.has(T.clipFor(rc))) {
+        const delay = (spec.at || 0) * cd;
+        const rd = rc === 'idle' || rc === 'hug' ? dc - delay : Math.max(1.2, Math.min(T.clipDur(T.clipFor(rc)), dc));
+        ttr.clips.push({ t: tc + delay, d: rd, clip: rc, react: true });
+      }
+    } else if (T.kind === 'human') {
+      // Karşılamaya gelen hedef varınca oyuncuya döner.
+      const g = ttr.segs[ttr.segs.length - 1];
+      const y2 = yawTo(ts.pos, s.pos);
+      ttr.turns.push({ t0: g.t1, t1: g.t1 + 0.4, y0: ts.yaw, y1: y2 });
+      ts.yaw = y2;
+      const rc = spec.react?.human;
+      if (rc && T.actions.has(T.clipFor(rc))) ttr.clips.push({ t: tc + (spec.at || 0) * cd, d: Math.max(1.2, Math.min(T.clipDur(T.clipFor(rc)), dc)), clip: rc, react: true });
+    }
+    // Eşya geçişi: verme → alıcının eline, alma → alanın eline.
+    const pt = tc + dc * (spec.at || 0.5) + 0.15;
+    const prop = b.prop || null;
+    if (prop && spec.pass === true) { tr.props.push({ t: pt, id: null }); ttr.props.push({ t: pt, id: prop }); }
+    if (prop && spec.pass === 'back') { ttr.props.push({ t: pt, id: null }); tr.props.push({ t: pt, id: prop }); }
+  }
+
+  /** İki oyuncu şu an birbiriyle etkileşimde mi (karede ayırma bunları itmez). */
+  engaged(a, b, t) {
+    for (const it of this.inter) {
+      if (t < it.arrive - 0.2 || t > it.t1 + 0.6) continue;
+      if ((it.who === a && it.target === b) || (it.who === b && it.target === a)) return true;
+    }
+    return false;
+  }
+
+  /** t anında aktörün etkin etkileşimi ve el/bakış hedefleri (dünya noktaları, karedeki gerçek konumlardan). */
+  interactAt(id, t) {
+    for (const it of this.inter) {
+      if (t < it.t0 || t > it.t1) continue;
+      if (it.who !== id && it.target !== id) continue;
+      const r = this._reach(it, id, t);
+      if (r) return r;
+    }
+    return null;
+  }
+
+  _reach(it, id, t) {
+    const A = this.actors.get(it.who), T = this.actors.get(it.target);
+    const role = it.who === id ? 'actor' : 'target';
+    const u = t - it.t0;
+    let w = smooth(u / 0.45) * smooth((it.t1 - t) / 0.45);
+    // Anlık temaslı eylemlerde (tokat, verme): klibin temas anı çevresinde çan.
+    if (it.spec.at != null) { const k = u / Math.max(0.3, it.cd); w *= smooth((k - (it.spec.at - 0.3)) / 0.2) * (1 - smooth((k - (it.spec.at + 0.22)) / 0.2)); }
+    const out = { kind: it.kind, who: it.who, target: it.target, role, w, point: null, r: null, l: null, look: null };
+    const P = T.root.position, ya = T.root.rotation.y;
+    const f = V(Math.sin(ya), 0, Math.cos(ya)), rr = V(Math.cos(ya), 0, -Math.sin(ya));
+    const ay = A.root.rotation.y, aR = V(Math.cos(ay), 0, -Math.sin(ay));
+    const shY = A.root.position.y + A.eyeH * 0.82; // omuz hizası (yaklaşık)
+    const midPoint = () => {
+      const c = P.clone().lerp(A.root.position, 0.5);
+      // İki göğüs hizasının ortası (yetişkin–çocukta ikisinin de kolu yetişir).
+      c.y = (P.y + T.eyeH * 0.72 + A.root.position.y + A.eyeH * 0.72) / 2 - 0.06;
+      return c;
+    };
+    if (role === 'target') {
+      if (T.kind === 'animal') out.look = A.root.position.clone().setY(A.root.position.y + A.eyeH * 0.9);
+      else if (it.spec.reach === 'mid') { const c = midPoint(); out.r = { p: c, w: w * 0.85 }; out.point = c.toArray(); }
+      return out.r || out.look ? out : null;
+    }
+    let c = null;
+    if (T.kind === 'animal') {
+      const H = T.height || 1.6, L = T.length || 2;
+      const side = rr.clone().multiplyScalar(it.sgn);
+      if (it.zone === 'head') {
+        c = P.clone().addScaledVector(f, L * 0.46);
+        c.y = THREE.MathUtils.clamp(P.y + (T.eyeH || H * 0.8) * 0.8, shY - 0.45, shY + 0.1);
+      } else {
+        // Böğür / sağrı yüzeyi, oyuncunun hizasında (el çaprazlanmaz).
+        c = A.root.position.clone().addScaledVector(side, -(it.spec.gap + 0.12) + 0.03).addScaledVector(aR, 0.1);
+        c.y = THREE.MathUtils.clamp(P.y + H * (it.zone === 'rump' ? 0.52 : 0.5), shY - 0.42, shY + 0.02);
+      }
+      if (it.spec.reach === 'stroke') {
+        // Kaşağı dairesel sürülür (tık… tık… tık… bir saat gibi): ~1,1 Hz, böğür boyunca.
+        const ph = u * Math.PI * 2 * 1.1;
+        c.addScaledVector(f, 0.085 * Math.cos(ph)).y += 0.06 * Math.sin(ph);
+        const l = A.root.position.clone().addScaledVector(side, -(it.spec.gap + 0.12) + 0.05).addScaledVector(aR, -0.24);
+        l.y = c.y + 0.14 - 0.06 * Math.sin(ph);
+        out.l = { p: l, w: w * 0.75 };
+      }
+      if (it.spec.reach === 'chest') out.l = { p: c.clone().addScaledVector(aR, -0.3), w };
+    } else {
+      const eye = P.clone().add(T._eyeS || V(0, T.eyeH, 0));
+      const toA = A.root.position.clone().sub(P).setY(0).normalize();
+      if (it.spec.reach === 'hit') c = eye.clone().addScaledVector(aR, 0.08).addScaledVector(toA, 0.07).add(V(0, -0.07, 0));
+      else if (it.spec.reach === 'chest') {
+        c = P.clone().addScaledVector(toA, 0.14).setY(P.y + T.eyeH * 0.72);
+        out.l = { p: c.clone().addScaledVector(aR, -0.32), w };
+      } else if (it.spec.reach === 'mid') c = midPoint();
+    }
+    if (c) { out.r = { p: c, w }; out.point = c.toArray(); }
+    return out;
+  }
+
+  /** Kamera için: çekimin öznelerinden birinin şu anki (varıştan itibaren) etkileşimi. */
+  interactShot(t, ids) {
+    for (const it of this.inter) {
+      if (t < it.arrive - 0.05 || t > it.t1 + 0.3) continue;
+      if (ids.includes(it.who) || ids.includes(it.target)) return it;
+    }
+    return null;
   }
 
   /** Hedef: spot adı, aktör kimliği (yaklaşma mesafesiyle) ya da [x,y,z]. */
@@ -296,7 +607,11 @@ export class ScenePlan {
       if (cur && w < 1) { const a = time(cur, Math.min(t, cur.t + cur.d)); if (a) out.push({ ...a, weight: 1 - w }); }
       out.push({ ...idleOf(from), weight: cur ? w : 1 });
     }
-    return out.filter((x) => x.clip);
+    const res = out.filter((x) => x.clip);
+    // Etkileşim: el (IK) / baş (hayvan) hedefleri pozdan sonra uygulanır (Actor.pose).
+    const it = this.inter.length ? this.interactAt(id, t) : null;
+    if (it) res.reach = it;
+    return res;
   }
 
   /** Bir aktörün baktığı yer (konuşan, face hedefi). */
@@ -325,7 +640,7 @@ export class ScenePlan {
     let tgt = null;
     for (const b of sc.beats) {
       if (b.t > t) break;
-      if (b.who === id && b.face && this.tracks.has(b.face)) tgt = b.face;
+      if (b.who === id && (b._tgt || b.face) && this.tracks.has(b._tgt || b.face)) tgt = b._tgt || b.face;
     }
     if (line && line.who === id) {
       // Konuşan: muhatabına (son face hedefi, yoksa en yakın insan)
@@ -487,13 +802,14 @@ export class CameraDirector {
 
   /** Kamera ile bakış noktası arasında başka oyuncu ya da sahne duvarı varsa: kamerayı bakış noktası çevresinde döndürerek
    * açık bir açı arar (çekim başına ve 0,6 sn'de bir), bulamazsa engelin önüne çeker. */
-  _clear(plan, world, pos, look, ids, key, t) {
+  _clear(plan, world, pos, look, ids, key, t, lift = false) {
     // Çekim başında tam arama; çekim içinde 1 sn'de bir yalnızca seçili açının hâlâ açık olup olmadığına bakılır (açı
     // gereksiz yere değişip kamera yeniden kadraj aramaz — histerezis).
     const fresh = this._occKey !== key;
     if (!fresh && Math.abs(t - this._occT) > 1.0) {
       this._occT = t;
       const off = pos.clone().sub(look).applyAxisAngle(UP, this._occAng || 0).multiplyScalar(this._occPull || 1);
+      off.y += this._occLift || 0;
       if (this._blocked(plan, world, look, look.clone().add(off), ids)) this._occKey = null;
     }
     if (this._occKey !== key) {
@@ -501,19 +817,26 @@ export class CameraDirector {
       this._occT = t;
       this._occAng = 0;
       this._occPull = 1;
+      this._occLift = 0;
       const off = pos.clone().sub(look);
       const tries = [0, 0.35, -0.35, 0.7, -0.7, 1.1, -1.1];
       let found = false, firstHit = null;
-      for (const a of tries) {
-        const c = look.clone().add(off.clone().applyAxisAngle(UP, a));
-        const hit = this._blocked(plan, world, look, c, ids);
-        if (!hit) { this._occAng = a; found = true; break; }
-        if (a === 0 && hit.env) firstHit = hit.d;
+      // Etkileşim planında önce açı, sonra yükseklik denenir (önde masa/sedir/çit: kamera üstünden bakar, öne çekilmez).
+      for (const dy of lift ? [0, 0.6, 1.2] : [0]) {
+        for (const a of tries) {
+          const c = look.clone().add(off.clone().applyAxisAngle(UP, a));
+          c.y += dy;
+          const hit = this._blocked(plan, world, look, c, ids);
+          if (!hit) { this._occAng = a; this._occLift = dy; found = true; break; }
+          if (a === 0 && dy === 0 && hit.env) firstHit = hit.d;
+        }
+        if (found) break;
       }
       if (!found && firstHit) this._occPull = Math.max(0.25, (firstHit - 0.25) / off.length());
     }
-    if (this._occAng || this._occPull !== 1) {
+    if (this._occAng || this._occPull !== 1 || this._occLift) {
       const off = pos.clone().sub(look).applyAxisAngle(UP, this._occAng).multiplyScalar(this._occPull);
+      off.y += this._occLift || 0;
       pos.copy(look).add(off);
     }
   }
@@ -685,6 +1008,13 @@ export class CameraDirector {
     const cam = this.camera;
     const ids = (Array.isArray(shot.target) ? shot.target : [shot.target]).filter((x) => plan.tracks.has(x));
     if (!ids.length) ids.push(...plan.ids);
+    // Etkileşim (tımar, tokat, verme…): eylemi yapan ve hedefi birlikte kadrajda — hedef çekim listesinde olmasa da.
+    const IT = shot.type !== 'establishing' && plan.interactShot ? plan.interactShot(t, ids) : null;
+    if (IT) {
+      const rest = ids.filter((x) => x !== IT.who && x !== IT.target);
+      ids.length = 0;
+      ids.push(IT.who, IT.target, ...rest);
+    }
     const A = plan.actors.get(ids[0]);
     const B = ids[1] ? plan.actors.get(ids[1]) : null;
     const p = clamp01((t - shot.t) / Math.max(0.5, shot.d || 4));
@@ -694,8 +1024,14 @@ export class CameraDirector {
     if (type === 'two' || type === 'twoshot' || type === 'two-shot') type = 'two_shot'; // senaryo adı: "two"
     // Omuz üstü, dinleyen konuşandan çok uzunsa (yetişkin–çocuk) dinleyenin gövdesi kadrajı kaplar: karşı açıdan yakın plan.
     if (type === 'ots' && B && A.kind === 'human' && B.kind === 'human' && Math.abs(B.eyeH - A.eyeH) > 0.25) type = 'close';
+    if (IT && type !== 'wide' && type !== 'establishing' && type !== 'pov') {
+      // Yakın plan → ikili etkileşim planı; el işi (tımar, yemleme) uzun yakın plansa ikinci yarısı ellere yakın plan.
+      const s0 = Math.max(shot.t, IT.arrive), left = shot.t + (shot.d || 4) - s0;
+      const hands = IT.spec.hands && (type === 'insert' || (type === 'close' && left > 4 && t - s0 > left * 0.5));
+      type = hands ? 'inter_hands' : 'inter';
+    }
     const side = world.side.clone();
-    let pos = V(), look = V(), fov = lensFov(LENS[type] || 35, cam.aspect);
+    let pos = V(), look = V(), fov = lensFov(LENS[type] || (type === 'inter' ? 40 : type === 'inter_hands' ? 85 : 35), cam.aspect);
     const frameDist = (H) => (H / 2) / Math.tan(THREE.MathUtils.degToRad(fov) / 2); // kadraj yüksekliği H (m) için uzaklık
     const sOf = (X) => (X && X.kind === 'human' ? THREE.MathUtils.clamp(X.eyeH / 1.6, 0.6, 1.2) : 1);
     // 180° kuralı: konuşma ekseninin hep aynı (sahnenin kamera tarafı) yanı.
@@ -816,6 +1152,45 @@ export class CameraDirector {
         this.focus = pos.distanceTo(eye);
         break;
       }
+      case 'inter':
+      case 'inter_hands': {
+        // Etkileşim planı: hayvanda öne-yandan 3/4 (oyuncunun durduğu yanda, hayvanın başı tarafından: oyuncu profilden,
+        // eli hayvanın üstünde görünür); insanda konuşma ekseninin kamera tarafından ikili plan.
+        const W = plan.actors.get(IT.who), T = plan.actors.get(IT.target);
+        const live = plan._reach(IT, IT.who, Math.min(Math.max(t, IT.t0), IT.t1));
+        const cp = live?.r?.p ? live.r.p.clone() : W.root.position.clone().lerp(T.root.position, 0.5).setY(W.root.position.y + W.eyeH * 0.6);
+        let dir;
+        if (T.kind === 'animal') {
+          const ya = T.root.rotation.y;
+          const f = V(Math.sin(ya), 0, Math.cos(ya)), r = V(Math.cos(ya), 0, -Math.sin(ya)).multiplyScalar(IT.sgn);
+          dir = type === 'inter_hands' ? f.clone().addScaledVector(r, 0.5).normalize() : f.clone().multiplyScalar(IT.zone === 'head' ? 0.25 : 0.8).add(r).normalize();
+        } else dir = axisSide(W.root.position, T.root.position);
+        if (type === 'inter_hands') {
+          const H = 0.62;
+          const dist = frameDist(H);
+          look.copy(cp);
+          pos.copy(cp).addScaledVector(dir, dist);
+          pos.y = cp.y + 0.28;
+          this.focus = dist;
+          break;
+        }
+        const box = new THREE.Box3();
+        box.expandByPoint(W.root.position).expandByPoint(this.anchor(W, 'head').add(V(0, 0.12, 0))).expandByPoint(cp);
+        if (T.kind === 'animal') {
+          // Hayvanın başı ve temas bölgesi (tüm gövde değil: kadraj insanı küçültmesin).
+          box.expandByPoint(this.anchor(T, 'head'));
+          box.expandByPoint(T.root.position.clone().setY(T.root.position.y + (T.height || 1.6) * 0.55));
+        } else box.expandByPoint(this.anchor(T, 'head').add(V(0, 0.12, 0))).expandByPoint(T.root.position);
+        const c = box.getCenter(V());
+        const r = Math.max(0.9, box.getSize(V()).length() * 0.5);
+        const dist = Math.max(2.2, fitDist(r * 1.05, fov));
+        pos.copy(c).addScaledVector(dir, dist);
+        // Hafif yukarıdan (göz hizasının biraz üstü): önde masa/çit/sedir varsa onların üstünden görür.
+        pos.y = Math.max(c.y + 0.35 + dist * 0.05, box.max.y - 0.1);
+        look.copy(c);
+        this.focus = dist;
+        break;
+      }
       case 'pov': {
         const head = this.anchor(A, 'head');
         pos.copy(head).addScaledVector(facing(A), 0.12);
@@ -853,7 +1228,7 @@ export class CameraDirector {
     }
     // Yakın / orta / omuz üstü: kameranın özneye göre yönü (kerteriz) çekim başında kilitlenir, en çok 8°/sn kayar —
     // özne dönünce ya da yürürken yön değiştirince kamera onun çevresinde savrulmaz.
-    if (type === 'medium' || type === 'close' || type === 'insert' || type === 'ots') {
+    if (type === 'medium' || type === 'close' || type === 'insert' || type === 'ots' || type === 'inter_hands') {
       const bk = `${plan.scene._i}:${shot.t}:${type}`;
       const o = pos.clone().sub(look);
       const th = Math.atan2(o.x, o.z);
@@ -867,7 +1242,7 @@ export class CameraDirector {
     }
     // Geniş / kuruluş / iki kişilik planlarda kamera ayağı çekim başındaki yerinde durur (özne yürüse de kamera onunla
     // birlikte kaymaz, yalnızca yavaşça çevrilir); kadraj gerekirse en çok 0,2 m/sn sürüklenir.
-    if (type === 'wide' || type === 'establishing' || type === 'two_shot') {
+    if (type === 'wide' || type === 'establishing' || type === 'two_shot' || type === 'inter') {
       const wk = `${plan.scene._i}:${shot.t}:${type}`;
       if (this._wKey !== wk || this.snap || !this._wPos) { this._wKey = wk; this._wPos = pos.clone(); this._wT = t; }
       else {
@@ -923,7 +1298,7 @@ export class CameraDirector {
       pos.y = Math.min(pos.y, (world.ceiling || 3) - 0.25);
     }
     pos.y = Math.max(0.25, pos.y);
-    this._clear(plan, world, pos, look, type === 'ots' || type === 'wide' || type === 'establishing' || type === 'two_shot' ? plan.ids : ids.slice(0, 1), `${plan.scene._i}:${shot.t}:${type}`, t);
+    this._clear(plan, world, pos, look, type === 'ots' || type === 'wide' || type === 'establishing' || type === 'two_shot' ? plan.ids : IT ? ids.slice(0, 2) : ids.slice(0, 1), `${plan.scene._i}:${shot.t}:${type}`, t, type === 'inter' || type === 'inter_hands');
     if (world.interior && world.radius) {
       const c = world.center;
       const d = V(pos.x - c.x, 0, pos.z - c.z);
@@ -944,7 +1319,7 @@ export class CameraDirector {
     }
     this._vSub = this._vSub == null ? vSub : this._vSub + (vSub - this._vSub) * Math.min(1, dt * 3);
     if (!changed && !this.snap && this._pos && dt > 0 && dt < 0.25) {
-      const fixedLeg = type === 'wide' || type === 'establishing' || type === 'two_shot';
+      const fixedLeg = type === 'wide' || type === 'establishing' || type === 'two_shot' || type === 'inter';
       const vcap = CAM_VMAX + (fixedLeg ? 0 : this._vSub * 1.1); // geniş planda ayak sabit: özne hızı eklenmez
       const spring = (cur, vel, tgt) => {
         const a = tgt.clone().sub(cur).multiplyScalar(CAM_W * CAM_W).addScaledVector(vel, -2 * CAM_W);
@@ -976,14 +1351,14 @@ export class CameraDirector {
     cam.lookAt(this._look);
     if (Math.abs(cam.fov - fov) > 1e-3) { cam.fov = fov; cam.updateProjectionMatrix(); }
     this.shotKey = key;
-    this.closeup = type === 'close' || type === 'ots' || type === 'insert';
-    this.dofScale = type === 'ots' ? 0.4 : type === 'insert' ? 0.8 : 1; // omuz üstünde hafif alan derinliği
+    this.closeup = type === 'close' || type === 'ots' || type === 'insert' || type === 'inter_hands';
+    this.dofScale = type === 'ots' ? 0.4 : type === 'insert' || type === 'inter_hands' ? 0.8 : 1; // omuz üstünde hafif alan derinliği
     this.primary = A;
     // Portre ışığı: konuşanın (yoksa öznenin) gözü; plan sıkılaştıkça güçlenir.
     const line = plan.lineAt(t);
     const subj = line && plan.tracks.has(line.who) && ids.includes(line.who) ? plan.actors.get(line.who) : A;
     this.subjectEye = subj && subj.kind === 'human' ? this.anchor(subj, 'head') : null;
-    this.portraitW = { close: 1, ots: 1, insert: 0.6, medium: 0.8, two_shot: 0.55, pov: 0.4, wide: 0.25, establishing: 0 }[type] ?? 0.3;
+    this.portraitW = { close: 1, ots: 1, insert: 0.6, inter_hands: 0.5, medium: 0.8, two_shot: 0.55, inter: 0.6, pov: 0.4, wide: 0.25, establishing: 0 }[type] ?? 0.3;
     return { key, changed, shot, type };
   }
 }

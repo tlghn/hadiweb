@@ -11,7 +11,18 @@ import * as SkeletonUtils from './addons/utils/SkeletonUtils.js';
 import { HumanRig, ageToValue } from './human_rig.js';
 
 const _v = new THREE.Vector3(), _q = new THREE.Quaternion(), _m = new THREE.Matrix4();
-const _qs = new THREE.Quaternion();
+const _qs = new THREE.Quaternion(), _qa = new THREE.Quaternion(), _qp = new THREE.Quaternion(), _qb = new THREE.Quaternion();
+
+/** Kemiğe dünya uzayında ek dönüş (iskeletin yerel eksenlerinden bağımsız). */
+function rotateWorld(bone, qDelta) {
+  if (!bone || !bone.parent) return;
+  bone.parent.updateWorldMatrix(true, false);
+  bone.parent.getWorldQuaternion(_qp);
+  _qb.copy(_qp).multiply(bone.quaternion);
+  _qb.premultiply(qDelta);
+  bone.quaternion.copy(_qp.invert().multiply(_qb));
+  bone.updateMatrixWorld(true);
+}
 
 export const EXPR_FALLBACK = {
   cry: { sad: 1, blink_l: 0.35, blink_r: 0.35 },
@@ -453,6 +464,80 @@ export class Actor {
     g = wsum > 0 ? g / Math.max(1, wsum) : 0;
     this._headMode = mode;
     for (const x of [this.bones.neck, this.bones.head]) { const q = this.rest.get(x); if (q && x) x.quaternion.slerp(q, 1 - g); }
+    // Etkileşim (yönetmenden): el hedefe uzanır (kol IK), hayvan başını oyuncuya çevirir.
+    const R = list.reach;
+    if (R && R.w > 0.001) {
+      if (this.kind === 'human') {
+        if (R.r && R.r.w > 0.001) this.reachArm('r', R.r.p, R.r.w);
+        if (R.l && R.l.w > 0.001) this.reachArm('l', R.l.p, R.l.w);
+      } else if (R.look) this.lookToward(R.look, R.w);
+    }
+  }
+
+  /** Kol IK (iki kemik, analitik): elin kökü (hand_X) dünya noktası p'ye; w karışım (0..1). Dirsek klibin büküm düzleminde
+   * kalır (klip kolu düz tutuyorsa dirsek aşağı-geri bükülür); erişilemeyen hedefte kol hedefe doğru uzanır. */
+  reachArm(side, p, w) {
+    const arm = (this._arm = this._arm || {});
+    const B = arm[side] || (arm[side] = {
+      up: findBone(this.model, new RegExp(`^upperarm_${side}$`, 'i')),
+      lo: findBone(this.model, new RegExp(`^lowerarm_${side}$`, 'i')),
+      hand: findBone(this.model, new RegExp(`^hand_${side}$`, 'i')),
+    });
+    if (!B.up || !B.lo || !B.hand) return;
+    const k = Math.min(1, Math.max(0, w));
+    const qU0 = _qa.copy(B.up.quaternion).clone(), qL0 = B.lo.quaternion.clone();
+    this.root.updateMatrixWorld(true);
+    const a = B.up.getWorldPosition(new THREE.Vector3()), b = B.lo.getWorldPosition(new THREE.Vector3()), c = B.hand.getWorldPosition(new THREE.Vector3());
+    const lab = a.distanceTo(b), lbc = b.distanceTo(c);
+    if (lab < 1e-4 || lbc < 1e-4) return;
+    const at = p.clone().sub(a);
+    const lat = Math.min(Math.max(at.length(), Math.abs(lab - lbc) + 1e-3), (lab + lbc) * 0.995);
+    // 1) Dirsek açısı (kosinüs teoremi).
+    const ba = a.clone().sub(b), bc = c.clone().sub(b);
+    const cur = ba.angleTo(bc);
+    const want = Math.acos(Math.min(1, Math.max(-1, (lab * lab + lbc * lbc - lat * lat) / (2 * lab * lbc))));
+    let n = new THREE.Vector3().crossVectors(bc, ba);
+    if (n.lengthSq() < 1e-8) {
+      // Kol dümdüz: dirsek aşağı ve geri bükülsün (vücudun yanında).
+      const fwd = new THREE.Vector3(Math.sin(this.root.rotation.y), 0, Math.cos(this.root.rotation.y));
+      n.crossVectors(bc, fwd.add(new THREE.Vector3(0, -1, 0)));
+    }
+    n.normalize();
+    rotateWorld(B.lo, _q.setFromAxisAngle(n, cur - want));
+    // 2) Omuz: elin yeni yeri hedef doğrultusuna.
+    const c2 = B.hand.getWorldPosition(new THREE.Vector3()).sub(a).normalize();
+    rotateWorld(B.up, _q.setFromUnitVectors(c2, at.normalize()));
+    if (k < 1) {
+      B.up.quaternion.copy(qU0.slerp(B.up.quaternion, k));
+      B.lo.quaternion.copy(qL0.slerp(B.lo.quaternion, k));
+    }
+    B.up.updateMatrixWorld(true);
+  }
+
+  /** Hayvan: boyun/baş dünya dikey ekseninde hedefe döner (en çok ~30°, boyun ve başa paylaştırılır). */
+  lookToward(p, w) {
+    const head = this.bones.head, neck = this.bones.neck;
+    if (!head) return;
+    this.root.updateMatrixWorld(true);
+    const hp = head.getWorldPosition(new THREE.Vector3());
+    const want = Math.atan2(p.x - hp.x, p.z - hp.z);
+    let d = (want - this.root.rotation.y) % (Math.PI * 2);
+    if (d > Math.PI) d -= Math.PI * 2;
+    if (d < -Math.PI) d += Math.PI * 2;
+    const ang = THREE.MathUtils.clamp(d, -0.52, 0.52) * Math.min(1, w);
+    const up = new THREE.Vector3(0, 1, 0);
+    if (neck && neck !== head) { rotateWorld(neck, _q.setFromAxisAngle(up, ang * 0.6)); rotateWorld(head, _q.setFromAxisAngle(up, ang * 0.4)); }
+    else rotateWorld(head, _q.setFromAxisAngle(up, ang));
+  }
+
+  /** Eşyanın avuçtaki yeri (el kemiğinin yerel uzayında): bilek ile orta parmak kökünün arası (bilekte havada durmaz). */
+  gripLocal(side = 'r') {
+    const g = (this._grip = this._grip || {});
+    if (g[side] !== undefined) return g[side];
+    const hand = side === 'r' ? this.bones.handR : findBone(this.model, /^hand_l$/i);
+    const mid = hand && hand.children.find((o) => o.isBone && /^middle_01/i.test(o.name));
+    g[side] = mid ? mid.position.clone().multiplyScalar(0.62).toArray() : null;
+    return g[side];
   }
 
   /** Klip pozunu zamanda süzer (kemik başına tek kutuplu alçak geçiren): ham hareket yakalamanın titremesi, tek karelik

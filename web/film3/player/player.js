@@ -301,7 +301,7 @@ class Player {
     // v2: bölümün TEK sesi (sesli kitap) ana saattir; parça adresleri imzalı gelir (ya da audioBase'e göre).
     const au = this.film.audio && this.film.audio.src === 'audiobook' ? this.film.audio : null;
     const chFetch = (u) => (this.assets && u.startsWith(this.assets.base) ? this.assets.bytes(u) : fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }));
-    this.audio.setChapter(au, au ? au.parts.map((p) => this._resolveAudio(p.url)) : null, chFetch);
+    this.audio.setChapter(au, au ? au.parts.map((p) => this._resolveAudio(p.url)) : null, chFetch, (u) => !!this.assets && u.startsWith(this.assets.base));
     this.audio.onState = (st, info) => {
       if (st === 'audioError') { console.error('[film3] bölüm sesi parçası çalınamıyor', info); post('audioError', info || {}); return; }
       post('state', { playing: this.audio.playing, buffering: st === 'buffering' });
@@ -466,7 +466,7 @@ class Player {
     if (!src || !hand) return;
     const o = src.g.scene.clone(true);
     o.traverse((m) => { if (m.isMesh) m.castShadow = true; });
-    const g = src.it.grip || [0, -0.09, 0.03];
+    const g = src.it.grip || A.gripLocal?.('r') || [0, -0.09, 0.03]; // avuç içi (bilekte havada durmaz)
     o.position.set(g[0], g[1], g[2]);
     if (src.it.gripRot) o.rotation.set(...src.it.gripRot);
     // Kemiğin dünya ölçeği telafi edilir (bazı iskeletlerde santimetre ölçeği olur).
@@ -556,6 +556,7 @@ class Player {
       case 'narration': this.audio.setNarration(m.on !== false); post('narration', { on: this.audio.narration }); break;
       case 'subs': this.subs = !!m.on; this._subText = null; this.subsEl.style.display = this.subs ? '' : 'none'; break;
       case 'stats': post('stats', { ...this.stats, q: this.look.qname, pr: this.look.renderer.getPixelRatio() }); break;
+      case 'debug': setDebug(m.on !== false); break;
       default: break;
     }
   }
@@ -672,9 +673,10 @@ class Player {
   }
 
   /** Karede yumuşak ayırma (durumsuz): çok yaklaşan iki oyuncu birbirinden itilir. */
-  _separate(plan) {
+  _separate(plan, t) {
     const L = plan.ids.map((id) => this.actors.get(id));
     for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) {
+      if (plan.engaged?.(L[i].id, L[j].id, t)) continue; // etkileşimdeki ikili (tımar, sarılma, tokat) itilmez
       const a = L[i].root.position, b = L[j].root.position;
       const min = (L[i].kind === 'animal' ? 0.8 : 0.3) + (L[j].kind === 'animal' ? 0.8 : 0.3);
       const dx = b.x - a.x, dz = b.z - a.z, d = Math.hypot(dx, dz);
@@ -693,7 +695,7 @@ class Player {
     if (!(dt > 0) || dt > 0.25 || this._evPlan !== plan) snap = true;
     this._evPlan = plan;
     for (const id of plan.ids) { const A = this.actors.get(id); A._pl = plan.placement(id, t, A.root.position); }
-    this._separate(plan);
+    this._separate(plan, t);
     // Zemine bas: oturma kaldırması (spot y) korunur, üstüne zeminin yüksekliği eklenir.
     for (const id of plan.ids) {
       const A = this.actors.get(id);
@@ -839,7 +841,24 @@ class Player {
   }
 }
 
+// Tanı katmanı (yalnızca kurucu/geliştirici): ?f3debug=1 (bu cihazda hatırlanır; ?f3debug=0 kapatır), üst sayfanın adresinde
+// f3debug=1 ya da {type:'debug', on:true} iletisi. Normal üyede hiç yüklenmez.
+function setDebug(on) {
+  if (!on) { if (window.__f3diag) window.__f3diag.stop(); return; }
+  import('./diag.js').then((m) => m.startDiag(player)).catch((e) => console.warn('[film3] tanı açılamadı', e));
+}
+function debugWanted() {
+  try {
+    const q = params.get('f3debug');
+    if (q === '1') { try { localStorage.setItem('hadi.f3debug', '1'); } catch (_) {} return true; }
+    if (q === '0') { try { localStorage.removeItem('hadi.f3debug'); } catch (_) {} return false; }
+    try { if (window.parent !== window && /[?&#]f3debug=1\b/.test(window.parent.location.href)) return true; } catch (_) {}
+    return localStorage.getItem('hadi.f3debug') === '1';
+  } catch (_) { return false; }
+}
+
 const player = new Player();
+if (debugWanted()) setDebug(true);
 window.HadiFilm3 = { cmd: (m) => player.cmd(typeof m === 'string' ? JSON.parse(m) : m), player };
 window.addEventListener('message', (e) => {
   if (e.source !== window.parent && e.source !== window) return;

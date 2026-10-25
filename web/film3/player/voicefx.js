@@ -14,7 +14,7 @@
 //   5) İsteğe bağlı nefes: üst bantta zarfa uyan gürültü. Ters dönüşüm + örtüşerek toplama.
 // Gecikme N−N/4 örnek (≈16 ms); kuru yol da aynı kadar geciktirilir, böylece 40 ms'lik kuru↔ıslak geçişleri temiz olur.
 // AudioWorklet yoksa (eski WebView) ya da işlemci yüklenemezse yalnızca EQ + tremolo uygulanır (perde/formant yok); ses her
-// durumda kuru yoldan çıkışa ulaşır (zincir işlemciyi beklemeden kuruludur).
+// durumda kuru yoldan çıkışa ulaşır (zincir işlemciyi beklemeden kuruludur). Mobil (25 Ekim): kip seçimi + bekçi, VoiceChain başı.
 
 // İşlemcinin kaynağı: voicefx_worklet.js (aynı kökenli modül dosyası).
 
@@ -23,23 +23,23 @@ const WORKLET_URL = new URL('./voicefx_worklet.js', import.meta.url).href;
 
 /**
  * İşlemciyi bağlama bir kez yükler: önce aynı kökenli dosya (CSP 'self' izin verir), olmazsa dosyanın metni Blob URL'den
- * (CSP'siz ortamlar). En çok 6 sn beklenir. Yüklenemezse false: zincir kuru yol + EQ ile çalar (ses kesilmez).
+ * (CSP'siz ortamlar). Yüklenemezse false: zincir kuru yol + EQ ile çalar (ses kesilmez). Süre sınırı YOK: zincir işlemciyi
+ * beklemez (o gelene dek kuru + EQ), telefonda ilk karelerde ana iş parçacığı gölgelendirici derlerken (10–30 sn) sabit
+ * süre sınırı yanlışlıkla "yüklenemedi" deyip filtreyi kalıcı kapatıyordu.
  */
 export function loadVoiceFx(ctx) {
   if (!ctx) return Promise.resolve(false);
   if (_reg.has(ctx)) return _reg.get(ctx);
-  const within = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('zaman aşımı')), ms))]);
   const p = (async () => {
     if (!ctx.audioWorklet || typeof AudioWorkletNode === 'undefined') return false;
-    try { await within(ctx.audioWorklet.addModule(WORKLET_URL), 8000); return true; } catch (e) {
+    try { await ctx.audioWorklet.addModule(WORKLET_URL); return true; } catch (e) {
       console.warn('[film3] ses filtresi (dosya) yüklenemedi', e);
-      if (/zaman aşımı/.test(String(e && e.message))) return false; // yükleme sürüyor olabilir: aynı adı ikinci kez kaydetme
     }
     let url = null;
     try {
-      const src = await within(fetch(WORKLET_URL).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); }), 6000);
+      const src = await fetch(WORKLET_URL).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); });
       url = URL.createObjectURL(new Blob([src], { type: 'application/javascript' }));
-      await within(ctx.audioWorklet.addModule(url), 6000);
+      await ctx.audioWorklet.addModule(url);
       return true;
     } catch (e) { console.warn('[film3] ses filtresi yüklenemedi; kuru ses + EQ', e); return false; } finally { if (url) URL.revokeObjectURL(url); }
   })();
@@ -88,9 +88,40 @@ export function normFx(fx) {
   return flat ? null : o;
 }
 
-/** Bölüm sesinin ses zinciri. `input`a kaynaklar bağlanır; `out` çıkış veri yolu. */
+/**
+ * Cihaza göre ses filtresi kipi: full (faz vokoderi N=1024), cheap (N/2, zarf iki karede bir), eq (işlemci yok: perde/formant
+ * yok, karakter EQ'su + tremolo; yalnızca ≤ 1 GB bellek). Telefon/düşük donanım (≤ 4 çekirdek ya da ≤ 4 GB, dokunmatik) cheap
+ * başlar; yalnızca dokunmatik olduğu için seçildiyse bekçi yer görünce full'a çıkar. ?fx=full|cheap|eq ile
+ * zorlanabilir (tanı).
+ */
+export function pickFxMode() {
+  try {
+    const q = new URLSearchParams(location.search).get('fx');
+    if (q === 'full' || q === 'cheap' || q === 'eq') return { mode: q, forced: true };
+  } catch (_) {}
+  const nav = typeof navigator !== 'undefined' ? navigator : {};
+  const hc = nav.hardwareConcurrency || 8, dm = nav.deviceMemory || 8;
+  let coarse = false;
+  try { coarse = matchMedia('(pointer:coarse)').matches; } catch (_) {}
+  if (dm <= 1) return { mode: 'eq', why: `hc=${hc} dm=${dm}` };
+  if (hc <= 4 || dm <= 4) return { mode: 'cheap', why: `hc=${hc} dm=${dm}` };
+  if (coarse) return { mode: 'cheap', up: true, why: 'dokunmatik' };
+  return { mode: 'full', why: `hc=${hc} dm=${dm}` };
+}
+
+/**
+ * Bölüm sesinin ses zinciri. `input`a kaynaklar bağlanır; `out` çıkış veri yolu.
+ *
+ * Konuşmanın çıkışa giden yolu işlemciye BAĞLI DEĞİLDİR: giriş → gecikme(LAT) → kuru → kapı → çıkış her zaman kuruludur;
+ * ıslak yol (işlemci → EQ → tremolo) paraleldir ve bölüt sınırlarında 40 ms'de kuru ile çapraz geçer. İşlemci yalnızca
+ * karakter konuşurken çalışır ('on'). Bekçi (watch + işlemcinin yarım saniyelik durum iletileri):
+ *   · işlemci hata verirse (processorerror), NaN üretirse, girişi duyulur düzeydeyken çıkışı > 500 ms susarsa ya da hiç
+ *     çalışmıyorsa (durum iletisi gelmiyor) → kalıcı atlanır: ıslak yol = gecikmiş kuru + EQ + tremolo (zamanlama aynı);
+ *   · işlem yükü yüksekse ya da ses saati duvar saatinin gerisinde kalıyorsa (tampon boşalması) → full → cheap → atla;
+ *   · cheap'te (yalnızca dokunmatik olduğu için seçildiyse) 20 sn boyunca yük düşükse → full.
+ */
 export class VoiceChain {
-  constructor(ctx, out) {
+  constructor(ctx, out, opt = {}) {
     this.ctx = ctx;
     this.input = ctx.createGain();
     this.lat = fxLatency(ctx.sampleRate);
@@ -113,24 +144,124 @@ export class VoiceChain {
     this.eq[this.eq.length - 1].connect(this.trem).connect(this.wet).connect(this.gate);
     this.gate.connect(out);
     this.node = null; // AudioWorkletNode (yüklenince)
-    this.dryDelay.connect(this.eq[0]); // geçici: işlemci gelene dek ıslak yol = gecikmiş kuru + EQ
+    this.dryDelay.connect(this.eq[0]); // işlemci gelene dek (ve atlandığında) ıslak yol = gecikmiş kuru + EQ
     this.log = []; // tanı/test: {t (film), ctxT, who, kind, wet, gate}
-    this.ready = loadVoiceFx(ctx).then((ok) => {
-      if (!ok) return false;
+    this.errors = []; // tanı: son olaylar
+    this.onEvent = opt.onEvent || null; // (tür, bilgi) → oynatıcı (tanı / audioError)
+    const offline = typeof OfflineAudioContext !== 'undefined' && ctx instanceof OfflineAudioContext; // çevrimdışı: gerçek zaman yok → full
+    const pick = opt.mode ? { mode: opt.mode, forced: true } : offline ? { mode: 'full', why: 'çevrimdışı' } : pickFxMode();
+    this.mode = pick.mode === 'eq' ? 'eq' : 'loading';
+    this.want = pick.mode; // full | cheap | eq
+    this.why = pick.why || (pick.forced ? 'zorlandı' : '');
+    this.canUp = !!pick.up;
+    this.st = null; // işlemcinin son durum iletisi
+    this.wd = { silentMs: 0, hot: 0, cool: 0, nan: 0, lastPerf: 0, lastCtx: 0, under: null, lag: 0, stall: 0, lastWatch: 0 };
+    this.ready = pick.mode === 'eq' ? Promise.resolve(false) : loadVoiceFx(ctx).then((ok) => {
+      if (!ok) { this._event('fx', 'işlemci yüklenemedi; EQ'); this.mode = 'eq'; return false; }
+      if (this.mode === 'bypassed') return false;
       try {
-        this.node = new AudioWorkletNode(ctx, 'hadi-voicefx', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1], channelCount: 1, channelCountMode: 'explicit' });
+        this.node = new AudioWorkletNode(ctx, 'hadi-voicefx', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1], channelCount: 1, channelCountMode: 'explicit', processorOptions: { mode: this.want } });
+        const on = this.node.parameters.get('on');
+        if (on) on.value = this._wetNow ? 1 : 0;
+        this.node.port.onmessage = (e) => this._stat(e.data);
+        this.node.onprocessorerror = (e) => this.bypass('processorerror', e);
         this.input.connect(this.node).connect(this.eq[0]);
-        this.dryDelay.disconnect(this.eq[0]); // dryDelay → dry bağlantısı yerinde kalır
-        // İşlemci çalışırken hata verirse ıslak yol gecikmiş kuru + EQ'ya döner (karakter sesi susmaz).
-        this.node.onprocessorerror = (e) => {
-          console.warn('[film3] ses filtresi durdu; kuru ses + EQ', e);
-          try { this.input.disconnect(this.node); this.node.disconnect(); } catch (_) {}
-          this.node = null;
-          try { this.dryDelay.connect(this.eq[0]); } catch (_) {}
-        };
+        try { this.dryDelay.disconnect(this.eq[0]); } catch (_) {} // dryDelay → dry bağlantısı yerinde kalır
+        this.mode = this.want;
+        this._modeAt = performance.now();
         return true;
-      } catch (e) { console.warn('[film3] ses filtresi kurulamadı', e); return false; }
+      } catch (e) { this._event('fx', 'işlemci kurulamadı: ' + (e && e.message)); this.mode = 'eq'; return false; }
     });
+  }
+
+  _event(kind, msg) {
+    const e = { at: Math.round(performance.now()), kind, msg: String(msg) };
+    this.errors.push(e);
+    if (this.errors.length > 12) this.errors.shift();
+    if (kind === 'fx') console.warn('[film3] ses filtresi:', msg);
+    if (this.onEvent) { try { this.onEvent(kind, e); } catch (_) {} }
+  }
+
+  /** İşlemciyi kalıcı atlar: ıslak yol gecikmiş kuru + EQ + tremolo olur (zamanlama değişmez, konuşma susmaz). */
+  bypass(reason, err) {
+    if (this.mode === 'bypassed') return;
+    const n = this.node;
+    this.node = null;
+    this.mode = 'bypassed';
+    this.bypassWhy = reason;
+    if (n) {
+      try { n.port.onmessage = null; n.onprocessorerror = null; } catch (_) {}
+      try { this.input.disconnect(n); } catch (_) {}
+      try { n.disconnect(); } catch (_) {}
+    }
+    try { this.dryDelay.connect(this.eq[0]); } catch (_) {}
+    this._event('fx', `işlemci atlandı (${reason})${err && err.message ? ': ' + err.message : ''}`);
+  }
+
+  _setMode(m) {
+    if (!this.node || this.mode === m) return;
+    try { this.node.port.postMessage({ mode: m }); } catch (_) {}
+    this._event('mode', `${this.mode} → ${m}`);
+    this.mode = m;
+    this._modeAt = performance.now();
+    this.wd.hot = 0; this.wd.cool = 0;
+  }
+
+  /** İşlemcinin durum iletisi (≈ 2/sn). */
+  _stat(d) {
+    if (!d || d.type !== 'st' || !this.node) return;
+    this.st = { ...d, perf: performance.now() };
+    const w = this.wd, sr = this.ctx.sampleRate;
+    const actMs = (d.act * 128 * 1000) / sr;
+    if (d.nan) { w.nan += d.nan; if (w.nan > 3) return this.bypass('NaN'); }
+    // Sessizlik: giriş duyulur düzeyde (> −50 dBFS), çıkış girişten 30 dB+ düşük → 500 ms'yi aşarsa atla.
+    const ri = Math.sqrt(d.ei || 0), ro = Math.sqrt(d.eo || 0);
+    if (d.act && ri > 0.003 && ro < ri * 0.0316) { w.silentMs += actMs; if (w.silentMs > 500) return this.bypass('sessiz çıkış'); } else if (d.act) w.silentMs = 0;
+    // Yük: işlemci açıkken ölçülen süre / geçen süre (ms çözünürlüğünde, ortalamada doğru).
+    if (d.act > 20) {
+      const load = d.load * (d.blocks / d.act); // açık olduğu süreye göre
+      if (load > (this.mode === 'full' ? 0.45 : 0.6)) { if (++w.hot >= 2) { if (this.mode === 'full') this._setMode('cheap'); else return this.bypass('işlemci yükü'); } } else w.hot = 0;
+      if (this.mode === 'cheap' && this.canUp && load < 0.15) { w.cool += actMs; if (w.cool > 20000) { this.canUp = false; this._setMode('full'); } } else if (this.mode === 'cheap') w.cool = Math.max(0, w.cool - actMs);
+    }
+  }
+
+  /**
+   * Ana iş parçacığından (her ses planlamasında) çağrılır: işlemci hiç çalışmıyorsa ya da ses saati gerçek zamanın
+   * gerisinde kalıyorsa (işleme yetişemiyor, tampon boşalıyor) kipi düşürür / atlar.
+   */
+  watch() {
+    const ctx = this.ctx, w = this.wd;
+    if (!this.node || ctx.state !== 'running') { w.lastPerf = 0; return; }
+    const p = performance.now(), c = ctx.currentTime;
+    // Durum iletisi gelmiyor (işlemcinin process'i çağrılmıyor): ses saati 4 sn ilerlediği hâlde son ileti eski.
+    // (Ana iş parçacığı uzun durduysa — ilk karede gölgelendirici derleme — iletiler kuyrukta bekliyor olabilir: yalnızca
+    // aralıkları < 1 sn olan art arda 3 denetimde de sürüyorsa.)
+    const at = this.st ? this.st.at : this._bornCtx ?? (this._bornCtx = c);
+    const steady = w.lastWatch && p - w.lastWatch < 1000;
+    w.lastWatch = p;
+    if (steady && c - at > 4) { if (++w.stall >= 3) return this.bypass('işlemci çalışmıyor'); } else w.stall = 0;
+    // Tampon boşalması: Chrome'un oynatma istatistikleri (varsa) ya da ses saati / duvar saati oranı.
+    const ps = ctx.playbackStats || ctx.playoutStats;
+    const und = ps ? (ps.underrunEvents ?? ps.fallbackFramesEvents ?? null) : null;
+    if (und != null) {
+      if (w.under != null && und > w.under && this.st && this.st.act > 0) { if (this.mode === 'full') this._setMode('cheap'); else if (this.mode === 'cheap' && und - w.under > 2) return this.bypass('tampon boşalması'); }
+      w.under = und;
+    }
+    if (!w.lastPerf) { w.lastPerf = p; w.lastCtx = c; return; }
+    const dp = (p - w.lastPerf) / 1000;
+    if (dp < 2) return;
+    const ratio = (c - w.lastCtx) / dp;
+    w.lastPerf = p; w.lastCtx = c;
+    this.ratio = ratio;
+    if (ratio < 0.9 && dp < 10) { // ana iş parçacığı uzun durduysa (dp büyük) ölçüm güvenilmez
+      if (++w.lag >= 2) { w.lag = 0; if (this.mode === 'full') this._setMode('cheap'); else return this.bypass('ses saati geride'); }
+    } else w.lag = 0;
+  }
+
+  /** Tanı: kısa durum. */
+  info() {
+    const st = this.st;
+    return { mode: this.mode, want: this.want, why: this.bypassWhy || this.why, load: st && st.act ? Math.round(st.load * (st.blocks / st.act) * 100) : 0, on: st ? st.act > 0 : false, ratio: this.ratio ? Math.round(this.ratio * 1000) / 1000 : null, nan: this.wd.nan };
   }
 
   _params() {
@@ -148,6 +279,20 @@ export class VoiceChain {
         else { const v = p.value; p.cancelScheduledValues(at); p.setValueAtTime(v, at); }
       } catch (_) {}
     }
+    const on = this.node && this.node.parameters.get('on');
+    if (on) { try { on.cancelScheduledValues(at); } catch (_) {} }
+  }
+
+  /** İşlemciyi aç/kapat (giriş tarafı): açılış bölütten 120 ms önce (ısınma), kapanış kuru geçiş bittikten sonra. */
+  _onAt(v, t) {
+    const on = this.node && this.node.parameters.get('on');
+    if (!on) return;
+    const n0 = this.ctx.currentTime;
+    t = Math.max(n0, t);
+    try {
+      if (v) { on.cancelScheduledValues(t); on.setValueAtTime(1, t); } // sonraki (bekleyen) kapanış silinir
+      else on.setValueAtTime(0, t);
+    } catch (_) {}
   }
 
   /**
@@ -165,6 +310,10 @@ export class VoiceChain {
     };
     this._last = this._last || new Map();
     const wetV = fx ? 1 : 0;
+    this._wetNow = wetV;
+    if (fx) this._onAt(1, now ? at : at - 0.12);
+    else if (!now) this._onAt(0, o + X + 0.03);
+    else this._onAt(0, at);
     rampAt(this.wet.gain, wetV, o);
     rampAt(this.dry.gain, 1 - wetV, o);
     rampAt(this.gate.gain, gate, o);
