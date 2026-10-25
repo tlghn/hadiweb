@@ -1,6 +1,6 @@
 # HADİ Film v3 — varlık lisansları
 
-Bu klasördeki üçüncü taraf varlıklar yalnızca serbest lisanslıdır (CC0 / MIT). Her bölüm, o varlıkları üreten ajanın kendi satırlarıdır.
+Bu klasördeki üçüncü taraf varlıklar yalnızca serbest lisanslıdır (CC0 / MIT; hayvan modellerinin bir kısmı CC BY 4.0 — atıf aşağıda). Her bölüm, o varlıkları üreten ajanın kendi satırlarıdır.
 
 ## İnsan tabanı ve parçalar (Ajan A)
 
@@ -53,3 +53,25 @@ Dosyalar: `anims.glb`, `animals/*.glb`, `env/*.glb`, `props/*.glb`, `sfx/*`, `mu
 | Hayvan yumuşatma ve türetme (koyun ← Quaternius Alpaca, kedi ← Quaternius Fox) | HADİ (`smooth_animals.mjs`, `derive_animals.mjs`) — kaynaklar Quaternius CC0 | CC0 türevi |
 | Gerçekçilik turu 2 — PBR dokular: sandstone_blocks_08, coast_sand_02, damp_beach_sand, wood_cabinet_worn_long | Poly Haven — polyhaven.com/a/<ad> | CC0 1.0 |
 | Gerçekçilik turu 2 — üretilmiş dokular: Anadolu kilimi (elibelinde, koçboynuzu, göz, baklava; kök boya tonları), kireç sıva (limewash), duvar dibi kir/is (grime), İznik çini karosu (cini), kurşun (lead); zemin dokularında ışık gradyanı düzleştirme (`flatten_tex.py`) | HADİ (`gen_pbr_extra.py`, `flatten_tex.py`) — Poly Haven/ambientCG CC0 kaynaklardan türetildi | CC0 türevi / HADİ |
+
+## Hayvanlar (Sketchfab, CC BY 4.0)
+
+Bu modeller CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/) lisanslıdır: atıf zorunludur, ticari kullanım serbesttir.
+Atıf her filmin sonunda ve oynatıcıdaki "i" (Künye) düğmesinde, o filmde kullanılan modeller için gösterilir (kaynak: catalog `animals[].credit`).
+Başlık/yazar/URL, kurucunun indirdiği zip'lerdeki `license.txt` dosyalarından aynen alınmıştır.
+
+- `animals/horse.glb` (At): "Horse" — henrysteve973 — CC BY 4.0 — https://sketchfab.com/3d-models/horse-a6f860e43e364619bccb174a1ac7d0c9 — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/dog.glb` (Köpek): "Dog animated" — MAXDESIGN-3D — CC BY 4.0 — https://sketchfab.com/3d-models/dog-animated-21b7336c58a442578ab88fc47233ef11 — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/sheep.glb` (Koyun): "Animated Sheep" — igor-lir — CC BY 4.0 — https://sketchfab.com/3d-models/animated-sheep-b99698502dea4905b916fce0bcf2dfc0 — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/cow.glb` (İnek): "Farm Cow Animated Dairy cattle" — Rukh3D — CC BY 4.0 — https://sketchfab.com/3d-models/farm-cow-animated-dairy-cattle-0e780cb5ab6d457198ded7d4e191a03e — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/chicken.glb` (Tavuk): "Chicken" — MAXDESIGN-3D — CC BY 4.0 — https://sketchfab.com/3d-models/chicken-4ab19d3a675343959815ae770f8b178e — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/donkey.glb` (Eşek): "Realistic Animated Donkey 3D Model" — WildMesh 3D — CC BY 4.0 — https://sketchfab.com/3d-models/realistic-animated-donkey-3d-model-2b4086035df94d9e88fd0f18d34b3872 — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/goat.glb` (Keçi): "Animated Goat – 3D Animal Model" — AnimalMesh 3D — CC BY 4.0 — https://sketchfab.com/3d-models/animated-goat-3d-animal-model-4f3a23b1fc094f75a1d9cf2e5bc1faef — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+- `animals/pig.glb` (Domuz): "Piglet" — grs — CC BY 4.0 — https://sketchfab.com/3d-models/piglet-8343f141936f4c799ed980a3c7c3ae27 — değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi
+
+Ek değişiklik ayrıntıları (HADİ, `hadimobile/tools/film3/anim/sketchfab_animals.mjs` + `quad_walk.mjs`): üçgen sayısı azaltıldı, dokular WebP'ye
+küçültüldü (meshopt sıkıştırma), +Z yönüne çevrilip metreye ölçeklendi, kök hareketi yerinde tutuldu, bileşik klipler (köpek, tavuk) ayrı kliplere
+bölündü; inek ve koyun için yürüme animasyonu koddan üretildi (koyuna otomatik bacak iskeleti eklendi); domuz/keçi/tavuk bekleme pozu var olan
+kliplerin bir karesinden türetildi; keçi ve eşekte spec-gloss malzeme metal-rough'a çevrildi.
+Önceki Quaternius (CC0) at/eşek/inek/koyun/köpek/domuz/tavuk dosyaları bu modellerle değiştirildi; `horse_white`, `bull`, `dog_big`, `wolf`, `fox`,
+`deer`, `alpaca`, `cat`, `bird` yukarıdaki Quaternius (CC0) satırındaki gibi kalır.

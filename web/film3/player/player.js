@@ -32,6 +32,15 @@ class Player {
     this.fadeEl = $('fade');
     this.xfade = $('xfade');
     this.chip = $('chip');
+    // Künye (CC BY atıfları): "i" düğmesi her zaman açar/kapatır; film bitince kendiliğinden açılır.
+    this.creditsEl = $('credits');
+    this.infoBtn = $('infoBtn');
+    this.credits = [];
+    if (this.infoBtn) {
+      this.infoBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+      this.infoBtn.addEventListener('click', (e) => { e.stopPropagation(); this._showCredits(!this.creditsEl.classList.contains('on')); });
+    }
+    if (this.creditsEl) this.creditsEl.addEventListener('pointerdown', (e) => e.stopPropagation());
     this.autoQ = true;
     const q0 = params.get('q') || (matchMedia('(pointer:coarse)').matches ? 'mid' : 'high');
     this.look = new Look(this.canvas, QUALITY[q0] ? q0 : 'mid');
@@ -170,6 +179,14 @@ class Player {
           throw new Error(`Oyuncu kurulamadı (${d.name || d.id}): ${e.message || e}`);
         }
       }
+      // Künye: bu filmde gerçekten kurulan hayvanların katalogdaki atıf bilgisi (credit / src)
+      const cr = new Map();
+      for (const d of defs) {
+        if (d.kind !== 'animal' || !this.actors.has(d.id)) continue;
+        const it = (cat.animals || []).find((a) => a.id === d.animal);
+        if (it && (it.credit || /CC BY/i.test(it.src || ''))) cr.set(it.credit?.url || it.src, { label: it.label || it.id, ...(it.credit || { src: it.src }) });
+      }
+      this._setCredits([...cr.values()]);
       // Eşyalar
       this.propSrc = new Map();
       for (const p of propIds) {
@@ -442,6 +459,7 @@ class Player {
     if (!this.film) return;
     if (this.ended || this.audio.time() >= this.film.dur - 0.05) { this.audio.seek(0); this.ended = false; }
     this.audio.unlock().then(() => this._chip());
+    this._showCredits(false);
     this.audio.play();
     this._hiddenPause = false;
     post('state', { playing: true });
@@ -453,6 +471,7 @@ class Player {
     this.audio.seek(Math.min(Math.max(0, +t || 0), this.film.dur - 0.01));
     this._seeked = true;
     this.ended = false;
+    this._showCredits(false);
     this.dirty = true;
     this.xfade.style.opacity = '0';
   }
@@ -465,6 +484,34 @@ class Player {
     this.look.setQuality(q);
     this.layout();
     post('quality', { q });
+  }
+
+  _setCredits(list) {
+    this.credits = list || [];
+    if (!this.creditsEl) return;
+    this.creditsEl.textContent = '';
+    this.creditsEl.classList.remove('on');
+    this.infoBtn.classList.toggle('on', this.credits.length > 0);
+    if (!this.credits.length) return;
+    const h = document.createElement('h4'); h.textContent = 'Künye · 3B modeller'; this.creditsEl.appendChild(h);
+    const ul = document.createElement('ul');
+    for (const c of this.credits) {
+      const li = document.createElement('li');
+      if (c.title) {
+        const t = document.createElement('span'); t.className = 't'; t.textContent = `${c.label}: "${c.title}"`; li.appendChild(t);
+        li.appendChild(document.createTextNode(` — ${c.author} — ${c.license || 'CC BY 4.0'}`));
+        const u = document.createElement('div'); u.className = 'u'; u.textContent = c.url; li.appendChild(u);
+      } else li.textContent = `${c.label}: ${c.src}`;
+      ul.appendChild(li);
+    }
+    this.creditsEl.appendChild(ul);
+    const n = document.createElement('div'); n.className = 'n';
+    n.textContent = 'Lisans: creativecommons.org/licenses/by/4.0 · Değişiklik: sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi.';
+    this.creditsEl.appendChild(n);
+  }
+  _showCredits(on) {
+    if (!this.creditsEl || !this.credits.length) return;
+    this.creditsEl.classList.toggle('on', !!on);
   }
 
   _chip() {
@@ -498,7 +545,7 @@ class Player {
     let t = this.audio.time();
     if (t >= this.film.dur) {
       t = this.film.dur;
-      if (playing) { this.audio.pause(); this.audio.seek(this.film.dur); this.ended = true; post('progress', { t, dur: this.film.dur }); post('ended'); post('state', { playing: false }); }
+      if (playing) { this.audio.pause(); this.audio.seek(this.film.dur); this.ended = true; post('progress', { t, dur: this.film.dur }); this._showCredits(true); post('ended'); post('state', { playing: false }); }
     }
     const si = sceneAt(this.film, t);
     if (si !== this.cur) this._activate(si, playing);

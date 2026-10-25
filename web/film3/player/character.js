@@ -899,7 +899,8 @@ export async function buildAnimal(get, cat, def) {
   const model = SkeletonUtils.clone(src.scene);
   cloneMaterials(model);
   const tm = item.tint?.materials;
-  tintObject(model, def.color, tm && tm.length ? new RegExp('^(' + tm.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')$', 'i') : /tint|main|body|coat|fur|skin/i);
+  // Gerçekçi (dokulu) hayvanlarda katalog tint:false → renk tonu uygulanmaz (doku rengi korunur).
+  if (item.tint !== false) tintObject(model, def.color, tm && tm.length ? new RegExp('^(' + tm.map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')$', 'i') : /tint|main|body|coat|fur|skin/i);
   if (item.scale) model.scale.setScalar(item.scale);
   if (item.yaw) model.rotation.y = item.yaw;
   if (item.height) {

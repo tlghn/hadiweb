@@ -1,5 +1,5 @@
 {
- "v": 10,
+ "v": 11,
  "hdri": {
   "day": {
    "id": "kloofendal_48d_partly_cloudy_puresky",
@@ -745,37 +745,42 @@
     "tay"
    ],
    "clips": [
+    "attack",
     "death",
     "eat",
     "gallop",
-    "headbutt",
-    "hit",
     "idle",
     "idle_2",
     "idle_headlow",
     "jump",
     "kick",
-    "land",
+    "lie",
     "neigh",
     "trot",
     "walk"
    ],
    "alias": {
-    "neigh": "idle_2",
-    "trot": "trot"
+    "run": "gallop",
+    "headbutt": "attack"
    },
-   "tint": {
-    "materials": [
-     "Main"
-    ]
-   },
-   "height": 2.25,
-   "length": 2.65,
-   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
    "speeds": {
     "walk": 1.6,
-    "trot": 3.6,
+    "trot": 2.72,
     "gallop": 8.5
+   },
+   "tint": false,
+   "height": 2.25,
+   "length": 2.82,
+   "realistic": true,
+   "src": "Sketchfab — \"Horse\" — henrysteve973 (CC BY 4.0) https://sketchfab.com/3d-models/horse-a6f860e43e364619bccb174a1ac7d0c9 — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Horse",
+    "author": "henrysteve973",
+    "authorUrl": "https://sketchfab.com/henrysteve973",
+    "url": "https://sketchfab.com/3d-models/horse-a6f860e43e364619bccb174a1ac7d0c9",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
@@ -832,34 +837,36 @@
     "death",
     "eat",
     "gallop",
-    "headbutt",
-    "hit",
+    "head_shake",
     "idle",
     "idle_2",
-    "idle_headlow",
-    "jump",
     "kick",
-    "land",
-    "neigh",
+    "lie",
     "trot",
     "walk"
    ],
    "alias": {
-    "bray": "idle_2",
-    "neigh": "idle_2"
+    "run": "gallop",
+    "idle_headlow": "eat"
    },
-   "tint": {
-    "materials": [
-     "Main"
-    ]
-   },
-   "height": 1.55,
-   "length": 1.84,
-   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
    "speeds": {
-    "walk": 1.1,
-    "trot": 2.4,
-    "gallop": 5.5
+    "walk": 1.04,
+    "trot": 2.45,
+    "gallop": 5.73
+   },
+   "tint": false,
+   "height": 1.55,
+   "length": 2.04,
+   "realistic": true,
+   "src": "Sketchfab — \"Realistic Animated Donkey 3D Model\" — WildMesh 3D (CC BY 4.0) https://sketchfab.com/3d-models/realistic-animated-donkey-3d-model-2b4086035df94d9e88fd0f18d34b3872 — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Realistic Animated Donkey 3D Model",
+    "author": "WildMesh 3D",
+    "authorUrl": "https://sketchfab.com/WildMesh_3D",
+    "url": "https://sketchfab.com/3d-models/realistic-animated-donkey-3d-model-2b4086035df94d9e88fd0f18d34b3872",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
@@ -872,36 +879,38 @@
     "buzağı"
    ],
    "clips": [
+    "attack",
     "death",
-    "eat",
     "gallop",
     "headbutt",
-    "hit",
     "idle",
     "idle_2",
-    "idle_headlow",
-    "jump",
-    "kick",
-    "land",
     "moo",
     "trot",
     "walk"
    ],
    "alias": {
-    "moo": "idle_2"
+    "run": "gallop",
+    "kick": "attack"
    },
-   "tint": {
-    "materials": [
-     "Main"
-    ]
-   },
-   "height": 1.6,
-   "length": 2.81,
-   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
    "speeds": {
-    "walk": 1,
-    "trot": 2,
-    "gallop": 5
+    "walk": 0.68,
+    "trot": 1.16,
+    "gallop": 1.85
+   },
+   "tint": false,
+   "height": 1.6,
+   "length": 2.7,
+   "realistic": true,
+   "src": "Sketchfab — \"Farm Cow Animated Dairy cattle\" — Rukh3D (CC BY 4.0) https://sketchfab.com/3d-models/farm-cow-animated-dairy-cattle-0e780cb5ab6d457198ded7d4e191a03e — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Farm Cow Animated Dairy cattle",
+    "author": "Rukh3D",
+    "authorUrl": "https://sketchfab.com/rukh3d",
+    "url": "https://sketchfab.com/3d-models/farm-cow-animated-dairy-cattle-0e780cb5ab6d457198ded7d4e191a03e",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
@@ -956,40 +965,75 @@
     "koç"
    ],
    "clips": [
-    "death",
-    "eat",
-    "gallop",
-    "headbutt",
-    "hit",
+    "bleat",
     "idle",
-    "idle_2",
-    "idle_headlow",
-    "jump",
-    "kick",
-    "land",
     "run",
-    "trot",
-    "walk",
-    "bleat"
+    "walk"
    ],
    "alias": {
-    "bleat": "idle_2",
-    "run": "gallop"
+    "gallop": "run",
+    "idle_2": "idle",
+    "trot": "walk"
    },
-   "tint": {
-    "materials": [
-     "Main",
-     "Main_Light"
-    ]
-   },
-   "height": 0.95,
-   "length": 1.55,
-   "src": "Quaternius Alpaca (CC0) — HADİ: yumuşatma + boyun kısaltma, yün rengi",
-   "note": "gerçekçi CC0 animasyonlu koyun bulunamadı; alpakadan türetildi",
    "speeds": {
-    "walk": 0.8,
-    "trot": 1.8,
-    "gallop": 4.0
+    "walk": 0.4,
+    "run": 1.04
+   },
+   "tint": false,
+   "height": 0.95,
+   "length": 1.32,
+   "realistic": true,
+   "src": "Sketchfab — \"Animated Sheep\" — igor-lir (CC BY 4.0) https://sketchfab.com/3d-models/animated-sheep-b99698502dea4905b916fce0bcf2dfc0 — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Animated Sheep",
+    "author": "igor-lir",
+    "authorUrl": "https://sketchfab.com/igor-lir",
+    "url": "https://sketchfab.com/3d-models/animated-sheep-b99698502dea4905b916fce0bcf2dfc0",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
+   }
+  },
+  {
+   "id": "goat",
+   "url": "animals/goat.glb",
+   "label": "Keçi",
+   "tr": [
+    "keçi",
+    "oğlak",
+    "teke"
+   ],
+   "clips": [
+    "bleat",
+    "hit",
+    "idle",
+    "jump",
+    "lie",
+    "run",
+    "walk"
+   ],
+   "alias": {
+    "gallop": "run",
+    "idle_2": "idle",
+    "trot": "walk"
+   },
+   "speeds": {
+    "walk": 0.9,
+    "run": 3.5
+   },
+   "tint": false,
+   "height": 1,
+   "length": 1.44,
+   "realistic": true,
+   "src": "Sketchfab — \"Animated Goat – 3D Animal Model\" — AnimalMesh 3D (CC BY 4.0) https://sketchfab.com/3d-models/animated-goat-3d-animal-model-4f3a23b1fc094f75a1d9cf2e5bc1faef — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Animated Goat – 3D Animal Model",
+    "author": "AnimalMesh 3D",
+    "authorUrl": "https://sketchfab.com/AnimalMesh3D",
+    "url": "https://sketchfab.com/3d-models/animated-goat-3d-animal-model-4f3a23b1fc094f75a1d9cf2e5bc1faef",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
@@ -1002,37 +1046,34 @@
     "kuçu"
    ],
    "clips": [
-    "attack",
     "bark",
-    "death",
-    "eat",
     "gallop",
-    "hit",
     "idle",
-    "idle_2",
-    "idle_headlow",
-    "jump",
-    "land",
-    "run",
     "trot",
     "walk"
    ],
    "alias": {
-    "bark": "idle_2",
-    "run": "gallop"
+    "run": "gallop",
+    "idle_2": "idle"
    },
-   "tint": {
-    "materials": [
-     "Main"
-    ]
-   },
-   "height": 0.75,
-   "length": 0.96,
-   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
    "speeds": {
     "walk": 1.1,
-    "trot": 2.5,
-    "gallop": 6.5
+    "trot": 1.87,
+    "gallop": 2.99
+   },
+   "tint": false,
+   "height": 0.75,
+   "length": 1.14,
+   "realistic": true,
+   "src": "Sketchfab — \"Dog animated\" — MAXDESIGN-3D (CC BY 4.0) https://sketchfab.com/3d-models/dog-animated-21b7336c58a442578ab88fc47233ef11 — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Dog animated",
+    "author": "MAXDESIGN-3D",
+    "authorUrl": "https://sketchfab.com/MAXDESIGN",
+    "url": "https://sketchfab.com/3d-models/dog-animated-21b7336c58a442578ab88fc47233ef11",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
@@ -1291,26 +1332,33 @@
     "domuz"
    ],
    "clips": [
-    "death",
-    "eat",
-    "gallop",
-    "headbutt",
     "idle",
-    "jump",
+    "oink",
     "run",
     "walk"
    ],
    "alias": {
-    "gallop": "run"
+    "gallop": "run",
+    "idle_2": "idle",
+    "trot": "walk"
+   },
+   "speeds": {
+    "walk": 0.7,
+    "run": 1.82
    },
    "tint": false,
    "height": 0.8,
-   "length": 1.01,
-   "src": "Quaternius (CC0) — poly.pizza",
-   "note": "blok (voksel) stil; gerçekçi CC0 animasyonlu sürüm bulunamadı",
-   "speeds": {
-    "walk": 0.7,
-    "run": 2.5
+   "length": 1.24,
+   "realistic": true,
+   "src": "Sketchfab — \"Piglet\" — grs (CC BY 4.0) https://sketchfab.com/3d-models/piglet-8343f141936f4c799ed980a3c7c3ae27 — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Piglet",
+    "author": "grs",
+    "authorUrl": "https://sketchfab.com/sgrosjean",
+    "url": "https://sketchfab.com/3d-models/piglet-8343f141936f4c799ed980a3c7c3ae27",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
@@ -1323,26 +1371,35 @@
     "civciv"
    ],
    "clips": [
-    "attack",
     "cluck",
     "death",
-    "eat",
+    "hit",
     "idle",
     "run",
     "walk"
    ],
    "alias": {
-    "walk": "run",
-    "cluck": "idle"
+    "gallop": "run",
+    "idle_2": "idle",
+    "trot": "walk"
    },
-   "tint": false,
-   "height": 0.45,
-   "length": 0.3,
-   "src": "Quaternius (CC0) — poly.pizza",
-   "note": "blok (voksel) stil; gerçekçi CC0 animasyonlu sürüm bulunamadı",
    "speeds": {
     "walk": 0.6,
     "run": 1.8
+   },
+   "tint": false,
+   "height": 0.45,
+   "length": 0.51,
+   "realistic": true,
+   "src": "Sketchfab — \"Chicken\" — MAXDESIGN-3D (CC BY 4.0) https://sketchfab.com/3d-models/chicken-4ab19d3a675343959815ae770f8b178e — HADİ: klip eşleme, sadeleştirme, meshopt",
+   "credit": {
+    "title": "Chicken",
+    "author": "MAXDESIGN-3D",
+    "authorUrl": "https://sketchfab.com/MAXDESIGN",
+    "url": "https://sketchfab.com/3d-models/chicken-4ab19d3a675343959815ae770f8b178e",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "sadeleştirildi, yeniden yönlendirildi, animasyon adları eşlendi"
    }
   },
   {
