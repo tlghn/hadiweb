@@ -1,0 +1,8403 @@
+{
+ "v": 17,
+ "built": "2026-10-25T01:43:39.288Z",
+ "human": {
+  "url": "human.glb",
+  "morphs": [
+   "gender",
+   "age",
+   "weight",
+   "muscle",
+   "height",
+   "proportion",
+   "head_round",
+   "head_long",
+   "head_wide",
+   "head_size",
+   "head_square",
+   "head_fat",
+   "face_age",
+   "forehead_slope",
+   "forehead_high",
+   "jaw_wide",
+   "chin_prominent",
+   "chin_height",
+   "chin_wide",
+   "chin_forward",
+   "cheek_full",
+   "cheek_bones",
+   "brow_arch",
+   "brow_low",
+   "brow_ridge",
+   "eye_size",
+   "eye_slant",
+   "eye_spacing",
+   "eye_open",
+   "eye_bags",
+   "eye_hooded",
+   "nose_long",
+   "nose_wide",
+   "nose_size",
+   "nose_hook",
+   "nose_tip_down",
+   "nose_flare",
+   "nose_out",
+   "lip_full",
+   "lip_wide",
+   "mouth_down",
+   "mouth_forward",
+   "mouth_low",
+   "cupid_bow",
+   "ear_size",
+   "ear_out",
+   "ear_lobe",
+   "ear_pointed",
+   "neck_long",
+   "neck_thick",
+   "double_chin",
+   "shoulder_wide",
+   "chest_wide",
+   "chest_deep",
+   "torso_v",
+   "torso_long",
+   "bust",
+   "belly",
+   "waist",
+   "hip_wide",
+   "buttocks",
+   "arm_long",
+   "leg_long",
+   "arm_fat",
+   "arm_muscle",
+   "leg_fat",
+   "hand_size",
+   "foot_size",
+   "bowlegs"
+  ],
+  "params": {
+   "gender": {
+    "label": "Cinsiyet (0 kadın, 1 erkek)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "age": {
+    "label": "Yaş (0=1 yaş, 0.1875=11, 0.5=25, 1=90 yaş)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "weight": {
+    "label": "Kilo (0 çok zayıf, 1 çok kilolu)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "muscle": {
+    "label": "Kas (0 güçsüz, 1 çok kaslı)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "height": {
+    "label": "Boy (yaşa göre; 0.35–0.65 olağan, 0 çok kısa, 1 çok uzun)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "proportion": {
+    "label": "Beden oranı (0 sıradan, 1 ideal)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "head_round": {
+    "label": "Baş yuvarlaklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_long": {
+    "label": "Baş uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_wide": {
+    "label": "Baş genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_size": {
+    "label": "Baş büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_square": {
+    "label": "Köşeli baş",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_fat": {
+    "label": "Dolgun yüz",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "face_age": {
+    "label": "Yüz yaşlılığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "forehead_slope": {
+    "label": "Alın eğimi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "forehead_high": {
+    "label": "Alın yüksekliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "jaw_wide": {
+    "label": "Çene kemiği genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_prominent": {
+    "label": "Çene çıkıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_height": {
+    "label": "Çene boyu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_wide": {
+    "label": "Çene ucu genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_forward": {
+    "label": "Çene ileri",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "cheek_full": {
+    "label": "Yanak dolgunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "cheek_bones": {
+    "label": "Elmacık kemiği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "brow_arch": {
+    "label": "Kaş kavisi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "brow_low": {
+    "label": "Kaş alçaklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "brow_ridge": {
+    "label": "Kaş kemeri çıkıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_size": {
+    "label": "Göz büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_slant": {
+    "label": "Göz çekikliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_spacing": {
+    "label": "Göz arası",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_open": {
+    "label": "Göz açıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_bags": {
+    "label": "Göz altı torbası",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_hooded": {
+    "label": "Göz kapağı düşüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_long": {
+    "label": "Burun uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_wide": {
+    "label": "Burun genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_size": {
+    "label": "Burun iriliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_hook": {
+    "label": "Kemerli burun",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_tip_down": {
+    "label": "Burun ucu düşük",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_flare": {
+    "label": "Burun kanadı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_out": {
+    "label": "Burun çıkıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "lip_full": {
+    "label": "Dudak dolgunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "lip_wide": {
+    "label": "Ağız genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "mouth_down": {
+    "label": "Ağız kenarı düşük",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "mouth_forward": {
+    "label": "Ağız ileri",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "mouth_low": {
+    "label": "Ağız aşağıda",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "cupid_bow": {
+    "label": "Dudak yayı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_size": {
+    "label": "Kulak büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_out": {
+    "label": "Kepçe kulak",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_lobe": {
+    "label": "Kulak memesi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_pointed": {
+    "label": "Sivri kulak",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "neck_long": {
+    "label": "Boyun uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "neck_thick": {
+    "label": "Boyun kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "double_chin": {
+    "label": "Gıdı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "shoulder_wide": {
+    "label": "Omuz genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chest_wide": {
+    "label": "Göğüs kafesi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chest_deep": {
+    "label": "Göğüs derinliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "torso_v": {
+    "label": "V gövde",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "torso_long": {
+    "label": "Gövde uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "bust": {
+    "label": "Göğüs",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "belly": {
+    "label": "Göbek",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "waist": {
+    "label": "Bel kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "hip_wide": {
+    "label": "Kalça genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "buttocks": {
+    "label": "Kalça dolgunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "arm_long": {
+    "label": "Kol uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "leg_long": {
+    "label": "Bacak uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "arm_fat": {
+    "label": "Kol kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "arm_muscle": {
+    "label": "Kol kası",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "leg_fat": {
+    "label": "Bacak kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "hand_size": {
+    "label": "El büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "foot_size": {
+    "label": "Ayak büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "bowlegs": {
+    "label": "Çarpık bacak",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   }
+  },
+  "ageYears": [
+   [
+    1,
+    0
+   ],
+   [
+    11,
+    0.1875
+   ],
+   [
+    25,
+    0.5
+   ],
+   [
+    90,
+    1
+   ]
+  ],
+  "targets": {
+   "mac_f_baby": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      0
+     ]
+    ]
+   },
+   "mac_f_child": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      0
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_f_young": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ]
+   },
+   "mac_f_old": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_m_baby": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      0
+     ]
+    ]
+   },
+   "mac_m_child": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      0
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_m_young": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ]
+   },
+   "mac_m_old": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_hi_f_child": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_f_child": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_f_young": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_f_young": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_f_old": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_f_old": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_m_child": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_m_child": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_m_young": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_m_young": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_m_old": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_m_old": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_height_hi_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      0.3
+     ]
+    ]
+   },
+   "mac_height_lo_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0,
+      0.6
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_height_hi_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      0.3
+     ]
+    ]
+   },
+   "mac_height_lo_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0,
+      0.6
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_height_hi_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      0.3
+     ]
+    ]
+   },
+   "mac_height_lo_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "height": [
+     [
+      0,
+      0.6
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_proportion_hi": {
+    "proportion": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_proportion_lo": {
+    "proportion": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_round_hi": {
+    "head_round": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_round_lo": {
+    "head_round": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_long_hi": {
+    "head_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_long_lo": {
+    "head_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_wide_hi": {
+    "head_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_wide_lo": {
+    "head_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_size_hi": {
+    "head_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_size_lo": {
+    "head_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_square_hi": {
+    "head_square": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_square_lo": {
+    "head_square": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_fat_hi": {
+    "head_fat": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_fat_lo": {
+    "head_fat": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "face_age_hi": {
+    "face_age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "face_age_lo": {
+    "face_age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "forehead_slope_hi": {
+    "forehead_slope": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "forehead_slope_lo": {
+    "forehead_slope": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "forehead_high_hi": {
+    "forehead_high": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "forehead_high_lo": {
+    "forehead_high": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "jaw_wide_hi": {
+    "jaw_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "jaw_wide_lo": {
+    "jaw_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_prominent_hi": {
+    "chin_prominent": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_prominent_lo": {
+    "chin_prominent": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_height_hi": {
+    "chin_height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_height_lo": {
+    "chin_height": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_wide_hi": {
+    "chin_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_wide_lo": {
+    "chin_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_forward_hi": {
+    "chin_forward": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_forward_lo": {
+    "chin_forward": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "cheek_full_hi": {
+    "cheek_full": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cheek_full_lo": {
+    "cheek_full": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "cheek_bones_hi": {
+    "cheek_bones": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cheek_bones_lo": {
+    "cheek_bones": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "brow_arch_hi": {
+    "brow_arch": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "brow_arch_lo": {
+    "brow_arch": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "brow_low_hi": {
+    "brow_low": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "brow_low_lo": {
+    "brow_low": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "brow_ridge_hi": {
+    "brow_ridge": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "brow_ridge_lo": {
+    "brow_ridge": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_size_hi": {
+    "eye_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_size_lo": {
+    "eye_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_slant_hi": {
+    "eye_slant": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_slant_lo": {
+    "eye_slant": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_spacing_hi": {
+    "eye_spacing": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_spacing_lo": {
+    "eye_spacing": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_open_hi": {
+    "eye_open": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_open_lo": {
+    "eye_open": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_bags_hi": {
+    "eye_bags": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_bags_lo": {
+    "eye_bags": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_hooded_hi": {
+    "eye_hooded": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_hooded_lo": {
+    "eye_hooded": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_long_hi": {
+    "nose_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_long_lo": {
+    "nose_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_wide_hi": {
+    "nose_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_wide_lo": {
+    "nose_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_size_hi": {
+    "nose_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_size_lo": {
+    "nose_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_hook_hi": {
+    "nose_hook": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_hook_lo": {
+    "nose_hook": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_tip_down_hi": {
+    "nose_tip_down": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_tip_down_lo": {
+    "nose_tip_down": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_flare_hi": {
+    "nose_flare": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_flare_lo": {
+    "nose_flare": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_out_hi": {
+    "nose_out": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_out_lo": {
+    "nose_out": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "lip_full_hi": {
+    "lip_full": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "lip_full_lo": {
+    "lip_full": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "lip_wide_hi": {
+    "lip_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "lip_wide_lo": {
+    "lip_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mouth_down_hi": {
+    "mouth_down": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mouth_down_lo": {
+    "mouth_down": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mouth_forward_hi": {
+    "mouth_forward": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mouth_forward_lo": {
+    "mouth_forward": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mouth_low_hi": {
+    "mouth_low": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mouth_low_lo": {
+    "mouth_low": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "cupid_bow_hi": {
+    "cupid_bow": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cupid_bow_lo": {
+    "cupid_bow": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_size_hi": {
+    "ear_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_size_lo": {
+    "ear_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_out_hi": {
+    "ear_out": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_out_lo": {
+    "ear_out": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_lobe_hi": {
+    "ear_lobe": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_lobe_lo": {
+    "ear_lobe": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_pointed_hi": {
+    "ear_pointed": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_pointed_lo": {
+    "ear_pointed": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "neck_long_hi": {
+    "neck_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "neck_long_lo": {
+    "neck_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "neck_thick_hi": {
+    "neck_thick": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "neck_thick_lo": {
+    "neck_thick": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "double_chin_hi": {
+    "double_chin": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "double_chin_lo": {
+    "double_chin": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "shoulder_wide_hi": {
+    "shoulder_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "shoulder_wide_lo": {
+    "shoulder_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chest_wide_hi": {
+    "chest_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chest_wide_lo": {
+    "chest_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chest_deep_hi": {
+    "chest_deep": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chest_deep_lo": {
+    "chest_deep": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "torso_v_hi": {
+    "torso_v": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "torso_v_lo": {
+    "torso_v": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "torso_long_hi": {
+    "torso_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "torso_long_lo": {
+    "torso_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "bust_hi": {
+    "bust": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "bust_lo": {
+    "bust": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "belly_hi": {
+    "belly": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "belly_lo": {
+    "belly": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "waist_hi": {
+    "waist": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "waist_lo": {
+    "waist": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "hip_wide_hi": {
+    "hip_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "hip_wide_lo": {
+    "hip_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "buttocks_hi": {
+    "buttocks": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "buttocks_lo": {
+    "buttocks": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "arm_long_hi": {
+    "arm_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "arm_long_lo": {
+    "arm_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "leg_long_hi": {
+    "leg_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "leg_long_lo": {
+    "leg_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "arm_fat_hi": {
+    "arm_fat": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "arm_fat_lo": {
+    "arm_fat": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "arm_muscle_hi": {
+    "arm_muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "arm_muscle_lo": {
+    "arm_muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "leg_fat_hi": {
+    "leg_fat": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "leg_fat_lo": {
+    "leg_fat": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "hand_size_hi": {
+    "hand_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "hand_size_lo": {
+    "hand_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "foot_size_hi": {
+    "foot_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "foot_size_lo": {
+    "foot_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "bowlegs_hi": {
+    "bowlegs": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "bowlegs_lo": {
+    "bowlegs": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   }
+  },
+  "units": [
+   "u_eye_left_closure",
+   "u_eye_left_opened_up",
+   "u_eye_left_slit",
+   "u_eye_right_closure",
+   "u_eye_right_opened_up",
+   "u_eye_right_slit",
+   "u_eyebrows_left_down",
+   "u_eyebrows_left_extern_up",
+   "u_eyebrows_left_inner_up",
+   "u_eyebrows_left_up",
+   "u_eyebrows_right_down",
+   "u_eyebrows_right_extern_up",
+   "u_eyebrows_right_inner_up",
+   "u_eyebrows_right_up",
+   "u_mouth_compression",
+   "u_mouth_corner_puller",
+   "u_mouth_depression_retraction",
+   "u_mouth_depression",
+   "u_mouth_elevation",
+   "u_mouth_eversion",
+   "u_mouth_open",
+   "u_mouth_parling",
+   "u_mouth_part_later",
+   "u_mouth_protusion",
+   "u_mouth_pursing",
+   "u_mouth_retraction",
+   "u_mouth_upward_retraction",
+   "u_neck_platysma",
+   "u_nose_compression",
+   "u_nose_depression",
+   "u_nose_left_dilatation",
+   "u_nose_left_elevation",
+   "u_nose_right_dilatation",
+   "u_nose_right_elevation",
+   "u_jaw_drop"
+  ],
+  "expressions": {
+   "neutral": {},
+   "smile": {
+    "u_mouth_corner_puller": 0.75,
+    "u_eye_left_slit": 0.2,
+    "u_eye_right_slit": 0.2,
+    "u_mouth_parling": 0.15
+   },
+   "laugh": {
+    "u_mouth_corner_puller": 1,
+    "u_eye_left_slit": 0.55,
+    "u_eye_right_slit": 0.55,
+    "u_eyebrows_left_up": 0.15,
+    "u_eyebrows_right_up": 0.15,
+    "u_mouth_parling": 0.3,
+    "u_jaw_drop": 0.33,
+    "u_mouth_open": 0.36,
+    "u_mouth_pursing": 0.084
+   },
+   "sad": {
+    "u_eyebrows_left_inner_up": 0.85,
+    "u_eyebrows_right_inner_up": 0.85,
+    "u_mouth_depression": 0.7,
+    "u_eye_left_slit": 0.15,
+    "u_eye_right_slit": 0.15
+   },
+   "cry": {
+    "u_eyebrows_left_inner_up": 1,
+    "u_eyebrows_right_inner_up": 1,
+    "u_mouth_depression": 0.8,
+    "u_mouth_depression_retraction": 0.35,
+    "u_eye_left_slit": 0.55,
+    "u_eye_right_slit": 0.55,
+    "u_neck_platysma": 0.3,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12,
+    "u_mouth_pursing": 0.028
+   },
+   "angry": {
+    "u_eyebrows_left_down": 1,
+    "u_eyebrows_right_down": 1,
+    "u_mouth_compression": 0.55,
+    "u_eye_left_slit": 0.3,
+    "u_eye_right_slit": 0.3,
+    "u_nose_left_dilatation": 0.5,
+    "u_nose_right_dilatation": 0.5,
+    "u_nose_compression": 0.3
+   },
+   "fear": {
+    "u_eyebrows_left_inner_up": 0.7,
+    "u_eyebrows_right_inner_up": 0.7,
+    "u_eyebrows_left_up": 0.5,
+    "u_eyebrows_right_up": 0.5,
+    "u_eye_left_opened_up": 0.8,
+    "u_eye_right_opened_up": 0.8,
+    "u_mouth_depression_retraction": 0.6,
+    "u_neck_platysma": 0.4,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12,
+    "u_mouth_pursing": 0.028
+   },
+   "surprise": {
+    "u_eyebrows_left_up": 1,
+    "u_eyebrows_right_up": 1,
+    "u_eye_left_opened_up": 0.8,
+    "u_eye_right_opened_up": 0.8,
+    "u_jaw_drop": 0.275,
+    "u_mouth_open": 0.3,
+    "u_mouth_pursing": 0.07
+   },
+   "disgust": {
+    "u_nose_left_elevation": 0.8,
+    "u_nose_right_elevation": 0.8,
+    "u_mouth_elevation": 0.55,
+    "u_eyebrows_left_down": 0.4,
+    "u_eyebrows_right_down": 0.4,
+    "u_eye_left_slit": 0.3,
+    "u_eye_right_slit": 0.3,
+    "u_mouth_depression": 0.25
+   },
+   "think": {
+    "u_mouth_compression": 0.3,
+    "u_mouth_part_later": 0.25,
+    "u_eyebrows_left_extern_up": 0.6,
+    "u_eyebrows_right_down": 0.35,
+    "u_eye_right_slit": 0.2
+   },
+   "shout": {
+    "u_eyebrows_left_down": 0.6,
+    "u_eyebrows_right_down": 0.6,
+    "u_mouth_retraction": 0.21,
+    "u_nose_left_dilatation": 0.5,
+    "u_nose_right_dilatation": 0.5,
+    "u_neck_platysma": 0.6,
+    "u_jaw_drop": 0.468,
+    "u_mouth_open": 0.51,
+    "u_mouth_pursing": 0.119
+   },
+   "blink_l": {
+    "u_eye_left_closure": 1
+   },
+   "blink_r": {
+    "u_eye_right_closure": 1
+   }
+  },
+  "visemes": {
+   "sil": {},
+   "PP": {
+    "u_mouth_compression": 0.65
+   },
+   "FF": {
+    "u_mouth_elevation": 0.35,
+    "u_mouth_retraction": 0.09,
+    "u_jaw_drop": 0.044,
+    "u_mouth_open": 0.048,
+    "u_mouth_pursing": 0.011
+   },
+   "TH": {
+    "u_mouth_retraction": 0.06,
+    "u_jaw_drop": 0.099,
+    "u_mouth_open": 0.108,
+    "u_mouth_pursing": 0.025
+   },
+   "DD": {
+    "u_mouth_retraction": 0.12,
+    "u_jaw_drop": 0.121,
+    "u_mouth_open": 0.132,
+    "u_mouth_pursing": 0.031
+   },
+   "kk": {
+    "u_mouth_retraction": 0.09,
+    "u_jaw_drop": 0.22,
+    "u_mouth_open": 0.24,
+    "u_mouth_pursing": 0.056
+   },
+   "CH": {
+    "u_mouth_protusion": 0.55,
+    "u_mouth_pursing": 0.225,
+    "u_jaw_drop": 0.099,
+    "u_mouth_open": 0.108
+   },
+   "SS": {
+    "u_mouth_retraction": 0.3,
+    "u_jaw_drop": 0.055,
+    "u_mouth_open": 0.06,
+    "u_mouth_pursing": 0.014
+   },
+   "nn": {
+    "u_mouth_retraction": 0.06,
+    "u_jaw_drop": 0.077,
+    "u_mouth_open": 0.084,
+    "u_mouth_pursing": 0.02
+   },
+   "RR": {
+    "u_mouth_protusion": 0.35,
+    "u_mouth_pursing": 0.178,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12
+   },
+   "aa": {
+    "u_jaw_drop": 0.55,
+    "u_mouth_open": 0.6,
+    "u_mouth_pursing": 0.14
+   },
+   "E": {
+    "u_mouth_retraction": 0.3,
+    "u_jaw_drop": 0.275,
+    "u_mouth_open": 0.3,
+    "u_mouth_pursing": 0.07
+   },
+   "I": {
+    "u_mouth_retraction": 0.42,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12,
+    "u_mouth_pursing": 0.028
+   },
+   "O": {
+    "u_mouth_pursing": 0.691,
+    "u_mouth_protusion": 0.3,
+    "u_jaw_drop": 0.358,
+    "u_mouth_open": 0.39
+   },
+   "U": {
+    "u_mouth_pursing": 0.917,
+    "u_mouth_protusion": 0.6,
+    "u_jaw_drop": 0.066,
+    "u_mouth_open": 0.072
+   }
+  },
+  "skin": [
+   "#E8BC9A",
+   "#E0B08A",
+   "#D9A47E",
+   "#C68E62",
+   "#8D5A3B",
+   "#5B3A29"
+  ],
+  "skinChildDefault": "#E0B08A",
+  "unitScaleByAge": [
+   [
+    0,
+    0.5
+   ],
+   [
+    0.1875,
+    0.68
+   ],
+   [
+    0.5,
+    1
+   ],
+   [
+    1,
+    1
+   ]
+  ],
+  "eyeColors": {
+   "brown": "#5A3A1E",
+   "dark": "#2E1E12",
+   "hazel": "#7A5A2A",
+   "green": "#4E6E38",
+   "blue": "#3E6A9A",
+   "gray": "#6E7A84"
+  },
+  "eyeColorDefault": "brown",
+  "bones": [
+   "Root",
+   "pelvis",
+   "thigh_l",
+   "calf_l",
+   "foot_l",
+   "ball_l",
+   "thigh_r",
+   "calf_r",
+   "foot_r",
+   "ball_r",
+   "spine_01",
+   "spine_02",
+   "spine_03",
+   "clavicle_l",
+   "clavicle_r",
+   "neck_01",
+   "head",
+   "eye_l",
+   "eye_r",
+   "upperarm_l",
+   "lowerarm_l",
+   "hand_l",
+   "upperarm_r",
+   "lowerarm_r",
+   "hand_r",
+   "index_01_l",
+   "index_01_r",
+   "index_02_l",
+   "index_02_r",
+   "index_03_l",
+   "index_03_r",
+   "jaw",
+   "middle_01_l",
+   "middle_01_r",
+   "middle_02_l",
+   "middle_02_r",
+   "middle_03_l",
+   "middle_03_r",
+   "pinky_01_l",
+   "pinky_01_r",
+   "pinky_02_l",
+   "pinky_02_r",
+   "pinky_03_l",
+   "pinky_03_r",
+   "ring_01_l",
+   "ring_01_r",
+   "ring_02_l",
+   "ring_02_r",
+   "ring_03_l",
+   "ring_03_r",
+   "thumb_01_l",
+   "thumb_01_r",
+   "thumb_02_l",
+   "thumb_02_r",
+   "thumb_03_l",
+   "thumb_03_r"
+  ],
+  "regions": [
+   "head",
+   "neck",
+   "chest",
+   "belly",
+   "hips",
+   "upperarm",
+   "lowerarm",
+   "hand",
+   "thigh",
+   "calf",
+   "foot"
+  ],
+  "rig": "human_rig.js",
+  "notes": "Morph değerleri 0..1, nötr 0.5. Hedef ağırlığı = Π pl(param, anahtarlar) (targets). Cinsiyet için kadın 0.0–0.1, erkek 0.9–1.0 kullan; yaş için ageYears tablosunu kullan. İfade/visem: units ağırlıkları = Σ tarif × ağırlık (en çok 1). Göz kırpma blink_l/blink_r. Eklemler: scene.userData.film3.jointDeltas[hedef][kemik] (metre) × ağırlık. Yüz birimleri yaşla ölçeklenir: u_mouth_* birim ağırlığı × pl(age, unitScaleByAge) (göz/kaş/çene birimleri ölçeklenmez). Göz rengi: rig.setEyes(eyeColors[ad]). Kemik adları mpfb2 game_engine + jaw, eye_l, eye_r. Y yukarı, +Z ileri, metre, ayak y=0.",
+  "assetsHash": "6ca7ac28a74f"
+ },
+ "parts": {
+  "hair": [
+   {
+    "id": "bald",
+    "url": null,
+    "label": "Kel",
+    "tint": false,
+    "suits": [
+     "m",
+     "old"
+    ]
+   },
+   {
+    "id": "short_straight",
+    "url": "parts/hair_short_straight.glb",
+    "label": "Kısa düz",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   },
+   {
+    "id": "short_side",
+    "url": "parts/hair_short_side.glb",
+    "label": "Kısa yana taranmış",
+    "tint": true,
+    "suits": [
+     "m"
+    ]
+   },
+   {
+    "id": "short_messy",
+    "url": "parts/hair_short_messy.glb",
+    "label": "Kısa dağınık",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   },
+   {
+    "id": "short_crop",
+    "url": "parts/hair_short_crop.glb",
+    "label": "Kısa kesim",
+    "tint": true,
+    "suits": [
+     "m",
+     "f"
+    ]
+   },
+   {
+    "id": "curly_afro",
+    "url": "parts/hair_curly_afro.glb",
+    "label": "Gür kıvırcık",
+    "tint": true,
+    "suits": [
+     "m",
+     "f"
+    ]
+   },
+   {
+    "id": "long",
+    "url": "parts/hair_long.glb",
+    "label": "Uzun",
+    "tint": true,
+    "suits": [
+     "f"
+    ]
+   },
+   {
+    "id": "braid",
+    "url": "parts/hair_braid.glb",
+    "label": "Örgü",
+    "tint": true,
+    "suits": [
+     "f",
+     "child"
+    ]
+   },
+   {
+    "id": "ponytail",
+    "url": "parts/hair_ponytail.glb",
+    "label": "At kuyruğu",
+    "tint": true,
+    "suits": [
+     "f"
+    ]
+   },
+   {
+    "id": "bob",
+    "url": "parts/hair_bob.glb",
+    "label": "Küt",
+    "tint": true,
+    "suits": [
+     "f"
+    ]
+   },
+   {
+    "id": "short_curly",
+    "url": "parts/hair_short_curly.glb",
+    "label": "Kısa kıvırcık",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   },
+   {
+    "id": "old_sparse",
+    "url": "parts/hair_old_sparse.glb",
+    "label": "Yaşlı seyrek (at nalı kellik)",
+    "tint": true,
+    "suits": [
+     "m",
+     "old"
+    ]
+   },
+   {
+    "id": "buzz",
+    "url": "parts/hair_buzz.glb",
+    "label": "Asker tıraşı (çok kısa)",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   }
+  ],
+  "brows": [
+   {
+    "id": "thin",
+    "url": "parts/brows_thin.glb",
+    "label": "İnce",
+    "tint": true
+   },
+   {
+    "id": "normal",
+    "url": "parts/brows_normal.glb",
+    "label": "Normal",
+    "tint": true
+   },
+   {
+    "id": "thick",
+    "url": "parts/brows_thick.glb",
+    "label": "Gür",
+    "tint": true
+   },
+   {
+    "id": "arched",
+    "url": "parts/brows_arched.glb",
+    "label": "Kavisli",
+    "tint": true
+   }
+  ],
+  "lashes": [
+   {
+    "id": "lashes_short",
+    "url": "parts/lashes_lashes_short.glb",
+    "label": "Kısa kirpik",
+    "tint": true
+   },
+   {
+    "id": "lashes_long",
+    "url": "parts/lashes_lashes_long.glb",
+    "label": "Uzun kirpik",
+    "tint": true
+   }
+  ],
+  "beard": [
+   {
+    "id": "none",
+    "url": null,
+    "label": "Yok"
+   },
+   {
+    "id": "full",
+    "url": "parts/beard_full.glb",
+    "label": "Gür sakal",
+    "tint": true
+   },
+   {
+    "id": "short",
+    "url": "parts/beard_short.glb",
+    "label": "Kısa sakal / kirli sakal",
+    "tint": true
+   },
+   {
+    "id": "goatee",
+    "url": "parts/beard_goatee.glb",
+    "label": "Keçi sakalı",
+    "tint": true
+   },
+   {
+    "id": "long",
+    "url": "parts/beard_long.glb",
+    "label": "Uzun sakal (ihtiyar)",
+    "tint": true
+   }
+  ],
+  "mustache": [
+   {
+    "id": "none",
+    "url": null,
+    "label": "Yok"
+   },
+   {
+    "id": "thin",
+    "url": "parts/mustache_thin.glb",
+    "label": "İnce bıyık",
+    "tint": true
+   },
+   {
+    "id": "thick",
+    "url": "parts/mustache_thick.glb",
+    "label": "Pala bıyık",
+    "tint": true
+   },
+   {
+    "id": "handlebar",
+    "url": "parts/mustache_handlebar.glb",
+    "label": "Kalkık uçlu bıyık (paşa)",
+    "tint": true
+   }
+  ],
+  "outfit": [
+   {
+    "id": "village_man",
+    "url": "parts/outfit_village_man.glb",
+    "label": "Köylü erkek (şalvar, yelek, gömlek, kuşak)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_boy",
+    "url": "parts/outfit_village_boy.glb",
+    "label": "Köylü çocuk (gömlek, yelek, şalvar)",
+    "suits": [
+     "child",
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_man_blue",
+    "url": "parts/outfit_village_man_blue.glb",
+    "label": "Köylü erkek (lacivert yelek)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_woman",
+    "url": "parts/outfit_village_woman.glb",
+    "label": "Köylü kadın (entari, önlük, şalvar)",
+    "suits": [
+     "f"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_girl",
+    "url": "parts/outfit_village_girl.glb",
+    "label": "Köylü kız çocuğu (basma elbise)",
+    "suits": [
+     "f",
+     "child"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "elder_robe",
+    "url": "parts/outfit_elder_robe.glb",
+    "label": "Yaşlı cübbe (uzun, geniş kollu)",
+    "suits": [
+     "m",
+     "old"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "soldier",
+    "url": "parts/outfit_soldier.glb",
+    "label": "Asker üniforması (haki, kemer, çizme)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "pasha",
+    "url": "parts/outfit_pasha.glb",
+    "label": "Paşa üniforması (lacivert, apolet, sırma)",
+    "suits": [
+     "m",
+     "old"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "clerk",
+    "url": "parts/outfit_clerk.glb",
+    "label": "Memur (ceket, yelek, pantolon)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "worker",
+    "url": "parts/outfit_worker.glb",
+    "label": "İşçi / esnaf (iş tulumu)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "city_woman",
+    "url": "parts/outfit_city_woman.glb",
+    "label": "Kasabalı kadın (uzun etekli takım)",
+    "suits": [
+     "f"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "thigh"
+    ]
+   }
+  ],
+  "hat": [
+   {
+    "id": "none",
+    "url": null,
+    "label": "Yok"
+   },
+   {
+    "id": "fez_red",
+    "url": "parts/hat_fez_red.glb",
+    "label": "Kırmızı fes (püsküllü)",
+    "hidesHair": true
+   },
+   {
+    "id": "kalpak",
+    "url": "parts/hat_kalpak.glb",
+    "label": "Kalpak (kuzu kürkü)",
+    "hidesHair": true
+   },
+   {
+    "id": "turban",
+    "url": "parts/hat_turban.glb",
+    "label": "Sarık (kavuk üstüne sarılı)",
+    "hidesHair": true
+   },
+   {
+    "id": "yazma",
+    "url": "parts/hat_yazma.glb",
+    "label": "Yazma (başörtüsü, çene altından bağlı)",
+    "hidesHair": true
+   },
+   {
+    "id": "fedora",
+    "url": "parts/hat_fedora.glb",
+    "label": "Fötr şapka (MakeHuman CC0)",
+    "hidesHair": true
+   },
+   {
+    "id": "skullcap",
+    "url": "parts/hat_skullcap.glb",
+    "label": "Takke (beyaz örgü)",
+    "hidesHair": true
+   }
+  ],
+  "defaults": {
+   "outfit": {
+    "m": "village_man",
+    "f": "village_woman",
+    "boy": "village_boy",
+    "girl": "village_girl",
+    "old_m": "elder_robe",
+    "old_f": "village_woman"
+   },
+   "brows": "normal",
+   "lashes": {
+    "m": "lashes_short",
+    "f": "lashes_long"
+   },
+   "note": "Her karakter mutlaka bir outfit taşımalı; human.glb iç giysisi yalnızca güvenlik ağıdır."
+  }
+ },
+ "hdri": {
+  "day": {
+   "id": "kloofendal_48d_partly_cloudy_puresky",
+   "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+   "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+   "bgExposure": 0.638,
+   "sun": {
+    "dir": [
+     -0.379,
+     0.743,
+     -0.551
+    ],
+    "color": "#fdfee8",
+    "strength": 8,
+    "visible": true
+   }
+  },
+  "morning": {
+   "id": "qwantani_morning_puresky",
+   "hdr": "hdri/qwantani_morning_puresky_1k.hdr",
+   "bg": "hdri/qwantani_morning_puresky_bg.webp",
+   "bgExposure": 0.996,
+   "sun": {
+    "dir": [
+     -0.558,
+     0.337,
+     -0.759
+    ],
+    "color": "#fecf96",
+    "strength": 8,
+    "visible": true
+   }
+  },
+  "dawn": {
+   "id": "qwantani_dawn_puresky",
+   "hdr": "hdri/qwantani_dawn_puresky_1k.hdr",
+   "bg": "hdri/qwantani_dawn_puresky_bg.webp",
+   "bgExposure": 0.27,
+   "sun": {
+    "dir": [
+     -0.572,
+     0.153,
+     -0.806
+    ],
+    "color": "#fee3b2",
+    "strength": 1.95,
+    "visible": true
+   }
+  },
+  "dusk": {
+   "id": "qwantani_sunset_puresky",
+   "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+   "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+   "bgExposure": 0.417,
+   "sun": {
+    "dir": [
+     -0.592,
+     0.074,
+     -0.802
+    ],
+    "color": "#fe5806",
+    "strength": 8,
+    "visible": true
+   }
+  },
+  "overcast": {
+   "id": "kloofendal_overcast_puresky",
+   "hdr": "hdri/kloofendal_overcast_puresky_1k.hdr",
+   "bg": "hdri/kloofendal_overcast_puresky_bg.webp",
+   "bgExposure": 0.209,
+   "sun": {
+    "dir": [
+     -0.497,
+     0.383,
+     -0.779
+    ],
+    "color": "#fee1c0",
+    "strength": 1.69,
+    "visible": true
+   }
+  },
+  "fog": {
+   "id": "kloofendal_misty_morning_puresky",
+   "hdr": "hdri/kloofendal_misty_morning_puresky_1k.hdr",
+   "bg": "hdri/kloofendal_misty_morning_puresky_bg.webp",
+   "bgExposure": 0.193,
+   "sun": {
+    "dir": [
+     -0.46,
+     0.706,
+     -0.538
+    ],
+    "color": "#d8e5fe",
+    "strength": 0.86,
+    "visible": true
+   }
+  },
+  "night": {
+   "id": "qwantani_night_puresky",
+   "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+   "bg": "hdri/qwantani_night_puresky_bg.webp",
+   "bgExposure": 0.462,
+   "sun": {
+    "dir": [
+     -0.678,
+     0.049,
+     -0.733
+    ],
+    "color": "#b3f9fe",
+    "strength": 4.68,
+    "visible": true
+   }
+  },
+  "storm": {
+   "id": "kloppenheim_07_puresky",
+   "hdr": "hdri/kloppenheim_07_puresky_1k.hdr",
+   "bg": "hdri/kloppenheim_07_puresky_bg.webp",
+   "bgExposure": 0.739,
+   "sun": {
+    "dir": [
+     -0.475,
+     0.606,
+     -0.638
+    ],
+    "color": "#cae9fe",
+    "strength": 2.39,
+    "visible": true
+   }
+  }
+ },
+ "anims": {
+  "url": "anims.glb",
+  "fps": 30,
+  "skeleton": "makehuman_game_engine",
+  "hipHeight": 0.8753,
+  "clips": [
+   "angry_gesture",
+   "bow",
+   "buy",
+   "carry",
+   "carry_bag",
+   "chop_wood",
+   "comb_horse",
+   "cry",
+   "cry_face",
+   "dig",
+   "drink",
+   "eat",
+   "fall",
+   "fist_shake",
+   "get_up",
+   "give",
+   "greet_hand_chest",
+   "handshake",
+   "happy",
+   "head_down",
+   "head_shake",
+   "hold_baby",
+   "hug",
+   "idle",
+   "idle_2",
+   "idle_arms_crossed",
+   "idle_child",
+   "idle_hands_back",
+   "idle_old",
+   "idle_sad",
+   "kneel",
+   "kneel_idle",
+   "laugh",
+   "lie",
+   "lie_idle",
+   "listen",
+   "look_around",
+   "march",
+   "nod",
+   "pick_up",
+   "point",
+   "pray",
+   "push",
+   "run",
+   "scared",
+   "shrug",
+   "sit",
+   "sit_ground",
+   "sit_idle",
+   "slap",
+   "sneak",
+   "stand_up",
+   "stretch_yawn",
+   "sweep",
+   "sword_fight",
+   "take",
+   "talk_gesture_1",
+   "talk_gesture_2",
+   "talk_gesture_3",
+   "think",
+   "upset",
+   "wait",
+   "walk",
+   "walk_limp",
+   "walk_old",
+   "walk_sad",
+   "walk_slow",
+   "wave",
+   "wave_big",
+   "write_board"
+  ],
+  "meta": {
+   "angry_gesture": {
+    "dur": 6,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 18_10",
+    "desc": "öfkeli el kol hareketleri"
+   },
+   "bow": {
+    "dur": 3.2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 111_02",
+    "desc": "eğilerek selam"
+   },
+   "buy": {
+    "dur": 5.567,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_16",
+    "desc": "alışveriş, para verme"
+   },
+   "carry": {
+    "dur": 1.133,
+    "loop": true,
+    "rootSpeed": 1.004,
+    "src": "kod",
+    "desc": "kucakta bir şey taşıyarak yürüme"
+   },
+   "carry_bag": {
+    "dur": 1.133,
+    "loop": true,
+    "rootSpeed": 1.063,
+    "src": "kod",
+    "desc": "elde çanta/kova taşıyarak yürüme"
+   },
+   "chop_wood": {
+    "dur": 4.467,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_01",
+    "desc": "odun yarma"
+   },
+   "comb_horse": {
+    "dur": 2.6,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 80_50",
+    "desc": "at tımarı / kaşağılama (kol ileri geri)"
+   },
+   "cry": {
+    "dur": 3.4,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 79_72",
+    "desc": "ağlama (hıçkırık)"
+   },
+   "cry_face": {
+    "dur": 3.333,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "elleri yüzünde ağlama"
+   },
+   "dig": {
+    "dur": 2.5,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 79_04",
+    "desc": "kazma/bel ile kazma"
+   },
+   "drink": {
+    "dur": 4.1,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_38",
+    "desc": "su içme"
+   },
+   "eat": {
+    "dur": 3,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 79_12",
+    "desc": "yemek yeme"
+   },
+   "fall": {
+    "dur": 5.6,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 90_16",
+    "desc": "yüzüstü düşme"
+   },
+   "fist_shake": {
+    "dur": 2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "yumruk sallama (tehdit)"
+   },
+   "get_up": {
+    "dur": 7.1,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 140_08",
+    "desc": "yerden kalkma"
+   },
+   "give": {
+    "dur": 2.4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "bir şey uzatma/verme"
+   },
+   "greet_hand_chest": {
+    "dur": 2.4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "eli göğüste selam (temenna)"
+   },
+   "handshake": {
+    "dur": 4.4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_06",
+    "desc": "tokalaşma"
+   },
+   "happy": {
+    "dur": 6.3,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_69",
+    "desc": "sevinç"
+   },
+   "head_down": {
+    "dur": 2.5,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "başını önüne eğme"
+   },
+   "head_shake": {
+    "dur": 2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "başını iki yana sallama (hayır)"
+   },
+   "hold_baby": {
+    "dur": 6.5,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 79_89",
+    "desc": "kucakta bebek tutma"
+   },
+   "hug": {
+    "dur": 3.2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "sarılma"
+   },
+   "idle": {
+    "dur": 4.8,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 113_21",
+    "desc": "ayakta durma (sakin)"
+   },
+   "idle_2": {
+    "dur": 4.033,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 111_28",
+    "desc": "ayakta durma (kadınsı, ağırlık kaydırma)"
+   },
+   "idle_arms_crossed": {
+    "dur": 4.8,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "kollar kavuşturulmuş"
+   },
+   "idle_child": {
+    "dur": 3.033,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 142_01",
+    "desc": "çocuk gibi kıpır kıpır bekleme"
+   },
+   "idle_hands_back": {
+    "dur": 4.8,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "eller arkada bekleme (ağırbaşlı)"
+   },
+   "idle_old": {
+    "dur": 4.8,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "yaşlı, hafif kambur bekleme"
+   },
+   "idle_sad": {
+    "dur": 3.333,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 79_71",
+    "desc": "üzgün bekleme"
+   },
+   "kneel": {
+    "dur": 1.9,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 23_03",
+    "desc": "diz çökme (geçiş)"
+   },
+   "kneel_idle": {
+    "dur": 1.5,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 23_03",
+    "seatHeight": 0.361,
+    "desc": "diz çökmüş bekleme"
+   },
+   "laugh": {
+    "dur": 5.9,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_70",
+    "desc": "kahkaha"
+   },
+   "lie": {
+    "dur": 9.8,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 111_12",
+    "desc": "yere uzanma (geçiş)"
+   },
+   "lie_idle": {
+    "dur": 1.6,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 111_12",
+    "desc": "yatarken bekleme"
+   },
+   "listen": {
+    "dur": 3,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "başı yana eğik dinleme"
+   },
+   "look_around": {
+    "dur": 5,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "etrafına bakınma"
+   },
+   "march": {
+    "dur": 1.133,
+    "loop": true,
+    "rootSpeed": 0.926,
+    "src": "CMU 138_01",
+    "desc": "asker gibi uygun adım"
+   },
+   "nod": {
+    "dur": 1.8,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "başını sallama (evet)"
+   },
+   "pick_up": {
+    "dur": 2.767,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 115_06",
+    "desc": "yerden bir şey alma"
+   },
+   "point": {
+    "dur": 2.6,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "sağ eliyle işaret etme"
+   },
+   "pray": {
+    "dur": 4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "eller açık dua"
+   },
+   "push": {
+    "dur": 10,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 81_06",
+    "desc": "ağır bir şeyi itme"
+   },
+   "run": {
+    "dur": 0.8,
+    "loop": true,
+    "rootSpeed": 2.71,
+    "src": "CMU 16_35",
+    "desc": "koşma"
+   },
+   "scared": {
+    "dur": 6.9,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_73",
+    "desc": "korku, irkilme"
+   },
+   "shrug": {
+    "dur": 2.033,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 141_21",
+    "desc": "omuz silkme"
+   },
+   "sit": {
+    "dur": 1.8,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 113_15",
+    "desc": "sandalyeye/sedire oturma (geçiş)"
+   },
+   "sit_ground": {
+    "dur": 4.067,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 82_05",
+    "seatHeight": 0.059,
+    "desc": "yere bağdaş/rahat oturma"
+   },
+   "sit_idle": {
+    "dur": 1.6,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 113_15",
+    "seatHeight": 0.392,
+    "desc": "oturur halde bekleme"
+   },
+   "slap": {
+    "dur": 1.6,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "tokat atma"
+   },
+   "sneak": {
+    "dur": 1.467,
+    "loop": true,
+    "rootSpeed": 0.572,
+    "src": "CMU 139_29",
+    "desc": "gizlice, sinerek yürüme"
+   },
+   "stand_up": {
+    "dur": 2.2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 113_15",
+    "desc": "oturduğu yerden kalkma"
+   },
+   "stretch_yawn": {
+    "dur": 2.833,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 141_13",
+    "desc": "gerinip esneme"
+   },
+   "sweep": {
+    "dur": 4.5,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 79_55",
+    "desc": "süpürme"
+   },
+   "sword_fight": {
+    "dur": 4.067,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 02_07",
+    "desc": "kılıç dövüşü"
+   },
+   "take": {
+    "dur": 2.4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "iki eliyle bir şey alma"
+   },
+   "talk_gesture_1": {
+    "dur": 5.2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 18_08",
+    "desc": "konuşurken anlatma jesti"
+   },
+   "talk_gesture_2": {
+    "dur": 4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "konuşurken iki elle anlatma"
+   },
+   "talk_gesture_3": {
+    "dur": 4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "konuşurken coşkulu el hareketleri"
+   },
+   "think": {
+    "dur": 4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "eli çenede düşünme"
+   },
+   "upset": {
+    "dur": 7.2,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_74",
+    "desc": "üzüntü/kızgınlık, söylenme"
+   },
+   "wait": {
+    "dur": 3,
+    "loop": true,
+    "rootSpeed": 0,
+    "src": "CMU 77_02",
+    "desc": "sabırsız bekleme"
+   },
+   "walk": {
+    "dur": 1.133,
+    "loop": true,
+    "rootSpeed": 1.181,
+    "src": "CMU 35_01",
+    "desc": "yürüme"
+   },
+   "walk_limp": {
+    "dur": 1.333,
+    "loop": true,
+    "rootSpeed": 0.618,
+    "src": "CMU 139_19",
+    "desc": "topallayarak yürüme"
+   },
+   "walk_old": {
+    "dur": 2.6,
+    "loop": true,
+    "rootSpeed": 0.367,
+    "src": "kod",
+    "desc": "yaşlı yürüyüşü"
+   },
+   "walk_sad": {
+    "dur": 1.867,
+    "loop": true,
+    "rootSpeed": 0.664,
+    "src": "CMU 91_13",
+    "desc": "üzgün, omuzlar düşük yürüme"
+   },
+   "walk_slow": {
+    "dur": 2.6,
+    "loop": true,
+    "rootSpeed": 0.431,
+    "src": "CMU 132_45",
+    "desc": "ağır yürüme"
+   },
+   "wave": {
+    "dur": 2.267,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 141_16",
+    "desc": "el sallama"
+   },
+   "wave_big": {
+    "dur": 2.6,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "kod",
+    "desc": "kolunu kaldırıp coşkuyla el sallama"
+   },
+   "write_board": {
+    "dur": 4.4,
+    "loop": false,
+    "rootSpeed": 0,
+    "src": "CMU 79_31",
+    "desc": "tahtaya yazma"
+   }
+  },
+  "speeds": {
+   "walk": 1.181,
+   "walk_slow": 0.431,
+   "walk_sad": 0.664,
+   "walk_limp": 0.618,
+   "sneak": 0.572,
+   "march": 0.926,
+   "run": 2.71,
+   "walk_old": 0.367,
+   "carry": 1.004,
+   "carry_bag": 1.063
+  },
+  "notes": "Yürüme/koşma klipleri yerinde; karakteri rootSpeed (m/sn, hipHeight boyundaki karaktere göre) ile ilerletin. Yalnızca dönme kanalları + pelvis ötelemesi.",
+  "restHips": [
+   0,
+   -0.0139,
+   0.8753
+  ],
+  "pelvis": {
+   "space": "Root-yerel (Root kemiğinin rest dönüşü var)",
+   "restHips": [
+    0,
+    -0.0139,
+    0.8753
+   ],
+   "upAxis": "z",
+   "upSign": 1,
+   "delta": "delta = iz - restHips; farklı boydaki karakterde delta * (karakterin pelvis yüksekliği / hipHeight) + karakterin restHips",
+   "horizontal": "yürüme klipleri yerinde (yatay delta ≈ 0); ilerleme speeds[clip] m/sn ile"
+  }
+ },
+ "animals": [
+  {
+   "id": "horse",
+   "url": "animals/horse.glb",
+   "label": "At",
+   "tr": [
+    "at",
+    "beygir",
+    "kısrak",
+    "tay"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "neigh",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "neigh": "idle_2",
+    "trot": "trot"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 2.25,
+   "length": 2.65,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.6,
+    "trot": 3.6,
+    "gallop": 8.5
+   }
+  },
+  {
+   "id": "horse_white",
+   "url": "animals/horse_white.glb",
+   "label": "Beyaz at",
+   "tr": [
+    "kır at",
+    "ak at"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "neigh",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "neigh": "idle_2"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 2.25,
+   "length": 2.65,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.6,
+    "trot": 3.6,
+    "gallop": 8.5
+   }
+  },
+  {
+   "id": "donkey",
+   "url": "animals/donkey.glb",
+   "label": "Eşek",
+   "tr": [
+    "eşek",
+    "merkep"
+   ],
+   "clips": [
+    "bray",
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "neigh",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "bray": "idle_2",
+    "neigh": "idle_2"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 1.55,
+   "length": 1.84,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.1,
+    "trot": 2.4,
+    "gallop": 5.5
+   }
+  },
+  {
+   "id": "cow",
+   "url": "animals/cow.glb",
+   "label": "İnek",
+   "tr": [
+    "inek",
+    "dana",
+    "buzağı"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "moo",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "moo": "idle_2"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 1.6,
+   "length": 2.81,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1,
+    "trot": 2,
+    "gallop": 5
+   }
+  },
+  {
+   "id": "bull",
+   "url": "animals/bull.glb",
+   "label": "Boğa / öküz",
+   "tr": [
+    "boğa",
+    "öküz",
+    "tosun"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "moo",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "moo": "idle_2"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 1.7,
+   "length": 2.99,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1,
+    "trot": 2.2,
+    "gallop": 6
+   }
+  },
+  {
+   "id": "sheep",
+   "url": "animals/sheep.glb",
+   "label": "Koyun",
+   "tr": [
+    "koyun",
+    "kuzu",
+    "koç"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "run",
+    "trot",
+    "walk",
+    "bleat"
+   ],
+   "alias": {
+    "bleat": "idle_2",
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main",
+     "Main_Light"
+    ]
+   },
+   "height": 0.95,
+   "length": 1.55,
+   "src": "Quaternius Alpaca (CC0) — HADİ: yumuşatma + boyun kısaltma, yün rengi",
+   "note": "gerçekçi CC0 animasyonlu koyun bulunamadı; alpakadan türetildi",
+   "speeds": {
+    "walk": 0.8,
+    "trot": 1.8,
+    "gallop": 4
+   }
+  },
+  {
+   "id": "dog",
+   "url": "animals/dog.glb",
+   "label": "Köpek",
+   "tr": [
+    "köpek",
+    "it",
+    "kuçu"
+   ],
+   "clips": [
+    "attack",
+    "bark",
+    "death",
+    "eat",
+    "gallop",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "bark": "idle_2",
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 0.75,
+   "length": 0.96,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.1,
+    "trot": 2.5,
+    "gallop": 6.5
+   }
+  },
+  {
+   "id": "dog_big",
+   "url": "animals/dog_big.glb",
+   "label": "Çoban köpeği",
+   "tr": [
+    "çoban köpeği",
+    "karabaş",
+    "kangal"
+   ],
+   "clips": [
+    "attack",
+    "bark",
+    "death",
+    "eat",
+    "gallop",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "bark": "idle_2",
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Material"
+    ]
+   },
+   "height": 0.9,
+   "length": 1.1,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.2,
+    "trot": 2.8,
+    "gallop": 7
+   }
+  },
+  {
+   "id": "wolf",
+   "url": "animals/wolf.glb",
+   "label": "Kurt",
+   "tr": [
+    "kurt"
+   ],
+   "clips": [
+    "attack",
+    "death",
+    "eat",
+    "gallop",
+    "hit",
+    "howl",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "howl": "idle_2",
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 0.95,
+   "length": 1.97,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.2,
+    "trot": 3,
+    "gallop": 8
+   }
+  },
+  {
+   "id": "fox",
+   "url": "animals/fox.glb",
+   "label": "Tilki",
+   "tr": [
+    "tilki"
+   ],
+   "clips": [
+    "attack",
+    "death",
+    "eat",
+    "gallop",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 0.75,
+   "length": 1.65,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1,
+    "trot": 2.6,
+    "gallop": 7
+   }
+  },
+  {
+   "id": "deer",
+   "url": "animals/deer.glb",
+   "label": "Geyik / ceylan",
+   "tr": [
+    "geyik",
+    "ceylan",
+    "karaca"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 1.7,
+   "length": 1.75,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1.2,
+    "trot": 3,
+    "gallop": 9
+   }
+  },
+  {
+   "id": "alpaca",
+   "url": "animals/alpaca.glb",
+   "label": "Lama / alpaka",
+   "tr": [
+    "lama",
+    "alpaka"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "kick",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 1.8,
+   "length": 1.43,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 1,
+    "trot": 2.4,
+    "gallop": 6
+   }
+  },
+  {
+   "id": "cat",
+   "url": "animals/cat.glb",
+   "label": "Kedi",
+   "tr": [
+    "kedi",
+    "pisi"
+   ],
+   "clips": [
+    "attack",
+    "death",
+    "eat",
+    "gallop",
+    "hit",
+    "idle",
+    "idle_2",
+    "idle_headlow",
+    "jump",
+    "land",
+    "run",
+    "trot",
+    "walk"
+   ],
+   "alias": {
+    "meow": "idle_2",
+    "run": "gallop"
+   },
+   "tint": {
+    "materials": [
+     "Main"
+    ]
+   },
+   "height": 0.4,
+   "length": 0.46,
+   "src": "Quaternius Fox (CC0) — HADİ: yumuşatma, ince kuyruk, tekir renk",
+   "note": "gerçekçi CC0 animasyonlu kedi bulunamadı; tilkiden türetildi",
+   "speeds": {
+    "walk": 0.6,
+    "trot": 1.6,
+    "gallop": 4.5
+   }
+  },
+  {
+   "id": "pig",
+   "url": "animals/pig.glb",
+   "label": "Domuz",
+   "tr": [
+    "domuz"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "gallop",
+    "headbutt",
+    "idle",
+    "jump",
+    "run",
+    "walk"
+   ],
+   "alias": {
+    "gallop": "run"
+   },
+   "tint": false,
+   "height": 0.8,
+   "length": 1.01,
+   "src": "Quaternius (CC0) — poly.pizza",
+   "note": "blok (voksel) stil; gerçekçi CC0 animasyonlu sürüm bulunamadı",
+   "speeds": {
+    "walk": 0.7,
+    "run": 2.5
+   }
+  },
+  {
+   "id": "chicken",
+   "url": "animals/chicken.glb",
+   "label": "Tavuk",
+   "tr": [
+    "tavuk",
+    "horoz",
+    "civciv"
+   ],
+   "clips": [
+    "attack",
+    "cluck",
+    "death",
+    "eat",
+    "idle",
+    "run",
+    "walk"
+   ],
+   "alias": {
+    "walk": "run",
+    "cluck": "idle"
+   },
+   "tint": false,
+   "height": 0.45,
+   "length": 0.3,
+   "src": "Quaternius (CC0) — poly.pizza",
+   "note": "blok (voksel) stil; gerçekçi CC0 animasyonlu sürüm bulunamadı",
+   "speeds": {
+    "walk": 0.6,
+    "run": 1.8
+   }
+  },
+  {
+   "id": "bird",
+   "url": "animals/bird.glb",
+   "label": "Kuş (güvercin)",
+   "tr": [
+    "kuş",
+    "güvercin",
+    "serçe"
+   ],
+   "clips": [
+    "death",
+    "eat",
+    "fly",
+    "head_shake",
+    "hit",
+    "idle",
+    "jump",
+    "nod",
+    "peck",
+    "walk"
+   ],
+   "alias": {
+    "fly": "jump",
+    "peck": "eat"
+   },
+   "tint": {
+    "materials": [
+     "Pigeon_Main"
+    ]
+   },
+   "height": 0.28,
+   "length": 0.31,
+   "src": "Quaternius (CC0) — poly.pizza — HADİ: alt bölme + yumuşatma (pürüzsüz gövde)",
+   "speeds": {
+    "walk": 0.4
+   }
+  }
+ ],
+ "env": [
+  {
+   "id": "village_yard",
+   "url": "env/village_yard.glb",
+   "label": "Köy avlusu (ahır, ev, çit, ağaçlar, dere)",
+   "tr": [
+    "avlu",
+    "ahır",
+    "köy evi",
+    "dere kenarı",
+    "çiftlik"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0,
+     1.5
+    ],
+    "b": [
+     3,
+     0,
+     0
+    ],
+    "c": [
+     6.2,
+     0,
+     -4.4
+    ],
+    "d": [
+     -6,
+     0,
+     -6.4
+    ],
+    "e": [
+     -2.4,
+     0,
+     3.8
+    ],
+    "f": [
+     13,
+     0,
+     4
+    ],
+    "g": [
+     0,
+     0,
+     5
+    ],
+    "h": [
+     16.5,
+     0.69,
+     9.5
+    ],
+    "i": [
+     -8.5,
+     0,
+     -0.5
+    ]
+   },
+   "camera": [
+    1.5,
+    3.2,
+    15
+   ],
+   "look": [
+    0,
+    1.6,
+    -4
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      1.5,
+      3.2,
+      15
+     ],
+     "look": [
+      0,
+      1.6,
+      -4
+     ]
+    },
+    {
+     "name": "barn",
+     "pos": [
+      2,
+      1.65,
+      1.5
+     ],
+     "look": [
+      6.5,
+      1.3,
+      -5
+     ]
+    },
+    {
+     "name": "stream",
+     "pos": [
+      9.5,
+      1.8,
+      9
+     ],
+     "look": [
+      15.5,
+      0.8,
+      3
+     ]
+    },
+    {
+     "name": "house",
+     "pos": [
+      -1.5,
+      1.7,
+      1.5
+     ],
+     "look": [
+      -6,
+      2.2,
+      -8
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "morning",
+    "dusk",
+    "night",
+    "overcast"
+   ],
+   "interior": false,
+   "radius": 21,
+   "ceiling": null,
+   "lights": null,
+   "size": 500,
+   "water": {
+    "material": "water",
+    "flow": [
+     0,
+     0,
+     1
+    ],
+    "normalTiling": 3.5
+   },
+   "ambient": [
+    "stream",
+    "birds",
+    "wind"
+   ],
+   "fog": {
+    "day": [
+     0.0045,
+     "#c9d6e3"
+    ],
+    "morning": [
+     0.006,
+     "#e8d7c0"
+    ],
+    "dusk": [
+     0.006,
+     "#d99a6c"
+    ],
+    "night": [
+     0.01,
+     "#0d1420"
+    ],
+    "overcast": [
+     0.008,
+     "#b8bec4"
+    ]
+   },
+   "hold": null,
+   "hdriYaw": 150,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "morning": {
+     "id": "qwantani_morning_puresky",
+     "hdr": "hdri/qwantani_morning_puresky_1k.hdr",
+     "bg": "hdri/qwantani_morning_puresky_bg.webp",
+     "bgExposure": 0.996,
+     "sun": {
+      "dir": [
+       -0.558,
+       0.337,
+       -0.759
+      ],
+      "color": "#fecf96",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    },
+    "overcast": {
+     "id": "kloofendal_overcast_puresky",
+     "hdr": "hdri/kloofendal_overcast_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_overcast_puresky_bg.webp",
+     "bgExposure": 0.209,
+     "sun": {
+      "dir": [
+       -0.497,
+       0.383,
+       -0.779
+      ],
+      "color": "#fee1c0",
+      "strength": 1.69,
+      "visible": true
+     }
+    }
+   }
+  },
+  {
+   "id": "house_interior",
+   "url": "env/house_interior.glb",
+   "label": "Köy evi içi (oda, sedir, ocak)",
+   "tr": [
+    "oda",
+    "ev içi",
+    "sedir",
+    "ocak başı",
+    "misafir odası"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0.5,
+     -2.4
+    ],
+    "b": [
+     -1.4,
+     0.5,
+     -2.4
+    ],
+    "c": [
+     1.4,
+     0.5,
+     -2.4
+    ],
+    "d": [
+     -2.85,
+     0.5,
+     -0.7
+    ],
+    "e": [
+     0.2,
+     0,
+     0.8
+    ],
+    "f": [
+     1.8,
+     0,
+     1.6
+    ],
+    "g": [
+     -2.2,
+     0,
+     1.8
+    ],
+    "h": [
+     2.9,
+     0,
+     0.6
+    ]
+   },
+   "camera": [
+    1.8,
+    1.65,
+    2.6
+   ],
+   "look": [
+    -0.5,
+    0.95,
+    -2
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      1.8,
+      1.65,
+      2.6
+     ],
+     "look": [
+      -0.5,
+      0.95,
+      -2
+     ]
+    },
+    {
+     "name": "sedir",
+     "pos": [
+      0.4,
+      1.2,
+      0.6
+     ],
+     "look": [
+      0,
+      0.9,
+      -2.5
+     ]
+    },
+    {
+     "name": "ocak",
+     "pos": [
+      0.6,
+      1.4,
+      1.5
+     ],
+     "look": [
+      -3,
+      0.8,
+      1.6
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "dusk",
+    "night"
+   ],
+   "interior": true,
+   "radius": 5,
+   "ceiling": 2.9,
+   "lights": [
+    {
+     "type": "point",
+     "p": [
+      -3,
+      0.5,
+      1.6
+     ],
+     "color": "#ff9a50",
+     "i": 2.5,
+     "d": 7,
+     "flicker": true
+    },
+    {
+     "type": "point",
+     "p": [
+      -3.05,
+      1.85,
+      1.6
+     ],
+     "color": "#ffc27a",
+     "i": 0.8,
+     "d": 5
+    },
+    {
+     "type": "window",
+     "p": [
+      3.6,
+      1.45,
+      -1.3
+     ],
+     "dir": [
+      -1,
+      -0.35,
+      0
+     ],
+     "size": [
+      1.2,
+      1.2
+     ]
+    },
+    {
+     "type": "window",
+     "p": [
+      3.6,
+      1.45,
+      1.3
+     ],
+     "dir": [
+      -1,
+      -0.35,
+      0
+     ],
+     "size": [
+      1.2,
+      1.2
+     ]
+    }
+   ],
+   "size": 7.53,
+   "water": null,
+   "ambient": [
+    "fire_crackle",
+    "room_tone"
+   ],
+   "hold": null,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    }
+   },
+   "hdriYaw": -60,
+   "realistic": true,
+   "fog": null
+  },
+  {
+   "id": "village_square",
+   "url": "env/village_square.glb",
+   "label": "Köy meydanı (mektep, kahvehane, çeşme, çınar)",
+   "tr": [
+    "köy meydanı",
+    "mektep",
+    "okul",
+    "kahve",
+    "kahvehane",
+    "çeşme",
+    "köy içi"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0,
+     0
+    ],
+    "b": [
+     2.5,
+     0,
+     -1
+    ],
+    "c": [
+     0,
+     0,
+     -5.2
+    ],
+    "d": [
+     -6,
+     0,
+     -6.4
+    ],
+    "e": [
+     6.6,
+     0,
+     -3.4
+    ],
+    "f": [
+     -3.5,
+     0.45,
+     1
+    ],
+    "g": [
+     0,
+     0,
+     5
+    ],
+    "h": [
+     8.2,
+     0,
+     -3.3
+    ],
+    "i": [
+     -3,
+     0,
+     -2
+    ]
+   },
+   "camera": [
+    0,
+    4.5,
+    17
+   ],
+   "look": [
+    0,
+    1.8,
+    -4
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      0,
+      4.5,
+      17
+     ],
+     "look": [
+      0,
+      1.8,
+      -4
+     ]
+    },
+    {
+     "name": "cesme",
+     "pos": [
+      1.5,
+      1.6,
+      -1.8
+     ],
+     "look": [
+      0,
+      1.2,
+      -6.5
+     ]
+    },
+    {
+     "name": "kahve",
+     "pos": [
+      3,
+      1.6,
+      1.5
+     ],
+     "look": [
+      8,
+      1.1,
+      -4
+     ]
+    },
+    {
+     "name": "mektep",
+     "pos": [
+      -2,
+      1.8,
+      0
+     ],
+     "look": [
+      -8,
+      2.5,
+      -9
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "morning",
+    "dusk",
+    "night",
+    "overcast"
+   ],
+   "interior": false,
+   "radius": 10.8,
+   "ceiling": null,
+   "lights": null,
+   "size": 400,
+   "water": {
+    "material": "water"
+   },
+   "ambient": [
+    "birds",
+    "crowd",
+    "wind"
+   ],
+   "hold": null,
+   "hdriYaw": 150,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "morning": {
+     "id": "qwantani_morning_puresky",
+     "hdr": "hdri/qwantani_morning_puresky_1k.hdr",
+     "bg": "hdri/qwantani_morning_puresky_bg.webp",
+     "bgExposure": 0.996,
+     "sun": {
+      "dir": [
+       -0.558,
+       0.337,
+       -0.759
+      ],
+      "color": "#fecf96",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    },
+    "overcast": {
+     "id": "kloofendal_overcast_puresky",
+     "hdr": "hdri/kloofendal_overcast_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_overcast_puresky_bg.webp",
+     "bgExposure": 0.209,
+     "sun": {
+      "dir": [
+       -0.497,
+       0.383,
+       -0.779
+      ],
+      "color": "#fee1c0",
+      "strength": 1.69,
+      "visible": true
+     }
+    }
+   },
+   "fog": {
+    "day": [
+     0.0045,
+     "#c9d6e3"
+    ],
+    "dusk": [
+     0.006,
+     "#d99a6c"
+    ],
+    "night": [
+     0.01,
+     "#0d1420"
+    ]
+   }
+  },
+  {
+   "id": "palace_hall",
+   "url": "env/palace_hall.glb",
+   "label": "Saray / konak divanhanesi",
+   "tr": [
+    "saray",
+    "divan",
+    "taht odası",
+    "padişah",
+    "konak salonu",
+    "paşa"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0.6,
+     -11.6
+    ],
+    "b": [
+     -2.2,
+     0.6,
+     -10
+    ],
+    "c": [
+     2.2,
+     0.6,
+     -10
+    ],
+    "d": [
+     0,
+     0,
+     -6
+    ],
+    "e": [
+     0,
+     0,
+     0
+    ],
+    "f": [
+     -2.5,
+     0,
+     -3
+    ],
+    "g": [
+     2.5,
+     0,
+     -3
+    ],
+    "h": [
+     -7.8,
+     0.52,
+     0
+    ],
+    "i": [
+     7.8,
+     0.52,
+     0
+    ],
+    "j": [
+     0,
+     0,
+     10
+    ]
+   },
+   "camera": [
+    0,
+    3.2,
+    12
+   ],
+   "look": [
+    0,
+    1.6,
+    -10
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      0,
+      3.2,
+      12
+     ],
+     "look": [
+      0,
+      1.6,
+      -10
+     ]
+    },
+    {
+     "name": "taht",
+     "pos": [
+      0,
+      1.8,
+      -5
+     ],
+     "look": [
+      0,
+      1.6,
+      -12
+     ]
+    },
+    {
+     "name": "yan",
+     "pos": [
+      6,
+      2.2,
+      -2
+     ],
+     "look": [
+      -1,
+      1.2,
+      -9
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "night"
+   ],
+   "interior": true,
+   "radius": 13.6,
+   "ceiling": 8,
+   "lights": [
+    {
+     "type": "point",
+     "p": [
+      0,
+      5,
+      -6
+     ],
+     "color": "#ffc27a",
+     "i": 3,
+     "d": 14
+    },
+    {
+     "type": "point",
+     "p": [
+      0,
+      5,
+      2
+     ],
+     "color": "#ffc27a",
+     "i": 3,
+     "d": 14
+    },
+    {
+     "type": "window",
+     "p": [
+      -8.9,
+      3.2,
+      -6
+     ],
+     "dir": [
+      1,
+      -0.3,
+      0
+     ],
+     "size": [
+      2.4,
+      3.2
+     ]
+    },
+    {
+     "type": "window",
+     "p": [
+      8.9,
+      3.2,
+      4
+     ],
+     "dir": [
+      -1,
+      -0.3,
+      0
+     ],
+     "size": [
+      2.4,
+      3.2
+     ]
+    },
+    {
+     "type": "window",
+     "p": [
+      0,
+      8.5,
+      -8
+     ],
+     "dir": [
+      0,
+      -1,
+      -0.15
+     ],
+     "size": [
+      6,
+      6
+     ]
+    }
+   ],
+   "size": 28.83,
+   "water": null,
+   "ambient": [
+    "room_tone"
+   ],
+   "hold": null,
+   "hdriYaw": -60,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    }
+   },
+   "fog": null
+  },
+  {
+   "id": "galley_deck",
+   "url": "env/galley_deck.glb",
+   "label": "Kadırga güvertesi (açık deniz)",
+   "tr": [
+    "kadırga",
+    "gemi",
+    "güverte",
+    "deniz",
+    "yelkenli",
+    "korsan"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0,
+     0
+    ],
+    "b": [
+     -1.6,
+     0,
+     2.5
+    ],
+    "c": [
+     1.6,
+     0,
+     2.5
+    ],
+    "d": [
+     0,
+     1.3,
+     10.5
+    ],
+    "e": [
+     -1.8,
+     0,
+     -6
+    ],
+    "f": [
+     1.8,
+     0,
+     -9
+    ],
+    "g": [
+     0,
+     0,
+     5
+    ]
+   },
+   "camera": [
+    6,
+    4,
+    14
+   ],
+   "look": [
+    0,
+    1.5,
+    0
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      6,
+      4,
+      14
+     ],
+     "look": [
+      0,
+      1.5,
+      0
+     ]
+    },
+    {
+     "name": "kic",
+     "pos": [
+      0,
+      2.9,
+      13.5
+     ],
+     "look": [
+      0,
+      1.2,
+      0
+     ]
+    },
+    {
+     "name": "pruva",
+     "pos": [
+      0,
+      2,
+      -12
+     ],
+     "look": [
+      0,
+      1.4,
+      4
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "dusk",
+    "night",
+    "storm",
+    "overcast"
+   ],
+   "interior": false,
+   "radius": 12.5,
+   "ceiling": null,
+   "lights": null,
+   "size": 600,
+   "water": {
+    "material": "water",
+    "sea": true,
+    "normalTiling": 9
+   },
+   "ambient": [
+    "sea_waves",
+    "wind"
+   ],
+   "hold": null,
+   "hdriYaw": 150,
+   "realistic": true,
+   "motion": {
+    "roll": 2.5,
+    "pitch": 1.2,
+    "period": 7
+   },
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    },
+    "storm": {
+     "id": "kloppenheim_07_puresky",
+     "hdr": "hdri/kloppenheim_07_puresky_1k.hdr",
+     "bg": "hdri/kloppenheim_07_puresky_bg.webp",
+     "bgExposure": 0.739,
+     "sun": {
+      "dir": [
+       -0.475,
+       0.606,
+       -0.638
+      ],
+      "color": "#cae9fe",
+      "strength": 2.39,
+      "visible": true
+     }
+    },
+    "overcast": {
+     "id": "kloofendal_overcast_puresky",
+     "hdr": "hdri/kloofendal_overcast_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_overcast_puresky_bg.webp",
+     "bgExposure": 0.209,
+     "sun": {
+      "dir": [
+       -0.497,
+       0.383,
+       -0.779
+      ],
+      "color": "#fee1c0",
+      "strength": 1.69,
+      "visible": true
+     }
+    }
+   },
+   "fog": {
+    "day": [
+     0.0045,
+     "#c9d6e3"
+    ],
+    "dusk": [
+     0.006,
+     "#d99a6c"
+    ],
+    "night": [
+     0.01,
+     "#0d1420"
+    ]
+   }
+  },
+  {
+   "id": "seashore",
+   "url": "env/seashore.glb",
+   "label": "Deniz kıyısı, iskele ve kayık",
+   "tr": [
+    "sahil",
+    "kıyı",
+    "iskele",
+    "liman",
+    "balıkçı",
+    "deniz kenarı"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0,
+     -24
+    ],
+    "b": [
+     3,
+     0,
+     -25
+    ],
+    "c": [
+     2,
+     0.5,
+     -36
+    ],
+    "d": [
+     2,
+     0.5,
+     -46
+    ],
+    "e": [
+     -6,
+     0,
+     -27
+    ],
+    "f": [
+     6,
+     0,
+     -22
+    ],
+    "g": [
+     -12,
+     0,
+     -10
+    ]
+   },
+   "camera": [
+    10,
+    4,
+    -12
+   ],
+   "look": [
+    0,
+    1,
+    -36
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      10,
+      4,
+      -12
+     ],
+     "look": [
+      0,
+      1,
+      -36
+     ]
+    },
+    {
+     "name": "iskele",
+     "pos": [
+      5,
+      1.8,
+      -29
+     ],
+     "look": [
+      1,
+      1.2,
+      -42
+     ]
+    },
+    {
+     "name": "ufuk",
+     "pos": [
+      0,
+      1.6,
+      -22
+     ],
+     "look": [
+      -10,
+      3,
+      -80
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "morning",
+    "dusk",
+    "night",
+    "overcast"
+   ],
+   "interior": false,
+   "radius": 48,
+   "ceiling": null,
+   "lights": null,
+   "size": 636,
+   "water": {
+    "material": "water",
+    "sea": true,
+    "normalTiling": 9
+   },
+   "ambient": [
+    "sea_waves",
+    "wind",
+    "birds"
+   ],
+   "hold": null,
+   "hdriYaw": 150,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "morning": {
+     "id": "qwantani_morning_puresky",
+     "hdr": "hdri/qwantani_morning_puresky_1k.hdr",
+     "bg": "hdri/qwantani_morning_puresky_bg.webp",
+     "bgExposure": 0.996,
+     "sun": {
+      "dir": [
+       -0.558,
+       0.337,
+       -0.759
+      ],
+      "color": "#fecf96",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    },
+    "overcast": {
+     "id": "kloofendal_overcast_puresky",
+     "hdr": "hdri/kloofendal_overcast_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_overcast_puresky_bg.webp",
+     "bgExposure": 0.209,
+     "sun": {
+      "dir": [
+       -0.497,
+       0.383,
+       -0.779
+      ],
+      "color": "#fee1c0",
+      "strength": 1.69,
+      "visible": true
+     }
+    }
+   },
+   "fog": {
+    "day": [
+     0.0045,
+     "#c9d6e3"
+    ],
+    "dusk": [
+     0.006,
+     "#d99a6c"
+    ],
+    "night": [
+     0.01,
+     "#0d1420"
+    ]
+   }
+  },
+  {
+   "id": "forest_road",
+   "url": "env/forest_road.glb",
+   "label": "Orman içinden toprak yol",
+   "tr": [
+    "orman",
+    "yol",
+    "patika",
+    "dağ yolu",
+    "koru",
+    "ağaçlık"
+   ],
+   "spots": {
+    "a": [
+     1,
+     0,
+     0
+    ],
+    "b": [
+     2.2,
+     0,
+     4
+    ],
+    "c": [
+     0,
+     0,
+     -6
+    ],
+    "d": [
+     3,
+     0,
+     12
+    ],
+    "e": [
+     -1.5,
+     0,
+     -12
+    ],
+    "f": [
+     4.5,
+     0,
+     -4
+    ],
+    "g": [
+     -1,
+     0,
+     20
+    ]
+   },
+   "camera": [
+    6,
+    3,
+    14
+   ],
+   "look": [
+    0,
+    1.2,
+    -6
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      6,
+      3,
+      14
+     ],
+     "look": [
+      0,
+      1.2,
+      -6
+     ]
+    },
+    {
+     "name": "yol",
+     "pos": [
+      1,
+      1.6,
+      9
+     ],
+     "look": [
+      0,
+      1.2,
+      -10
+     ]
+    },
+    {
+     "name": "kus",
+     "pos": [
+      -10,
+      14,
+      10
+     ],
+     "look": [
+      1,
+      0,
+      -5
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "morning",
+    "dusk",
+    "night",
+    "fog",
+    "overcast"
+   ],
+   "interior": false,
+   "radius": 22,
+   "ceiling": null,
+   "lights": null,
+   "size": 400,
+   "water": null,
+   "ambient": [
+    "birds",
+    "wind"
+   ],
+   "fog": {
+    "day": [
+     0.012,
+     "#b9c4b0"
+    ],
+    "morning": [
+     0.02,
+     "#d9d2bf"
+    ],
+    "dusk": [
+     0.015,
+     "#a87a5c"
+    ],
+    "night": [
+     0.02,
+     "#0b1016"
+    ],
+    "fog": [
+     0.05,
+     "#c4c8c8"
+    ],
+    "overcast": [
+     0.016,
+     "#aab0b2"
+    ]
+   },
+   "hold": null,
+   "hdriYaw": 150,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "morning": {
+     "id": "qwantani_morning_puresky",
+     "hdr": "hdri/qwantani_morning_puresky_1k.hdr",
+     "bg": "hdri/qwantani_morning_puresky_bg.webp",
+     "bgExposure": 0.996,
+     "sun": {
+      "dir": [
+       -0.558,
+       0.337,
+       -0.759
+      ],
+      "color": "#fecf96",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    },
+    "fog": {
+     "id": "kloofendal_misty_morning_puresky",
+     "hdr": "hdri/kloofendal_misty_morning_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_misty_morning_puresky_bg.webp",
+     "bgExposure": 0.193,
+     "sun": {
+      "dir": [
+       -0.46,
+       0.706,
+       -0.538
+      ],
+      "color": "#d8e5fe",
+      "strength": 0.86,
+      "visible": true
+     }
+    },
+    "overcast": {
+     "id": "kloofendal_overcast_puresky",
+     "hdr": "hdri/kloofendal_overcast_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_overcast_puresky_bg.webp",
+     "bgExposure": 0.209,
+     "sun": {
+      "dir": [
+       -0.497,
+       0.383,
+       -0.779
+      ],
+      "color": "#fee1c0",
+      "strength": 1.69,
+      "visible": true
+     }
+    }
+   }
+  },
+  {
+   "id": "town_bazaar",
+   "url": "env/town_bazaar.glb",
+   "label": "Kasaba çarşısı (dükkânlar, tezgâhlar)",
+   "tr": [
+    "çarşı",
+    "pazar",
+    "dükkân",
+    "kasaba",
+    "esnaf",
+    "bakkal"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0,
+     0
+    ],
+    "b": [
+     -2.8,
+     0,
+     -5
+    ],
+    "c": [
+     2.8,
+     0,
+     -3.5
+    ],
+    "d": [
+     -2.8,
+     0,
+     -0.5
+    ],
+    "e": [
+     2.8,
+     0,
+     1
+    ],
+    "f": [
+     0,
+     0,
+     -10
+    ],
+    "g": [
+     0,
+     0,
+     8
+    ],
+    "h": [
+     0,
+     0,
+     -18
+    ]
+   },
+   "camera": [
+    0,
+    4,
+    16
+   ],
+   "look": [
+    0,
+    1.5,
+    -8
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      0,
+      4,
+      16
+     ],
+     "look": [
+      0,
+      1.5,
+      -8
+     ]
+    },
+    {
+     "name": "dukkan",
+     "pos": [
+      1.5,
+      1.6,
+      -2
+     ],
+     "look": [
+      -5.5,
+      1.3,
+      -5
+     ]
+    },
+    {
+     "name": "karsi",
+     "pos": [
+      -1.5,
+      1.6,
+      4
+     ],
+     "look": [
+      5.5,
+      1.3,
+      2
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "morning",
+    "dusk",
+    "night"
+   ],
+   "interior": false,
+   "radius": 20,
+   "ceiling": null,
+   "lights": null,
+   "size": 400,
+   "water": null,
+   "ambient": [
+    "crowd",
+    "birds"
+   ],
+   "hold": null,
+   "hdriYaw": 150,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "morning": {
+     "id": "qwantani_morning_puresky",
+     "hdr": "hdri/qwantani_morning_puresky_1k.hdr",
+     "bg": "hdri/qwantani_morning_puresky_bg.webp",
+     "bgExposure": 0.996,
+     "sun": {
+      "dir": [
+       -0.558,
+       0.337,
+       -0.759
+      ],
+      "color": "#fecf96",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    }
+   },
+   "fog": {
+    "day": [
+     0.0045,
+     "#c9d6e3"
+    ],
+    "dusk": [
+     0.006,
+     "#d99a6c"
+    ],
+    "night": [
+     0.01,
+     "#0d1420"
+    ]
+   }
+  },
+  {
+   "id": "courtroom",
+   "url": "env/courtroom.glb",
+   "label": "Mahkeme salonu",
+   "tr": [
+    "mahkeme",
+    "duruşma",
+    "hâkim",
+    "kadı",
+    "adliye"
+   ],
+   "spots": {
+    "a": [
+     0,
+     0.4,
+     -5.9
+    ],
+    "b": [
+     -3.5,
+     0,
+     -1.8
+    ],
+    "c": [
+     3.5,
+     0,
+     -1.8
+    ],
+    "d": [
+     0,
+     0,
+     -1.2
+    ],
+    "e": [
+     -2.6,
+     0.45,
+     1.2
+    ],
+    "f": [
+     2.6,
+     0.45,
+     1.2
+    ],
+    "g": [
+     0,
+     0,
+     6
+    ]
+   },
+   "camera": [
+    0,
+    3,
+    7.2
+   ],
+   "look": [
+    0,
+    1.4,
+    -5
+   ],
+   "cameras": [
+    {
+     "name": "wide",
+     "pos": [
+      0,
+      3,
+      7.2
+     ],
+     "look": [
+      0,
+      1.4,
+      -5
+     ]
+    },
+    {
+     "name": "hakim",
+     "pos": [
+      0,
+      1.7,
+      -1.5
+     ],
+     "look": [
+      0,
+      1.8,
+      -6
+     ]
+    },
+    {
+     "name": "sanik",
+     "pos": [
+      -0.5,
+      1.6,
+      -4
+     ],
+     "look": [
+      -3.5,
+      1.3,
+      -2
+     ]
+    }
+   ],
+   "time": [
+    "day",
+    "night"
+   ],
+   "interior": true,
+   "radius": 8,
+   "ceiling": 5,
+   "lights": [
+    {
+     "type": "window",
+     "p": [
+      -6,
+      2.2,
+      -3
+     ],
+     "dir": [
+      1,
+      -0.3,
+      0
+     ],
+     "size": [
+      1.6,
+      2.4
+     ]
+    },
+    {
+     "type": "window",
+     "p": [
+      -6,
+      2.2,
+      2
+     ],
+     "dir": [
+      1,
+      -0.3,
+      0
+     ],
+     "size": [
+      1.6,
+      2.4
+     ]
+    }
+   ],
+   "size": 16.6,
+   "water": null,
+   "ambient": [
+    "room_tone"
+   ],
+   "hold": null,
+   "hdriYaw": -60,
+   "realistic": true,
+   "hdri": {
+    "day": {
+     "id": "kloofendal_48d_partly_cloudy_puresky",
+     "hdr": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+     "bg": "hdri/kloofendal_48d_partly_cloudy_puresky_bg.webp",
+     "bgExposure": 0.638,
+     "sun": {
+      "dir": [
+       -0.379,
+       0.743,
+       -0.551
+      ],
+      "color": "#fdfee8",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "dusk": {
+     "id": "qwantani_sunset_puresky",
+     "hdr": "hdri/qwantani_sunset_puresky_1k.hdr",
+     "bg": "hdri/qwantani_sunset_puresky_bg.webp",
+     "bgExposure": 0.417,
+     "sun": {
+      "dir": [
+       -0.592,
+       0.074,
+       -0.802
+      ],
+      "color": "#fe5806",
+      "strength": 8,
+      "visible": true
+     }
+    },
+    "night": {
+     "id": "qwantani_night_puresky",
+     "hdr": "hdri/qwantani_night_puresky_1k.hdr",
+     "bg": "hdri/qwantani_night_puresky_bg.webp",
+     "bgExposure": 0.462,
+     "sun": {
+      "dir": [
+       -0.678,
+       0.049,
+       -0.733
+      ],
+      "color": "#b3f9fe",
+      "strength": 4.68,
+      "visible": true
+     }
+    }
+   },
+   "fog": null
+  }
+ ],
+ "props": [
+  {
+   "id": "curry_comb",
+   "url": "props/curry_comb.glb",
+   "label": "Kaşağı",
+   "tr": [
+    "kaşağı",
+    "tımar fırçası"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.12
+  },
+  {
+   "id": "jug",
+   "url": "props/jug.glb",
+   "label": "Testi",
+   "tr": [
+    "testi",
+    "güğüm"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.38
+  },
+  {
+   "id": "bucket",
+   "url": "props/bucket.glb",
+   "label": "Kova",
+   "tr": [
+    "kova",
+    "bakraç"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.36
+  },
+  {
+   "id": "book",
+   "url": "props/book.glb",
+   "label": "Kitap",
+   "tr": [
+    "kitap",
+    "defter"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.22
+  },
+  {
+   "id": "book_open",
+   "url": "props/book_open.glb",
+   "label": "Açık kitap",
+   "tr": [
+    "açık kitap",
+    "mushaf"
+   ],
+   "hold": {
+    "bone": "hand_l"
+   },
+   "size": 0.32
+  },
+  {
+   "id": "prayer_beads",
+   "url": "props/prayer_beads.glb",
+   "label": "Tespih",
+   "tr": [
+    "tespih"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.14
+  },
+  {
+   "id": "sword",
+   "url": "props/sword.glb",
+   "label": "Kılıç",
+   "tr": [
+    "kılıç",
+    "pala",
+    "yatağan"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.95
+  },
+  {
+   "id": "rifle",
+   "url": "props/rifle.glb",
+   "label": "Tüfek",
+   "tr": [
+    "tüfek",
+    "çifte",
+    "filinta"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 1.2
+  },
+  {
+   "id": "lantern",
+   "url": "props/lantern.glb",
+   "label": "Fener",
+   "tr": [
+    "fener",
+    "lamba",
+    "kandil"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.38
+  },
+  {
+   "id": "suitcase",
+   "url": "props/suitcase.glb",
+   "label": "Bavul",
+   "tr": [
+    "bavul",
+    "valiz",
+    "çanta"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.64
+  },
+  {
+   "id": "basket",
+   "url": "props/basket.glb",
+   "label": "Sepet",
+   "tr": [
+    "sepet",
+    "zembil"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.49
+  },
+  {
+   "id": "stick",
+   "url": "props/stick.glb",
+   "label": "Değnek / baston",
+   "tr": [
+    "değnek",
+    "sopa",
+    "asa",
+    "baston",
+    "çoban değneği"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 1.37
+  },
+  {
+   "id": "kaftan",
+   "url": "props/kaftan.glb",
+   "label": "Kaftan (askıda / sedirde)",
+   "tr": [
+    "kaftan",
+    "cübbe",
+    "entari"
+   ],
+   "hold": null,
+   "size": 1.42
+  },
+  {
+   "id": "coin_pouch",
+   "url": "props/coin_pouch.glb",
+   "label": "Kese",
+   "tr": [
+    "kese",
+    "para kesesi"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.14
+  },
+  {
+   "id": "cup",
+   "url": "props/cup.glb",
+   "label": "Bardak / maşrapa",
+   "tr": [
+    "bardak",
+    "maşrapa",
+    "fincan"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.11
+  },
+  {
+   "id": "pot",
+   "url": "props/pot.glb",
+   "label": "Çömlek / tencere",
+   "tr": [
+    "çömlek",
+    "tencere",
+    "kazan"
+   ],
+   "hold": null,
+   "size": 0.68
+  },
+  {
+   "id": "shovel",
+   "url": "props/shovel.glb",
+   "label": "Kürek / bel",
+   "tr": [
+    "kürek",
+    "bel",
+    "çapa"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 1.2
+  },
+  {
+   "id": "pitchfork",
+   "url": "props/pitchfork.glb",
+   "label": "Yaba",
+   "tr": [
+    "yaba",
+    "dirgen"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 22.3
+  },
+  {
+   "id": "candle",
+   "url": "props/candle.glb",
+   "label": "Mum",
+   "tr": [
+    "mum",
+    "şamdan"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.44
+  },
+  {
+   "id": "letter",
+   "url": "props/letter.glb",
+   "label": "Mektup",
+   "tr": [
+    "mektup",
+    "kâğıt",
+    "ferman",
+    "not"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.28
+  },
+  {
+   "id": "bread",
+   "url": "props/bread.glb",
+   "label": "Somun ekmek",
+   "tr": [
+    "ekmek",
+    "somun",
+    "pide"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.22
+  },
+  {
+   "id": "tray",
+   "url": "props/tray.glb",
+   "label": "Sini / tepsi",
+   "tr": [
+    "sini",
+    "tepsi"
+   ],
+   "hold": {
+    "bone": "hand_r"
+   },
+   "size": 0.64
+  },
+  {
+   "id": "saddle",
+   "url": "props/saddle.glb",
+   "label": "Eyer",
+   "tr": [
+    "eyer",
+    "semer"
+   ],
+   "hold": null,
+   "size": 0.7
+  }
+ ],
+ "sfx": [
+  {
+   "id": "stream",
+   "url": "sfx/stream.mp3",
+   "ogg": "sfx/stream.ogg",
+   "dur": 30,
+   "loop": true,
+   "label": "dere / su şırıltısı",
+   "src": "OGA park-ambiences (CC0)",
+   "tags": [
+    "ambient",
+    "water"
+   ]
+  },
+  {
+   "id": "wind",
+   "url": "sfx/wind.mp3",
+   "ogg": "sfx/wind.ogg",
+   "dur": 30,
+   "loop": true,
+   "label": "rüzgâr",
+   "src": "OGA park-ambiences (CC0)",
+   "tags": [
+    "ambient"
+   ]
+  },
+  {
+   "id": "birds",
+   "url": "sfx/birds.mp3",
+   "ogg": "sfx/birds.ogg",
+   "dur": 28.6,
+   "loop": true,
+   "label": "kuş cıvıltısı",
+   "src": "OGA ambient-bird-sounds (CC0)",
+   "tags": [
+    "ambient"
+   ]
+  },
+  {
+   "id": "crowd",
+   "url": "sfx/crowd.mp3",
+   "ogg": "sfx/crowd.ogg",
+   "dur": 25.3,
+   "loop": true,
+   "label": "kalabalık uğultusu / çarşı",
+   "src": "OGA crowd-shoutingspeaking-ambience (CC0)",
+   "tags": [
+    "ambient"
+   ]
+  },
+  {
+   "id": "sea_waves",
+   "url": "sfx/sea_waves.mp3",
+   "ogg": "sfx/sea_waves.ogg",
+   "dur": 30,
+   "loop": true,
+   "label": "deniz / dalga",
+   "src": "OGA sea-and-river-wave-sounds (CC0)",
+   "tags": [
+    "ambient",
+    "water"
+   ]
+  },
+  {
+   "id": "wave_crash",
+   "url": "sfx/wave_crash.mp3",
+   "ogg": "sfx/wave_crash.ogg",
+   "dur": 4,
+   "loop": false,
+   "label": "kıyıya vuran dalga",
+   "src": "OGA beach-ocean-waves (CC0)",
+   "tags": []
+  },
+  {
+   "id": "fire_crackle",
+   "url": "sfx/fire_crackle.mp3",
+   "ogg": "sfx/fire_crackle.ogg",
+   "dur": 18.5,
+   "loop": true,
+   "label": "ocak / ateş çıtırtısı",
+   "src": "OGA fireplace-sound-loop (CC0)",
+   "tags": [
+    "ambient"
+   ]
+  },
+  {
+   "id": "rain",
+   "url": "sfx/rain.mp3",
+   "ogg": "sfx/rain.ogg",
+   "dur": 28,
+   "loop": true,
+   "label": "yağmur",
+   "src": "OGA amb-rain-loop-1 (CC0)",
+   "tags": [
+    "ambient",
+    "weather"
+   ]
+  },
+  {
+   "id": "thunder",
+   "url": "sfx/thunder.mp3",
+   "ogg": "sfx/thunder.ogg",
+   "dur": 12,
+   "loop": false,
+   "label": "gök gürültüsü",
+   "src": "OGA rain-long-thunder (CC0)",
+   "tags": [
+    "weather"
+   ]
+  },
+  {
+   "id": "hooves_trot",
+   "url": "sfx/hooves_trot.mp3",
+   "ogg": "sfx/hooves_trot.ogg",
+   "dur": 8,
+   "loop": true,
+   "label": "at nal sesi (tırıs)",
+   "src": "OGA horse-trotting (CC0)",
+   "tags": [
+    "horse"
+   ]
+  },
+  {
+   "id": "hooves_walk",
+   "url": "sfx/hooves_walk.mp3",
+   "ogg": "sfx/hooves_walk.ogg",
+   "dur": 4,
+   "loop": true,
+   "label": "at nal sesi (yürüyüş)",
+   "src": "OGA horse-trotting (CC0), yeniden düzenlendi",
+   "tags": [
+    "horse"
+   ]
+  },
+  {
+   "id": "footsteps",
+   "url": "sfx/footsteps.mp3",
+   "ogg": "sfx/footsteps.ogg",
+   "dur": 4,
+   "loop": true,
+   "label": "ayak sesleri (yürüyüş)",
+   "src": "OGA footsteps-0 (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "footstep",
+   "url": "sfx/footstep.mp3",
+   "ogg": "sfx/footstep.ogg",
+   "dur": 0.32,
+   "loop": false,
+   "label": "tek adım",
+   "src": "OGA footsteps-0 (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "door_open",
+   "url": "sfx/door_open.mp3",
+   "ogg": "sfx/door_open.ogg",
+   "dur": 0.43,
+   "loop": false,
+   "label": "kapı açılması",
+   "src": "OGA 100-cc0-metal-and-wood-sfx (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "door_close",
+   "url": "sfx/door_close.mp3",
+   "ogg": "sfx/door_close.ogg",
+   "dur": 0.79,
+   "loop": false,
+   "label": "kapı kapanması",
+   "src": "OGA 4-door-closes (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "door_creak",
+   "url": "sfx/door_creak.mp3",
+   "ogg": "sfx/door_creak.ogg",
+   "dur": 0.39,
+   "loop": false,
+   "label": "kapı gıcırtısı",
+   "src": "OGA 100-cc0-metal-and-wood-sfx (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "knock",
+   "url": "sfx/knock.mp3",
+   "ogg": "sfx/knock.ogg",
+   "dur": 1.2,
+   "loop": false,
+   "label": "kapı çalma",
+   "src": "OGA 100-cc0-metal-and-wood-sfx (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "sword_clash",
+   "url": "sfx/sword_clash.mp3",
+   "ogg": "sfx/sword_clash.ogg",
+   "dur": 0.8,
+   "loop": false,
+   "label": "kılıç çarpışması",
+   "src": "OGA 20-sword-sound-effects (CC0)",
+   "tags": [
+    "combat"
+   ]
+  },
+  {
+   "id": "sword_swing",
+   "url": "sfx/sword_swing.mp3",
+   "ogg": "sfx/sword_swing.ogg",
+   "dur": 0.97,
+   "loop": false,
+   "label": "kılıç savurma",
+   "src": "OGA 20-sword-sound-effects (CC0)",
+   "tags": [
+    "combat"
+   ]
+  },
+  {
+   "id": "wood_hit",
+   "url": "sfx/wood_hit.mp3",
+   "ogg": "sfx/wood_hit.ogg",
+   "dur": 0.37,
+   "loop": false,
+   "label": "tahta vuruş",
+   "src": "OGA 100-cc0-metal-and-wood-sfx (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "keys",
+   "url": "sfx/keys.mp3",
+   "ogg": "sfx/keys.ogg",
+   "dur": 0.41,
+   "loop": false,
+   "label": "anahtar şıngırtısı",
+   "src": "OGA 100-cc0-metal-and-wood-sfx (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "gunshot",
+   "url": "sfx/gunshot.mp3",
+   "ogg": "sfx/gunshot.ogg",
+   "dur": 0.62,
+   "loop": false,
+   "label": "tüfek atışı",
+   "src": "OGA gunshot-sound-effect (CC0)",
+   "tags": [
+    "combat"
+   ]
+  },
+  {
+   "id": "heartbeat",
+   "url": "sfx/heartbeat.mp3",
+   "ogg": "sfx/heartbeat.ogg",
+   "dur": 4.44,
+   "loop": true,
+   "label": "kalp atışı",
+   "src": "OGA heartbeat-single-sound (CC0)",
+   "tags": [
+    "tension"
+   ]
+  },
+  {
+   "id": "sheep_baa",
+   "url": "sfx/sheep_baa.mp3",
+   "ogg": "sfx/sheep_baa.ogg",
+   "dur": 0.87,
+   "loop": false,
+   "label": "koyun melemesi",
+   "src": "OGA sheep-baa (CC0)",
+   "tags": [
+    "animal"
+   ]
+  },
+  {
+   "id": "dog_bark",
+   "url": "sfx/dog_bark.mp3",
+   "ogg": "sfx/dog_bark.ogg",
+   "dur": 2.04,
+   "loop": false,
+   "label": "köpek havlaması",
+   "src": "OGA dog-barking-mono (CC0)",
+   "tags": [
+    "animal"
+   ]
+  },
+  {
+   "id": "cat_meow",
+   "url": "sfx/cat_meow.mp3",
+   "ogg": "sfx/cat_meow.ogg",
+   "dur": 0.51,
+   "loop": false,
+   "label": "kedi miyavlaması",
+   "src": "OGA meow (CC0)",
+   "tags": [
+    "animal"
+   ]
+  },
+  {
+   "id": "horse_neigh",
+   "url": "sfx/horse_neigh.mp3",
+   "ogg": "sfx/horse_neigh.ogg",
+   "dur": 2.05,
+   "loop": false,
+   "label": "at kişnemesi (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "horse",
+    "animal"
+   ]
+  },
+  {
+   "id": "horse_snort",
+   "url": "sfx/horse_snort.mp3",
+   "ogg": "sfx/horse_snort.ogg",
+   "dur": 0.35,
+   "loop": false,
+   "label": "at burun soluğu (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "horse",
+    "animal"
+   ]
+  },
+  {
+   "id": "cow_moo",
+   "url": "sfx/cow_moo.mp3",
+   "ogg": "sfx/cow_moo.ogg",
+   "dur": 1.8,
+   "loop": false,
+   "label": "inek böğürmesi (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "animal"
+   ]
+  },
+  {
+   "id": "rooster",
+   "url": "sfx/rooster.mp3",
+   "ogg": "sfx/rooster.ogg",
+   "dur": 1.31,
+   "loop": false,
+   "label": "horoz ötüşü (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "animal",
+    "morning"
+   ]
+  },
+  {
+   "id": "chicken",
+   "url": "sfx/chicken.mp3",
+   "ogg": "sfx/chicken.ogg",
+   "dur": 1.6,
+   "loop": false,
+   "label": "tavuk gıdaklaması (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "animal"
+   ]
+  },
+  {
+   "id": "bell",
+   "url": "sfx/bell.mp3",
+   "ogg": "sfx/bell.ogg",
+   "dur": 3,
+   "loop": false,
+   "label": "çan / zil (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "village"
+   ]
+  },
+  {
+   "id": "water_pour",
+   "url": "sfx/water_pour.mp3",
+   "ogg": "sfx/water_pour.ogg",
+   "dur": 1.4,
+   "loop": false,
+   "label": "su dökme (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "water"
+   ]
+  },
+  {
+   "id": "slap",
+   "url": "sfx/slap.mp3",
+   "ogg": "sfx/slap.ogg",
+   "dur": 0.25,
+   "loop": false,
+   "label": "tokat (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "body_fall",
+   "url": "sfx/body_fall.mp3",
+   "ogg": "sfx/body_fall.ogg",
+   "dur": 0.6,
+   "loop": false,
+   "label": "yere düşme (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "foley"
+   ]
+  },
+  {
+   "id": "brush",
+   "url": "sfx/brush.mp3",
+   "ogg": "sfx/brush.ogg",
+   "dur": 3,
+   "loop": true,
+   "label": "kaşağı / fırçalama (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "horse",
+    "foley"
+   ]
+  },
+  {
+   "id": "room_tone",
+   "url": "sfx/room_tone.mp3",
+   "ogg": "sfx/room_tone.ogg",
+   "dur": 10,
+   "loop": true,
+   "label": "iç mekân sessizliği",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "ambient"
+   ]
+  },
+  {
+   "id": "crickets",
+   "url": "sfx/crickets.mp3",
+   "ogg": "sfx/crickets.ogg",
+   "dur": 10.5,
+   "loop": true,
+   "label": "cırcır böcekleri (gece)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "ambient",
+    "night"
+   ]
+  },
+  {
+   "id": "river",
+   "url": "sfx/stream.mp3",
+   "ogg": "sfx/stream.ogg",
+   "dur": 30,
+   "loop": true,
+   "label": "dere / su şırıltısı",
+   "src": "OGA park-ambiences (CC0)",
+   "tags": [
+    "ambient",
+    "water"
+   ],
+   "alias": "stream"
+  },
+  {
+   "id": "neigh",
+   "url": "sfx/horse_neigh.mp3",
+   "ogg": "sfx/horse_neigh.ogg",
+   "dur": 2.05,
+   "loop": false,
+   "label": "at kişnemesi (sentez)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "horse",
+    "animal"
+   ],
+   "alias": "horse_neigh"
+  },
+  {
+   "id": "hooves",
+   "url": "sfx/hooves_walk.mp3",
+   "ogg": "sfx/hooves_walk.ogg",
+   "dur": 4,
+   "loop": true,
+   "label": "at nal sesi (yürüyüş)",
+   "src": "OGA horse-trotting (CC0), yeniden düzenlendi",
+   "tags": [
+    "horse"
+   ],
+   "alias": "hooves_walk"
+  },
+  {
+   "id": "waves",
+   "url": "sfx/sea_waves.mp3",
+   "ogg": "sfx/sea_waves.ogg",
+   "dur": 30,
+   "loop": true,
+   "label": "deniz / dalga",
+   "src": "OGA sea-and-river-wave-sounds (CC0)",
+   "tags": [
+    "ambient",
+    "water"
+   ],
+   "alias": "sea_waves"
+  },
+  {
+   "id": "fire",
+   "url": "sfx/fire_crackle.mp3",
+   "ogg": "sfx/fire_crackle.ogg",
+   "dur": 18.5,
+   "loop": true,
+   "label": "ocak / ateş çıtırtısı",
+   "src": "OGA fireplace-sound-loop (CC0)",
+   "tags": [
+    "ambient"
+   ],
+   "alias": "fire_crackle"
+  },
+  {
+   "id": "door",
+   "url": "sfx/door_close.mp3",
+   "ogg": "sfx/door_close.ogg",
+   "dur": 0.79,
+   "loop": false,
+   "label": "kapı kapanması",
+   "src": "OGA 4-door-closes (CC0)",
+   "tags": [
+    "foley"
+   ],
+   "alias": "door_close"
+  },
+  {
+   "id": "steps",
+   "url": "sfx/footsteps.mp3",
+   "ogg": "sfx/footsteps.ogg",
+   "dur": 4,
+   "loop": true,
+   "label": "ayak sesleri (yürüyüş)",
+   "src": "OGA footsteps-0 (CC0)",
+   "tags": [
+    "foley"
+   ],
+   "alias": "footsteps"
+  }
+ ],
+ "music": [
+  {
+   "id": "calm_strings",
+   "url": "music/calm_strings.mp3",
+   "ogg": "music/calm_strings.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Sakin yaylılar (huzurlu sabah, kır)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "calm",
+    "day"
+   ]
+  },
+  {
+   "id": "tension",
+   "url": "music/tension.mp3",
+   "ogg": "music/tension.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Gerilim (tehlike, sır, bekleyiş)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "tension"
+   ]
+  },
+  {
+   "id": "sad",
+   "url": "music/sad.mp3",
+   "ogg": "music/sad.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Hüzün (ayrılık, kayıp)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "sad"
+   ]
+  },
+  {
+   "id": "joy",
+   "url": "music/joy.mp3",
+   "ogg": "music/joy.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Neşe (bayram, oyun, kavuşma)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "happy"
+   ]
+  },
+  {
+   "id": "eastern",
+   "url": "music/eastern.mp3",
+   "ogg": "music/eastern.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Doğu ezgisi — Hicaz (ney, ud, def)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "eastern",
+    "ottoman"
+   ]
+  },
+  {
+   "id": "village",
+   "url": "music/village.mp3",
+   "ogg": "music/village.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Köy havası (saz, ney)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "village",
+    "folk"
+   ]
+  },
+  {
+   "id": "night",
+   "url": "music/night.mp3",
+   "ogg": "music/night.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Gece / gizem",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "night",
+    "mystery"
+   ]
+  },
+  {
+   "id": "heroic",
+   "url": "music/heroic.mp3",
+   "ogg": "music/heroic.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Kahramanlık / savaş",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "epic",
+    "battle"
+   ]
+  },
+  {
+   "id": "tension_low",
+   "url": "music/tension.mp3",
+   "ogg": "music/tension.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Gerilim (tehlike, sır, bekleyiş)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "tension"
+   ],
+   "alias": "tension"
+  },
+  {
+   "id": "calm",
+   "url": "music/calm_strings.mp3",
+   "ogg": "music/calm_strings.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Sakin yaylılar (huzurlu sabah, kır)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "calm",
+    "day"
+   ],
+   "alias": "calm_strings"
+  },
+  {
+   "id": "sad_strings",
+   "url": "music/sad.mp3",
+   "ogg": "music/sad.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Hüzün (ayrılık, kayıp)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "sad"
+   ],
+   "alias": "sad"
+  },
+  {
+   "id": "happy",
+   "url": "music/joy.mp3",
+   "ogg": "music/joy.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Neşe (bayram, oyun, kavuşma)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "happy"
+   ],
+   "alias": "joy"
+  },
+  {
+   "id": "oriental",
+   "url": "music/eastern.mp3",
+   "ogg": "music/eastern.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Doğu ezgisi — Hicaz (ney, ud, def)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "eastern",
+    "ottoman"
+   ],
+   "alias": "eastern"
+  },
+  {
+   "id": "folk",
+   "url": "music/village.mp3",
+   "ogg": "music/village.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Köy havası (saz, ney)",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "village",
+    "folk"
+   ],
+   "alias": "village"
+  },
+  {
+   "id": "mystery",
+   "url": "music/night.mp3",
+   "ogg": "music/night.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Gece / gizem",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "night",
+    "mystery"
+   ],
+   "alias": "night"
+  },
+  {
+   "id": "epic",
+   "url": "music/heroic.mp3",
+   "ogg": "music/heroic.ogg",
+   "dur": 32,
+   "loop": true,
+   "label": "Kahramanlık / savaş",
+   "src": "HADİ sentez (CC0)",
+   "tags": [
+    "epic",
+    "battle"
+   ],
+   "alias": "heroic"
+  }
+ ],
+ "licenses": "film3/LICENSES.md",
+ "parts_v": {
+  "human": 1,
+  "world": 10
+ }
+}

@@ -1,0 +1,1918 @@
+{
+ "_note": "HADİ Film v3 tanıtım: Kaşağı (Ömer Seyfettin), kırık kaşağı sahnesi ~62 sn (anlatıcı yok; \"ben\" = Ağabey, sessiz tanık) — elle yazıldı (ajan C). Biçim books_film3 (spec §4) ile aynı; ses yok (audio null), visemler metinden.",
+ "film": {
+  "v": 1,
+  "ch": 0,
+  "dur": 62,
+  "cast": [
+   "agabey",
+   "hasan",
+   "dadaruh",
+   "baba",
+   "tosun"
+  ],
+  "scenes": [
+   {
+    "i": 0,
+    "title": "Avluda kırık kaşağı",
+    "env": "village_yard",
+    "time": "morning",
+    "weather": "clear",
+    "particles": [
+     "dust",
+     "leaves"
+    ],
+    "light": {
+     "sun": [
+      0.55,
+      0.55,
+      0.45
+     ],
+     "color": "#FFE2BD",
+     "ambient": 0.55,
+     "fog": 0.08
+    },
+    "src": [
+     22,
+     25
+    ],
+    "t0": 0,
+    "t1": 22,
+    "actors": [
+     {
+      "id": "dadaruh",
+      "spot": "b",
+      "face": "tosun"
+     },
+     {
+      "id": "tosun",
+      "spot": "c"
+     },
+     {
+      "id": "baba",
+      "spot": "g",
+      "face": "a"
+     }
+    ],
+    "beats": [
+     {
+      "t": 0.3,
+      "d": 3.2,
+      "src": {
+       "b": 22,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "do": "walk",
+      "to": "tosun",
+      "prop": "curry_comb"
+     },
+     {
+      "t": 3.6,
+      "d": 4.5,
+      "src": {
+       "b": 22,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "do": "pick_up",
+      "face": "tosun"
+     },
+     {
+      "t": 2,
+      "d": 6,
+      "src": {
+       "b": 22,
+       "s": 0
+      },
+      "who": "baba",
+      "do": "walk",
+      "to": "a"
+     },
+     {
+      "t": 4,
+      "d": 4,
+      "src": {
+       "b": 22,
+       "s": 0
+      },
+      "who": "tosun",
+      "do": "eat"
+     },
+     {
+      "t": 8.2,
+      "d": 2.4,
+      "src": {
+       "b": 22,
+       "s": 2
+      },
+      "who": "baba",
+      "do": "pick_up",
+      "expr": "surprise"
+     },
+     {
+      "t": 10.6,
+      "d": 1.4,
+      "src": {
+       "b": 22,
+       "s": 2
+      },
+      "who": "baba",
+      "do": "idle",
+      "face": "dadaruh",
+      "expr": "angry"
+     },
+     {
+      "t": 12,
+      "d": 1.4,
+      "src": {
+       "b": 23,
+       "s": 0
+      },
+      "who": "baba",
+      "say": "l0",
+      "expr": "shout"
+     },
+     {
+      "t": 13.5,
+      "d": 2.6,
+      "src": {
+       "b": 24,
+       "s": 1
+      },
+      "who": "dadaruh",
+      "do": "walk",
+      "to": "baba",
+      "expr": "fear"
+     },
+     {
+      "t": 16.2,
+      "d": 2,
+      "src": {
+       "b": 24,
+       "s": 2
+      },
+      "who": "baba",
+      "do": "point",
+      "face": "dadaruh",
+      "expr": "angry"
+     },
+     {
+      "t": 18.3,
+      "d": 1.6,
+      "src": {
+       "b": 25,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "do": "head_shake",
+      "say": "l1",
+      "expr": "fear"
+     },
+     {
+      "t": 20,
+      "d": 2,
+      "src": {
+       "b": 26,
+       "s": 0
+      },
+      "who": "tosun",
+      "do": "neigh"
+     }
+    ],
+    "shots": [
+     {
+      "t": 0,
+      "d": 4.2,
+      "type": "establishing",
+      "target": [
+       "dadaruh",
+       "tosun",
+       "baba"
+      ],
+      "move": "crane"
+     },
+     {
+      "t": 4.2,
+      "d": 4,
+      "type": "medium",
+      "target": "baba",
+      "move": "track"
+     },
+     {
+      "t": 8.2,
+      "d": 2.4,
+      "type": "insert",
+      "target": "baba",
+      "move": "dolly_in"
+     },
+     {
+      "t": 10.6,
+      "d": 2.8,
+      "type": "close",
+      "target": [
+       "baba",
+       "dadaruh"
+      ],
+      "move": "dolly_in"
+     }
+    ],
+    "sfx": [
+     {
+      "t": 0.5,
+      "id": "stream"
+     },
+     {
+      "t": 20.2,
+      "id": "horse_neigh"
+     }
+    ],
+    "music": {
+     "id": "calm_strings",
+     "vol": 0.35
+    },
+    "trans": "fade"
+   },
+   {
+    "i": 1,
+    "title": "Ben kırmadım",
+    "env": "village_yard",
+    "time": "morning",
+    "weather": "clear",
+    "particles": [
+     "dust"
+    ],
+    "light": {
+     "sun": [
+      0.55,
+      0.55,
+      0.45
+     ],
+     "color": "#FFE2BD",
+     "ambient": 0.55,
+     "fog": 0.08
+    },
+    "src": [
+     34,
+     45
+    ],
+    "t0": 22,
+    "t1": 62,
+    "actors": [
+     {
+      "id": "baba",
+      "spot": "a",
+      "face": "g"
+     },
+     {
+      "id": "dadaruh",
+      "spot": "b",
+      "face": "baba"
+     },
+     {
+      "id": "hasan",
+      "spot": "g",
+      "face": "baba"
+     },
+     {
+      "id": "agabey",
+      "spot": "e",
+      "face": "hasan"
+     },
+     {
+      "id": "tosun",
+      "spot": "c"
+     }
+    ],
+    "beats": [
+     {
+      "t": 22,
+      "d": 2.8,
+      "src": {
+       "b": 34,
+       "s": 3
+      },
+      "who": "hasan",
+      "do": "run",
+      "to": "baba",
+      "face": "baba"
+     },
+     {
+      "t": 22,
+      "d": 0.6,
+      "src": {
+       "b": 34,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "prop": "curry_comb"
+     },
+     {
+      "t": 23,
+      "d": 1.5,
+      "src": {
+       "b": 34,
+       "s": 5
+      },
+      "who": "baba",
+      "face": "hasan",
+      "expr": "angry"
+     },
+     {
+      "t": 25,
+      "d": 2.6,
+      "src": {
+       "b": 35,
+       "s": 0
+      },
+      "who": "baba",
+      "do": "point",
+      "say": "l2"
+     },
+     {
+      "t": 27.8,
+      "d": 1.2,
+      "src": {
+       "b": 36,
+       "s": 0
+      },
+      "who": "hasan",
+      "do": "nod",
+      "say": "l3"
+     },
+     {
+      "t": 29.2,
+      "d": 2.5,
+      "src": {
+       "b": 37,
+       "s": 0
+      },
+      "who": "baba",
+      "say": "l4"
+     },
+     {
+      "t": 31.8,
+      "d": 2.2,
+      "src": {
+       "b": 38,
+       "s": 0
+      },
+      "who": "hasan",
+      "do": "idle",
+      "face": "dadaruh",
+      "expr": "surprise"
+     },
+     {
+      "t": 34,
+      "d": 2,
+      "src": {
+       "b": 38,
+       "s": 1
+      },
+      "who": "hasan",
+      "do": "head_shake",
+      "face": "baba",
+      "expr": "cry"
+     },
+     {
+      "t": 34.5,
+      "d": 3,
+      "src": {
+       "b": 38,
+       "s": 1
+      },
+      "who": "agabey",
+      "do": "idle",
+      "face": "hasan",
+      "expr": "fear"
+     },
+     {
+      "t": 36,
+      "d": 1.6,
+      "src": {
+       "b": 39,
+       "s": 0
+      },
+      "who": "hasan",
+      "say": "l5",
+      "expr": "cry"
+     },
+     {
+      "t": 37.8,
+      "d": 2,
+      "src": {
+       "b": 40,
+       "s": 0
+      },
+      "who": "baba",
+      "do": "point",
+      "say": "l6"
+     },
+     {
+      "t": 40,
+      "d": 1.8,
+      "src": {
+       "b": 41,
+       "s": 0
+      },
+      "who": "hasan",
+      "do": "cry",
+      "say": "l7"
+     },
+     {
+      "t": 42,
+      "d": 3.8,
+      "src": {
+       "b": 43,
+       "s": 0
+      },
+      "who": "baba",
+      "say": "l8"
+     },
+     {
+      "t": 46,
+      "d": 3,
+      "src": {
+       "b": 44,
+       "s": 0
+      },
+      "who": "hasan",
+      "do": "head_shake",
+      "expr": "cry"
+     },
+     {
+      "t": 46.5,
+      "d": 2.5,
+      "src": {
+       "b": 44,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "do": "idle_sad",
+      "expr": "sad"
+     },
+     {
+      "t": 49,
+      "d": 1.6,
+      "src": {
+       "b": 44,
+       "s": 1
+      },
+      "who": "baba",
+      "do": "walk",
+      "to": "hasan",
+      "expr": "angry"
+     },
+     {
+      "t": 50.8,
+      "d": 1.4,
+      "src": {
+       "b": 44,
+       "s": 2
+      },
+      "who": "baba",
+      "do": "slap"
+     },
+     {
+      "t": 51.6,
+      "d": 3,
+      "src": {
+       "b": 44,
+       "s": 2
+      },
+      "who": "hasan",
+      "do": "cry",
+      "expr": "cry"
+     },
+     {
+      "t": 52.4,
+      "d": 3,
+      "src": {
+       "b": 45,
+       "s": 0
+      },
+      "who": "baba",
+      "say": "l9",
+      "expr": "shout"
+     },
+     {
+      "t": 55.6,
+      "d": 2.4,
+      "src": {
+       "b": 46,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "do": "walk_slow",
+      "to": "hasan",
+      "expr": "sad"
+     },
+     {
+      "t": 58,
+      "d": 2.5,
+      "src": {
+       "b": 46,
+       "s": 0
+      },
+      "who": "dadaruh",
+      "do": "hug",
+      "face": "hasan"
+     },
+     {
+      "t": 58.2,
+      "d": 3.6,
+      "src": {
+       "b": 46,
+       "s": 1
+      },
+      "who": "baba",
+      "do": "walk",
+      "to": "d",
+      "expr": "angry"
+     }
+    ],
+    "shots": [
+     {
+      "t": 22,
+      "d": 3,
+      "type": "wide",
+      "target": [
+       "hasan",
+       "baba"
+      ],
+      "move": "pan_r"
+     },
+     {
+      "t": 25,
+      "d": 2.8,
+      "type": "ots",
+      "target": [
+       "baba",
+       "hasan"
+      ],
+      "move": "static"
+     },
+     {
+      "t": 27.8,
+      "d": 1.4,
+      "type": "ots",
+      "target": [
+       "hasan",
+       "baba"
+      ],
+      "move": "static"
+     },
+     {
+      "t": 29.2,
+      "d": 2.6,
+      "type": "close",
+      "target": [
+       "baba",
+       "hasan"
+      ],
+      "move": "dolly_in"
+     },
+     {
+      "t": 31.8,
+      "d": 2.2,
+      "type": "insert",
+      "target": "dadaruh",
+      "move": "static"
+     },
+     {
+      "t": 34,
+      "d": 3.8,
+      "type": "close",
+      "target": [
+       "hasan",
+       "baba"
+      ],
+      "move": "dolly_in"
+     },
+     {
+      "t": 49,
+      "d": 3.4,
+      "type": "two_shot",
+      "target": [
+       "baba",
+       "hasan"
+      ],
+      "move": "static"
+     },
+     {
+      "t": 52.4,
+      "d": 3.1,
+      "type": "close",
+      "target": [
+       "baba",
+       "hasan"
+      ],
+      "move": "handheld"
+     },
+     {
+      "t": 55.5,
+      "d": 6.5,
+      "type": "wide",
+      "target": [
+       "dadaruh",
+       "hasan",
+       "baba"
+      ],
+      "move": "dolly_out"
+     }
+    ],
+    "sfx": [
+     {
+      "t": 51.25,
+      "id": "slap"
+     }
+    ],
+    "music": {
+     "id": "tension_low",
+     "vol": 0.3
+    },
+    "trans": "fade"
+   }
+  ],
+  "lines": [
+   {
+    "id": "l0",
+    "who": "baba",
+    "text": "Gel buraya!",
+    "emo": "shout",
+    "t": 12,
+    "d": 1.4,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.07,
+      "kk"
+     ],
+     [
+      0.152,
+      "E"
+     ],
+     [
+      0.283,
+      "nn"
+     ],
+     [
+      0.365,
+      "sil"
+     ],
+     [
+      0.388,
+      "PP"
+     ],
+     [
+      0.47,
+      "U"
+     ],
+     [
+      0.601,
+      "RR"
+     ],
+     [
+      0.683,
+      "aa"
+     ],
+     [
+      0.814,
+      "I"
+     ],
+     [
+      0.946,
+      "aa"
+     ],
+     [
+      1.078,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 23,
+     "s": 0
+    }
+   },
+   {
+    "id": "l1",
+    "who": "dadaruh",
+    "text": "Bilmiyorum.",
+    "emo": "fear",
+    "t": 18.4,
+    "d": 1.3,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.065,
+      "PP"
+     ],
+     [
+      0.137,
+      "I"
+     ],
+     [
+      0.254,
+      "nn"
+     ],
+     [
+      0.326,
+      "PP"
+     ],
+     [
+      0.398,
+      "I"
+     ],
+     [
+      0.632,
+      "O"
+     ],
+     [
+      0.748,
+      "RR"
+     ],
+     [
+      0.821,
+      "U"
+     ],
+     [
+      0.937,
+      "PP"
+     ],
+     [
+      1.009,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 25,
+     "s": 0
+    }
+   },
+   {
+    "id": "l2",
+    "who": "baba",
+    "text": "Eğer yalan söylersen seni döverim!",
+    "emo": "angry",
+    "t": 25,
+    "d": 2.6,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.08,
+      "E"
+     ],
+     [
+      0.321,
+      "RR"
+     ],
+     [
+      0.378,
+      "sil"
+     ],
+     [
+      0.395,
+      "I"
+     ],
+     [
+      0.487,
+      "aa"
+     ],
+     [
+      0.58,
+      "nn"
+     ],
+     [
+      0.637,
+      "aa"
+     ],
+     [
+      0.73,
+      "nn"
+     ],
+     [
+      0.787,
+      "sil"
+     ],
+     [
+      0.804,
+      "SS"
+     ],
+     [
+      0.861,
+      "O"
+     ],
+     [
+      0.954,
+      "I"
+     ],
+     [
+      1.047,
+      "nn"
+     ],
+     [
+      1.104,
+      "E"
+     ],
+     [
+      1.196,
+      "RR"
+     ],
+     [
+      1.254,
+      "SS"
+     ],
+     [
+      1.311,
+      "E"
+     ],
+     [
+      1.404,
+      "nn"
+     ],
+     [
+      1.461,
+      "sil"
+     ],
+     [
+      1.478,
+      "SS"
+     ],
+     [
+      1.535,
+      "E"
+     ],
+     [
+      1.628,
+      "nn"
+     ],
+     [
+      1.685,
+      "I"
+     ],
+     [
+      1.778,
+      "sil"
+     ],
+     [
+      1.795,
+      "DD"
+     ],
+     [
+      1.852,
+      "O"
+     ],
+     [
+      1.945,
+      "FF"
+     ],
+     [
+      2.002,
+      "E"
+     ],
+     [
+      2.095,
+      "RR"
+     ],
+     [
+      2.152,
+      "I"
+     ],
+     [
+      2.244,
+      "PP"
+     ],
+     [
+      2.302,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 35,
+     "s": 0
+    }
+   },
+   {
+    "id": "l3",
+    "who": "hasan",
+    "text": "Söylemem.",
+    "emo": "fear",
+    "t": 27.8,
+    "d": 1.1,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.055,
+      "SS"
+     ],
+     [
+      0.128,
+      "O"
+     ],
+     [
+      0.247,
+      "I"
+     ],
+     [
+      0.365,
+      "nn"
+     ],
+     [
+      0.439,
+      "E"
+     ],
+     [
+      0.557,
+      "PP"
+     ],
+     [
+      0.631,
+      "E"
+     ],
+     [
+      0.749,
+      "PP"
+     ],
+     [
+      0.822,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 36,
+     "s": 0
+    }
+   },
+   {
+    "id": "l4",
+    "who": "baba",
+    "text": "Pekala, bu kaşağıyı niye kırdın?",
+    "emo": "angry",
+    "t": 29.2,
+    "d": 2.4,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.08,
+      "PP"
+     ],
+     [
+      0.135,
+      "E"
+     ],
+     [
+      0.224,
+      "kk"
+     ],
+     [
+      0.279,
+      "aa"
+     ],
+     [
+      0.367,
+      "nn"
+     ],
+     [
+      0.422,
+      "aa"
+     ],
+     [
+      0.511,
+      "sil"
+     ],
+     [
+      0.591,
+      "PP"
+     ],
+     [
+      0.646,
+      "U"
+     ],
+     [
+      0.735,
+      "sil"
+     ],
+     [
+      0.751,
+      "kk"
+     ],
+     [
+      0.806,
+      "aa"
+     ],
+     [
+      0.894,
+      "CH"
+     ],
+     [
+      0.949,
+      "aa"
+     ],
+     [
+      1.091,
+      "I"
+     ],
+     [
+      1.358,
+      "sil"
+     ],
+     [
+      1.373,
+      "nn"
+     ],
+     [
+      1.428,
+      "I"
+     ],
+     [
+      1.606,
+      "E"
+     ],
+     [
+      1.695,
+      "sil"
+     ],
+     [
+      1.711,
+      "kk"
+     ],
+     [
+      1.766,
+      "I"
+     ],
+     [
+      1.854,
+      "RR"
+     ],
+     [
+      1.909,
+      "DD"
+     ],
+     [
+      1.964,
+      "I"
+     ],
+     [
+      2.053,
+      "nn"
+     ],
+     [
+      2.108,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 37,
+     "s": 0
+    }
+   },
+   {
+    "id": "l5",
+    "who": "hasan",
+    "text": "Ben kırmadım.",
+    "emo": "cry",
+    "t": 36,
+    "d": 1.5,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.075,
+      "PP"
+     ],
+     [
+      0.155,
+      "E"
+     ],
+     [
+      0.284,
+      "nn"
+     ],
+     [
+      0.364,
+      "sil"
+     ],
+     [
+      0.387,
+      "kk"
+     ],
+     [
+      0.467,
+      "I"
+     ],
+     [
+      0.596,
+      "RR"
+     ],
+     [
+      0.676,
+      "PP"
+     ],
+     [
+      0.756,
+      "aa"
+     ],
+     [
+      0.885,
+      "DD"
+     ],
+     [
+      0.965,
+      "I"
+     ],
+     [
+      1.094,
+      "PP"
+     ],
+     [
+      1.174,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 39,
+     "s": 0
+    }
+   },
+   {
+    "id": "l6",
+    "who": "baba",
+    "text": "Yalan söyleme, diyorum.",
+    "emo": "angry",
+    "t": 37.8,
+    "d": 1.9,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.08,
+      "I"
+     ],
+     [
+      0.17,
+      "aa"
+     ],
+     [
+      0.259,
+      "nn"
+     ],
+     [
+      0.315,
+      "aa"
+     ],
+     [
+      0.404,
+      "nn"
+     ],
+     [
+      0.46,
+      "sil"
+     ],
+     [
+      0.476,
+      "SS"
+     ],
+     [
+      0.532,
+      "O"
+     ],
+     [
+      0.621,
+      "I"
+     ],
+     [
+      0.711,
+      "nn"
+     ],
+     [
+      0.766,
+      "E"
+     ],
+     [
+      0.856,
+      "PP"
+     ],
+     [
+      0.911,
+      "E"
+     ],
+     [
+      1.001,
+      "sil"
+     ],
+     [
+      1.082,
+      "DD"
+     ],
+     [
+      1.137,
+      "I"
+     ],
+     [
+      1.316,
+      "O"
+     ],
+     [
+      1.406,
+      "RR"
+     ],
+     [
+      1.462,
+      "U"
+     ],
+     [
+      1.551,
+      "PP"
+     ],
+     [
+      1.607,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 40,
+     "s": 0
+    }
+   },
+   {
+    "id": "l7",
+    "who": "hasan",
+    "text": "Ben kırmadım.",
+    "emo": "cry",
+    "t": 40,
+    "d": 1.6,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.08,
+      "PP"
+     ],
+     [
+      0.165,
+      "E"
+     ],
+     [
+      0.303,
+      "nn"
+     ],
+     [
+      0.388,
+      "sil"
+     ],
+     [
+      0.413,
+      "kk"
+     ],
+     [
+      0.498,
+      "I"
+     ],
+     [
+      0.636,
+      "RR"
+     ],
+     [
+      0.721,
+      "PP"
+     ],
+     [
+      0.806,
+      "aa"
+     ],
+     [
+      0.944,
+      "DD"
+     ],
+     [
+      1.029,
+      "I"
+     ],
+     [
+      1.167,
+      "PP"
+     ],
+     [
+      1.252,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 41,
+     "s": 0
+    }
+   },
+   {
+    "id": "l8",
+    "who": "baba",
+    "text": "Doğru söyle, darılmayacağım. Yalan çok fenadır.",
+    "emo": "sad",
+    "t": 42,
+    "d": 3.6,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.08,
+      "DD"
+     ],
+     [
+      0.138,
+      "O"
+     ],
+     [
+      0.288,
+      "RR"
+     ],
+     [
+      0.346,
+      "U"
+     ],
+     [
+      0.439,
+      "sil"
+     ],
+     [
+      0.456,
+      "SS"
+     ],
+     [
+      0.514,
+      "O"
+     ],
+     [
+      0.608,
+      "I"
+     ],
+     [
+      0.702,
+      "nn"
+     ],
+     [
+      0.76,
+      "E"
+     ],
+     [
+      0.853,
+      "sil"
+     ],
+     [
+      0.937,
+      "DD"
+     ],
+     [
+      0.996,
+      "aa"
+     ],
+     [
+      1.089,
+      "RR"
+     ],
+     [
+      1.147,
+      "I"
+     ],
+     [
+      1.241,
+      "nn"
+     ],
+     [
+      1.299,
+      "PP"
+     ],
+     [
+      1.357,
+      "aa"
+     ],
+     [
+      1.45,
+      "I"
+     ],
+     [
+      1.544,
+      "aa"
+     ],
+     [
+      1.638,
+      "CH"
+     ],
+     [
+      1.696,
+      "aa"
+     ],
+     [
+      1.846,
+      "I"
+     ],
+     [
+      1.939,
+      "PP"
+     ],
+     [
+      1.997,
+      "sil"
+     ],
+     [
+      2.147,
+      "I"
+     ],
+     [
+      2.241,
+      "aa"
+     ],
+     [
+      2.334,
+      "nn"
+     ],
+     [
+      2.392,
+      "aa"
+     ],
+     [
+      2.486,
+      "nn"
+     ],
+     [
+      2.544,
+      "sil"
+     ],
+     [
+      2.561,
+      "CH"
+     ],
+     [
+      2.619,
+      "O"
+     ],
+     [
+      2.712,
+      "kk"
+     ],
+     [
+      2.77,
+      "sil"
+     ],
+     [
+      2.787,
+      "FF"
+     ],
+     [
+      2.845,
+      "E"
+     ],
+     [
+      2.939,
+      "nn"
+     ],
+     [
+      2.997,
+      "aa"
+     ],
+     [
+      3.091,
+      "DD"
+     ],
+     [
+      3.149,
+      "I"
+     ],
+     [
+      3.242,
+      "RR"
+     ],
+     [
+      3.3,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 43,
+     "s": 0
+    }
+   },
+   {
+    "id": "l9",
+    "who": "baba",
+    "text": "Götür bunu eve; sakın bunu bir daha buraya sokma!",
+    "emo": "shout",
+    "t": 52.4,
+    "d": 3,
+    "audio": null,
+    "visemes": [
+     [
+      0,
+      "sil"
+     ],
+     [
+      0.08,
+      "kk"
+     ],
+     [
+      0.128,
+      "O"
+     ],
+     [
+      0.205,
+      "DD"
+     ],
+     [
+      0.253,
+      "U"
+     ],
+     [
+      0.33,
+      "RR"
+     ],
+     [
+      0.378,
+      "sil"
+     ],
+     [
+      0.392,
+      "PP"
+     ],
+     [
+      0.44,
+      "U"
+     ],
+     [
+      0.517,
+      "nn"
+     ],
+     [
+      0.565,
+      "U"
+     ],
+     [
+      0.642,
+      "sil"
+     ],
+     [
+      0.656,
+      "E"
+     ],
+     [
+      0.733,
+      "FF"
+     ],
+     [
+      0.781,
+      "E"
+     ],
+     [
+      0.859,
+      "sil"
+     ],
+     [
+      0.982,
+      "SS"
+     ],
+     [
+      1.03,
+      "aa"
+     ],
+     [
+      1.107,
+      "kk"
+     ],
+     [
+      1.155,
+      "I"
+     ],
+     [
+      1.232,
+      "nn"
+     ],
+     [
+      1.28,
+      "sil"
+     ],
+     [
+      1.294,
+      "PP"
+     ],
+     [
+      1.342,
+      "U"
+     ],
+     [
+      1.419,
+      "nn"
+     ],
+     [
+      1.467,
+      "U"
+     ],
+     [
+      1.545,
+      "sil"
+     ],
+     [
+      1.558,
+      "PP"
+     ],
+     [
+      1.606,
+      "I"
+     ],
+     [
+      1.684,
+      "RR"
+     ],
+     [
+      1.731,
+      "sil"
+     ],
+     [
+      1.745,
+      "DD"
+     ],
+     [
+      1.793,
+      "aa"
+     ],
+     [
+      1.871,
+      "kk"
+     ],
+     [
+      1.918,
+      "aa"
+     ],
+     [
+      1.996,
+      "sil"
+     ],
+     [
+      2.01,
+      "PP"
+     ],
+     [
+      2.057,
+      "U"
+     ],
+     [
+      2.135,
+      "RR"
+     ],
+     [
+      2.183,
+      "aa"
+     ],
+     [
+      2.26,
+      "I"
+     ],
+     [
+      2.337,
+      "aa"
+     ],
+     [
+      2.414,
+      "sil"
+     ],
+     [
+      2.428,
+      "SS"
+     ],
+     [
+      2.476,
+      "O"
+     ],
+     [
+      2.553,
+      "kk"
+     ],
+     [
+      2.601,
+      "PP"
+     ],
+     [
+      2.649,
+      "aa"
+     ],
+     [
+      2.726,
+      "sil"
+     ]
+    ],
+    "src": {
+     "b": 45,
+     "s": 0
+    }
+   }
+  ],
+  "coverage": {
+   "sentences": 34,
+   "covered": 34
+  }
+ },
+ "cast": [
+  {
+   "id": "agabey",
+   "name": "Ağabey",
+   "kind": "human",
+   "sex": "m",
+   "age": 9,
+   "morphs": {
+    "weight": 0.4,
+    "height": 0.3,
+    "age": 0.15,
+    "gender": 0.95
+   },
+   "skin": "#E6B896",
+   "eyes": "#2E1E12",
+   "eyeColor": "dark",
+   "hair": {
+    "id": "short_straight",
+    "color": "#1E1A18"
+   },
+   "brows": {
+    "id": "thin",
+    "color": "#1E1A18"
+   },
+   "beard": null,
+   "mustache": null,
+   "outfit": "village_boy",
+   "hat": null,
+   "animal": null,
+   "color": null,
+   "voice": {
+    "name": "Puck",
+    "pitch": 2,
+    "rate": 1.06
+   },
+   "traits": "dokuz yaşlarında, kara saçlı, kısa saçlı köy çocuğu, meraklı, kıskanç, sonra vicdan azabı çeken"
+  },
+  {
+   "id": "hasan",
+   "name": "Hasan",
+   "kind": "human",
+   "sex": "m",
+   "age": 8,
+   "morphs": {
+    "weight": 0.3,
+    "eye_size": 1,
+    "gender": 0.9,
+    "age": 0.1312
+   },
+   "skin": "#EBC2A2",
+   "eyes": "#4E6E38",
+   "eyeColor": "green",
+   "hair": {
+    "id": "short_straight",
+    "color": "#E3C16F"
+   },
+   "brows": {
+    "id": "thin",
+    "color": "#E3C16F"
+   },
+   "beard": null,
+   "mustache": null,
+   "outfit": "village_boy",
+   "hat": null,
+   "animal": null,
+   "color": null,
+   "voice": {
+    "name": "Sadachbia",
+    "pitch": 2,
+    "rate": 1.06
+   },
+   "traits": "sarı saçlı, zayıf küçük çocuk, masum, inatçı, korkak"
+  },
+  {
+   "id": "dadaruh",
+   "name": "Dadaruh",
+   "kind": "human",
+   "sex": "m",
+   "age": 70,
+   "morphs": {
+    "weight": 0.55,
+    "belly": 0.4,
+    "age": 0.8462,
+    "gender": 0.95
+   },
+   "skin": "#C68E62",
+   "eyes": "#7A5A2A",
+   "eyeColor": "hazel",
+   "hair": {
+    "id": "short_straight",
+    "color": "#9A9A96"
+   },
+   "brows": {
+    "id": "thin",
+    "color": "#9A9A96"
+   },
+   "beard": {
+    "id": "full",
+    "color": "#9A9A96"
+   },
+   "mustache": {
+    "id": "thick",
+    "color": "#9A9A96"
+   },
+   "outfit": "village_man",
+   "hat": "skullcap",
+   "animal": null,
+   "color": null,
+   "voice": {
+    "name": "Sadaltager",
+    "pitch": -1,
+    "rate": 0.92
+   },
+   "traits": "ihtiyar seyis, kır sakallı, ela gözlü, şalvarlı, şefkatli, sabırlı"
+  },
+  {
+   "id": "baba",
+   "name": "Baba",
+   "kind": "human",
+   "sex": "m",
+   "age": 45,
+   "morphs": {
+    "jaw_wide": 0.7,
+    "brow_low": 0.6,
+    "age": 0.6538,
+    "gender": 0.95
+   },
+   "skin": "#D9A47E",
+   "eyes": "#3E6A9A",
+   "eyeColor": "blue",
+   "hair": {
+    "id": "short_straight",
+    "color": "#2A1E18"
+   },
+   "brows": {
+    "id": "thin",
+    "color": "#2A1E18"
+   },
+   "beard": null,
+   "mustache": {
+    "id": "handlebar",
+    "color": "#1E1A18"
+   },
+   "outfit": "village_man",
+   "hat": "fez_red",
+   "animal": null,
+   "color": null,
+   "voice": {
+    "name": "Alnilam",
+    "pitch": 0,
+    "rate": 1
+   },
+   "traits": "sert bakışlı, bıyıklı, fesli çiftlik sahibi, sert, otoriter"
+  },
+  {
+   "id": "tosun",
+   "name": "Tosun",
+   "kind": "animal",
+   "sex": "m",
+   "age": 6,
+   "morphs": {},
+   "skin": null,
+   "eyes": null,
+   "eyeColor": null,
+   "hair": null,
+   "brows": null,
+   "beard": null,
+   "mustache": null,
+   "outfit": null,
+   "hat": null,
+   "animal": "horse",
+   "color": "#5C3A22",
+   "voice": null,
+   "traits": "doru at"
+  }
+ ]
+}

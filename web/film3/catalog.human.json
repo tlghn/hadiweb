@@ -1,0 +1,3844 @@
+{
+ "v": 1,
+ "human": {
+  "url": "human.glb",
+  "morphs": [
+   "gender",
+   "age",
+   "weight",
+   "muscle",
+   "height",
+   "proportion",
+   "head_round",
+   "head_long",
+   "head_wide",
+   "head_size",
+   "head_square",
+   "head_fat",
+   "face_age",
+   "forehead_slope",
+   "forehead_high",
+   "jaw_wide",
+   "chin_prominent",
+   "chin_height",
+   "chin_wide",
+   "chin_forward",
+   "cheek_full",
+   "cheek_bones",
+   "brow_arch",
+   "brow_low",
+   "brow_ridge",
+   "eye_size",
+   "eye_slant",
+   "eye_spacing",
+   "eye_open",
+   "eye_bags",
+   "eye_hooded",
+   "nose_long",
+   "nose_wide",
+   "nose_size",
+   "nose_hook",
+   "nose_tip_down",
+   "nose_flare",
+   "nose_out",
+   "lip_full",
+   "lip_wide",
+   "mouth_down",
+   "mouth_forward",
+   "mouth_low",
+   "cupid_bow",
+   "ear_size",
+   "ear_out",
+   "ear_lobe",
+   "ear_pointed",
+   "neck_long",
+   "neck_thick",
+   "double_chin",
+   "shoulder_wide",
+   "chest_wide",
+   "chest_deep",
+   "torso_v",
+   "torso_long",
+   "bust",
+   "belly",
+   "waist",
+   "hip_wide",
+   "buttocks",
+   "arm_long",
+   "leg_long",
+   "arm_fat",
+   "arm_muscle",
+   "leg_fat",
+   "hand_size",
+   "foot_size",
+   "bowlegs"
+  ],
+  "params": {
+   "gender": {
+    "label": "Cinsiyet (0 kadın, 1 erkek)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "age": {
+    "label": "Yaş (0=1 yaş, 0.1875=11, 0.5=25, 1=90 yaş)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "weight": {
+    "label": "Kilo (0 çok zayıf, 1 çok kilolu)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "muscle": {
+    "label": "Kas (0 güçsüz, 1 çok kaslı)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "height": {
+    "label": "Boy (yaşa göre; 0.35–0.65 olağan, 0 çok kısa, 1 çok uzun)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "proportion": {
+    "label": "Beden oranı (0 sıradan, 1 ideal)",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "macro"
+   },
+   "head_round": {
+    "label": "Baş yuvarlaklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_long": {
+    "label": "Baş uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_wide": {
+    "label": "Baş genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_size": {
+    "label": "Baş büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_square": {
+    "label": "Köşeli baş",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "head_fat": {
+    "label": "Dolgun yüz",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "face_age": {
+    "label": "Yüz yaşlılığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "forehead_slope": {
+    "label": "Alın eğimi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "forehead_high": {
+    "label": "Alın yüksekliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "jaw_wide": {
+    "label": "Çene kemiği genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_prominent": {
+    "label": "Çene çıkıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_height": {
+    "label": "Çene boyu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_wide": {
+    "label": "Çene ucu genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chin_forward": {
+    "label": "Çene ileri",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "cheek_full": {
+    "label": "Yanak dolgunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "cheek_bones": {
+    "label": "Elmacık kemiği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "brow_arch": {
+    "label": "Kaş kavisi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "brow_low": {
+    "label": "Kaş alçaklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "brow_ridge": {
+    "label": "Kaş kemeri çıkıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_size": {
+    "label": "Göz büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_slant": {
+    "label": "Göz çekikliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_spacing": {
+    "label": "Göz arası",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_open": {
+    "label": "Göz açıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_bags": {
+    "label": "Göz altı torbası",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "eye_hooded": {
+    "label": "Göz kapağı düşüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_long": {
+    "label": "Burun uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_wide": {
+    "label": "Burun genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_size": {
+    "label": "Burun iriliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_hook": {
+    "label": "Kemerli burun",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_tip_down": {
+    "label": "Burun ucu düşük",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_flare": {
+    "label": "Burun kanadı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "nose_out": {
+    "label": "Burun çıkıklığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "lip_full": {
+    "label": "Dudak dolgunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "lip_wide": {
+    "label": "Ağız genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "mouth_down": {
+    "label": "Ağız kenarı düşük",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "mouth_forward": {
+    "label": "Ağız ileri",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "mouth_low": {
+    "label": "Ağız aşağıda",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "cupid_bow": {
+    "label": "Dudak yayı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_size": {
+    "label": "Kulak büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_out": {
+    "label": "Kepçe kulak",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_lobe": {
+    "label": "Kulak memesi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "ear_pointed": {
+    "label": "Sivri kulak",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "neck_long": {
+    "label": "Boyun uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "neck_thick": {
+    "label": "Boyun kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "double_chin": {
+    "label": "Gıdı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "shoulder_wide": {
+    "label": "Omuz genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chest_wide": {
+    "label": "Göğüs kafesi",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "chest_deep": {
+    "label": "Göğüs derinliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "torso_v": {
+    "label": "V gövde",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "torso_long": {
+    "label": "Gövde uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "bust": {
+    "label": "Göğüs",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "belly": {
+    "label": "Göbek",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "waist": {
+    "label": "Bel kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "hip_wide": {
+    "label": "Kalça genişliği",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "buttocks": {
+    "label": "Kalça dolgunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "arm_long": {
+    "label": "Kol uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "leg_long": {
+    "label": "Bacak uzunluğu",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "arm_fat": {
+    "label": "Kol kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "arm_muscle": {
+    "label": "Kol kası",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "leg_fat": {
+    "label": "Bacak kalınlığı",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "hand_size": {
+    "label": "El büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "foot_size": {
+    "label": "Ayak büyüklüğü",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   },
+   "bowlegs": {
+    "label": "Çarpık bacak",
+    "min": 0,
+    "max": 1,
+    "neutral": 0.5,
+    "group": "shape"
+   }
+  },
+  "ageYears": [
+   [
+    1,
+    0
+   ],
+   [
+    11,
+    0.1875
+   ],
+   [
+    25,
+    0.5
+   ],
+   [
+    90,
+    1
+   ]
+  ],
+  "targets": {
+   "mac_f_baby": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      0
+     ]
+    ]
+   },
+   "mac_f_child": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      0
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_f_young": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ]
+   },
+   "mac_f_old": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_m_baby": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      0
+     ]
+    ]
+   },
+   "mac_m_child": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      0
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_m_young": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ]
+   },
+   "mac_m_old": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_hi_f_child": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_f_child": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_f_young": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_f_young": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_f_old": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_f_old": {
+    "gender": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_m_child": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_m_child": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_m_young": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_m_young": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_weight_hi_m_old": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_weight_lo_m_old": {
+    "gender": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "weight": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_muscle_hi_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_muscle_lo_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_height_hi_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      0.3
+     ]
+    ]
+   },
+   "mac_height_lo_child": {
+    "age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.1875,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0,
+      0.6
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_height_hi_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      0.3
+     ]
+    ]
+   },
+   "mac_height_lo_young": {
+    "age": [
+     [
+      0.1875,
+      0
+     ],
+     [
+      0.5,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "height": [
+     [
+      0,
+      0.6
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_height_hi_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      0.3
+     ]
+    ]
+   },
+   "mac_height_lo_old": {
+    "age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "height": [
+     [
+      0,
+      0.6
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mac_proportion_hi": {
+    "proportion": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mac_proportion_lo": {
+    "proportion": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_round_hi": {
+    "head_round": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_round_lo": {
+    "head_round": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_long_hi": {
+    "head_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_long_lo": {
+    "head_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_wide_hi": {
+    "head_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_wide_lo": {
+    "head_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_size_hi": {
+    "head_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_size_lo": {
+    "head_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_square_hi": {
+    "head_square": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_square_lo": {
+    "head_square": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "head_fat_hi": {
+    "head_fat": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "head_fat_lo": {
+    "head_fat": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "face_age_hi": {
+    "face_age": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "face_age_lo": {
+    "face_age": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "forehead_slope_hi": {
+    "forehead_slope": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "forehead_slope_lo": {
+    "forehead_slope": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "forehead_high_hi": {
+    "forehead_high": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "forehead_high_lo": {
+    "forehead_high": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "jaw_wide_hi": {
+    "jaw_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "jaw_wide_lo": {
+    "jaw_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_prominent_hi": {
+    "chin_prominent": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_prominent_lo": {
+    "chin_prominent": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_height_hi": {
+    "chin_height": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_height_lo": {
+    "chin_height": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_wide_hi": {
+    "chin_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_wide_lo": {
+    "chin_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chin_forward_hi": {
+    "chin_forward": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chin_forward_lo": {
+    "chin_forward": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "cheek_full_hi": {
+    "cheek_full": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cheek_full_lo": {
+    "cheek_full": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "cheek_bones_hi": {
+    "cheek_bones": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cheek_bones_lo": {
+    "cheek_bones": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "brow_arch_hi": {
+    "brow_arch": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "brow_arch_lo": {
+    "brow_arch": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "brow_low_hi": {
+    "brow_low": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "brow_low_lo": {
+    "brow_low": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "brow_ridge_hi": {
+    "brow_ridge": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "brow_ridge_lo": {
+    "brow_ridge": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_size_hi": {
+    "eye_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_size_lo": {
+    "eye_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_slant_hi": {
+    "eye_slant": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_slant_lo": {
+    "eye_slant": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_spacing_hi": {
+    "eye_spacing": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_spacing_lo": {
+    "eye_spacing": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_open_hi": {
+    "eye_open": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_open_lo": {
+    "eye_open": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_bags_hi": {
+    "eye_bags": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_bags_lo": {
+    "eye_bags": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "eye_hooded_hi": {
+    "eye_hooded": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "eye_hooded_lo": {
+    "eye_hooded": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_long_hi": {
+    "nose_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_long_lo": {
+    "nose_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_wide_hi": {
+    "nose_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_wide_lo": {
+    "nose_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_size_hi": {
+    "nose_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_size_lo": {
+    "nose_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_hook_hi": {
+    "nose_hook": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_hook_lo": {
+    "nose_hook": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_tip_down_hi": {
+    "nose_tip_down": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_tip_down_lo": {
+    "nose_tip_down": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_flare_hi": {
+    "nose_flare": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_flare_lo": {
+    "nose_flare": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "nose_out_hi": {
+    "nose_out": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "nose_out_lo": {
+    "nose_out": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "lip_full_hi": {
+    "lip_full": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "lip_full_lo": {
+    "lip_full": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "lip_wide_hi": {
+    "lip_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "lip_wide_lo": {
+    "lip_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mouth_down_hi": {
+    "mouth_down": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mouth_down_lo": {
+    "mouth_down": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mouth_forward_hi": {
+    "mouth_forward": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mouth_forward_lo": {
+    "mouth_forward": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "mouth_low_hi": {
+    "mouth_low": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "mouth_low_lo": {
+    "mouth_low": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "cupid_bow_hi": {
+    "cupid_bow": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "cupid_bow_lo": {
+    "cupid_bow": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_size_hi": {
+    "ear_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_size_lo": {
+    "ear_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_out_hi": {
+    "ear_out": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_out_lo": {
+    "ear_out": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_lobe_hi": {
+    "ear_lobe": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_lobe_lo": {
+    "ear_lobe": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "ear_pointed_hi": {
+    "ear_pointed": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "ear_pointed_lo": {
+    "ear_pointed": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "neck_long_hi": {
+    "neck_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "neck_long_lo": {
+    "neck_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "neck_thick_hi": {
+    "neck_thick": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "neck_thick_lo": {
+    "neck_thick": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "double_chin_hi": {
+    "double_chin": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "double_chin_lo": {
+    "double_chin": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "shoulder_wide_hi": {
+    "shoulder_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "shoulder_wide_lo": {
+    "shoulder_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chest_wide_hi": {
+    "chest_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chest_wide_lo": {
+    "chest_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "chest_deep_hi": {
+    "chest_deep": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "chest_deep_lo": {
+    "chest_deep": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "torso_v_hi": {
+    "torso_v": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "torso_v_lo": {
+    "torso_v": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "torso_long_hi": {
+    "torso_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "torso_long_lo": {
+    "torso_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "bust_hi": {
+    "bust": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "bust_lo": {
+    "bust": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "belly_hi": {
+    "belly": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "belly_lo": {
+    "belly": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "waist_hi": {
+    "waist": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "waist_lo": {
+    "waist": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "hip_wide_hi": {
+    "hip_wide": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "hip_wide_lo": {
+    "hip_wide": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "buttocks_hi": {
+    "buttocks": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "buttocks_lo": {
+    "buttocks": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "arm_long_hi": {
+    "arm_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "arm_long_lo": {
+    "arm_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "leg_long_hi": {
+    "leg_long": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "leg_long_lo": {
+    "leg_long": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "arm_fat_hi": {
+    "arm_fat": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "arm_fat_lo": {
+    "arm_fat": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "arm_muscle_hi": {
+    "arm_muscle": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "arm_muscle_lo": {
+    "arm_muscle": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "leg_fat_hi": {
+    "leg_fat": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "leg_fat_lo": {
+    "leg_fat": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "hand_size_hi": {
+    "hand_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "hand_size_lo": {
+    "hand_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "foot_size_hi": {
+    "foot_size": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "foot_size_lo": {
+    "foot_size": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   },
+   "bowlegs_hi": {
+    "bowlegs": [
+     [
+      0.5,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ]
+   },
+   "bowlegs_lo": {
+    "bowlegs": [
+     [
+      0,
+      1
+     ],
+     [
+      0.5,
+      0
+     ]
+    ]
+   }
+  },
+  "units": [
+   "u_eye_left_closure",
+   "u_eye_left_opened_up",
+   "u_eye_left_slit",
+   "u_eye_right_closure",
+   "u_eye_right_opened_up",
+   "u_eye_right_slit",
+   "u_eyebrows_left_down",
+   "u_eyebrows_left_extern_up",
+   "u_eyebrows_left_inner_up",
+   "u_eyebrows_left_up",
+   "u_eyebrows_right_down",
+   "u_eyebrows_right_extern_up",
+   "u_eyebrows_right_inner_up",
+   "u_eyebrows_right_up",
+   "u_mouth_compression",
+   "u_mouth_corner_puller",
+   "u_mouth_depression_retraction",
+   "u_mouth_depression",
+   "u_mouth_elevation",
+   "u_mouth_eversion",
+   "u_mouth_open",
+   "u_mouth_parling",
+   "u_mouth_part_later",
+   "u_mouth_protusion",
+   "u_mouth_pursing",
+   "u_mouth_retraction",
+   "u_mouth_upward_retraction",
+   "u_neck_platysma",
+   "u_nose_compression",
+   "u_nose_depression",
+   "u_nose_left_dilatation",
+   "u_nose_left_elevation",
+   "u_nose_right_dilatation",
+   "u_nose_right_elevation",
+   "u_jaw_drop"
+  ],
+  "expressions": {
+   "neutral": {},
+   "smile": {
+    "u_mouth_corner_puller": 0.75,
+    "u_eye_left_slit": 0.2,
+    "u_eye_right_slit": 0.2,
+    "u_mouth_parling": 0.15
+   },
+   "laugh": {
+    "u_mouth_corner_puller": 1.0,
+    "u_eye_left_slit": 0.55,
+    "u_eye_right_slit": 0.55,
+    "u_eyebrows_left_up": 0.15,
+    "u_eyebrows_right_up": 0.15,
+    "u_mouth_parling": 0.3,
+    "u_jaw_drop": 0.33,
+    "u_mouth_open": 0.36,
+    "u_mouth_pursing": 0.084
+   },
+   "sad": {
+    "u_eyebrows_left_inner_up": 0.85,
+    "u_eyebrows_right_inner_up": 0.85,
+    "u_mouth_depression": 0.7,
+    "u_eye_left_slit": 0.15,
+    "u_eye_right_slit": 0.15
+   },
+   "cry": {
+    "u_eyebrows_left_inner_up": 1.0,
+    "u_eyebrows_right_inner_up": 1.0,
+    "u_mouth_depression": 0.8,
+    "u_mouth_depression_retraction": 0.35,
+    "u_eye_left_slit": 0.55,
+    "u_eye_right_slit": 0.55,
+    "u_neck_platysma": 0.3,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12,
+    "u_mouth_pursing": 0.028
+   },
+   "angry": {
+    "u_eyebrows_left_down": 1.0,
+    "u_eyebrows_right_down": 1.0,
+    "u_mouth_compression": 0.55,
+    "u_eye_left_slit": 0.3,
+    "u_eye_right_slit": 0.3,
+    "u_nose_left_dilatation": 0.5,
+    "u_nose_right_dilatation": 0.5,
+    "u_nose_compression": 0.3
+   },
+   "fear": {
+    "u_eyebrows_left_inner_up": 0.7,
+    "u_eyebrows_right_inner_up": 0.7,
+    "u_eyebrows_left_up": 0.5,
+    "u_eyebrows_right_up": 0.5,
+    "u_eye_left_opened_up": 0.8,
+    "u_eye_right_opened_up": 0.8,
+    "u_mouth_depression_retraction": 0.6,
+    "u_neck_platysma": 0.4,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12,
+    "u_mouth_pursing": 0.028
+   },
+   "surprise": {
+    "u_eyebrows_left_up": 1.0,
+    "u_eyebrows_right_up": 1.0,
+    "u_eye_left_opened_up": 0.8,
+    "u_eye_right_opened_up": 0.8,
+    "u_jaw_drop": 0.275,
+    "u_mouth_open": 0.3,
+    "u_mouth_pursing": 0.07
+   },
+   "disgust": {
+    "u_nose_left_elevation": 0.8,
+    "u_nose_right_elevation": 0.8,
+    "u_mouth_elevation": 0.55,
+    "u_eyebrows_left_down": 0.4,
+    "u_eyebrows_right_down": 0.4,
+    "u_eye_left_slit": 0.3,
+    "u_eye_right_slit": 0.3,
+    "u_mouth_depression": 0.25
+   },
+   "think": {
+    "u_mouth_compression": 0.3,
+    "u_mouth_part_later": 0.25,
+    "u_eyebrows_left_extern_up": 0.6,
+    "u_eyebrows_right_down": 0.35,
+    "u_eye_right_slit": 0.2
+   },
+   "shout": {
+    "u_eyebrows_left_down": 0.6,
+    "u_eyebrows_right_down": 0.6,
+    "u_mouth_retraction": 0.21,
+    "u_nose_left_dilatation": 0.5,
+    "u_nose_right_dilatation": 0.5,
+    "u_neck_platysma": 0.6,
+    "u_jaw_drop": 0.468,
+    "u_mouth_open": 0.51,
+    "u_mouth_pursing": 0.119
+   },
+   "blink_l": {
+    "u_eye_left_closure": 1.0
+   },
+   "blink_r": {
+    "u_eye_right_closure": 1.0
+   }
+  },
+  "visemes": {
+   "sil": {},
+   "PP": {
+    "u_mouth_compression": 0.65
+   },
+   "FF": {
+    "u_mouth_elevation": 0.35,
+    "u_mouth_retraction": 0.09,
+    "u_jaw_drop": 0.044,
+    "u_mouth_open": 0.048,
+    "u_mouth_pursing": 0.011
+   },
+   "TH": {
+    "u_mouth_retraction": 0.06,
+    "u_jaw_drop": 0.099,
+    "u_mouth_open": 0.108,
+    "u_mouth_pursing": 0.025
+   },
+   "DD": {
+    "u_mouth_retraction": 0.12,
+    "u_jaw_drop": 0.121,
+    "u_mouth_open": 0.132,
+    "u_mouth_pursing": 0.031
+   },
+   "kk": {
+    "u_mouth_retraction": 0.09,
+    "u_jaw_drop": 0.22,
+    "u_mouth_open": 0.24,
+    "u_mouth_pursing": 0.056
+   },
+   "CH": {
+    "u_mouth_protusion": 0.55,
+    "u_mouth_pursing": 0.225,
+    "u_jaw_drop": 0.099,
+    "u_mouth_open": 0.108
+   },
+   "SS": {
+    "u_mouth_retraction": 0.3,
+    "u_jaw_drop": 0.055,
+    "u_mouth_open": 0.06,
+    "u_mouth_pursing": 0.014
+   },
+   "nn": {
+    "u_mouth_retraction": 0.06,
+    "u_jaw_drop": 0.077,
+    "u_mouth_open": 0.084,
+    "u_mouth_pursing": 0.02
+   },
+   "RR": {
+    "u_mouth_protusion": 0.35,
+    "u_mouth_pursing": 0.178,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12
+   },
+   "aa": {
+    "u_jaw_drop": 0.55,
+    "u_mouth_open": 0.6,
+    "u_mouth_pursing": 0.14
+   },
+   "E": {
+    "u_mouth_retraction": 0.3,
+    "u_jaw_drop": 0.275,
+    "u_mouth_open": 0.3,
+    "u_mouth_pursing": 0.07
+   },
+   "I": {
+    "u_mouth_retraction": 0.42,
+    "u_jaw_drop": 0.11,
+    "u_mouth_open": 0.12,
+    "u_mouth_pursing": 0.028
+   },
+   "O": {
+    "u_mouth_pursing": 0.691,
+    "u_mouth_protusion": 0.3,
+    "u_jaw_drop": 0.358,
+    "u_mouth_open": 0.39
+   },
+   "U": {
+    "u_mouth_pursing": 0.917,
+    "u_mouth_protusion": 0.6,
+    "u_jaw_drop": 0.066,
+    "u_mouth_open": 0.072
+   }
+  },
+  "skin": [
+   "#E8BC9A",
+   "#E0B08A",
+   "#D9A47E",
+   "#C68E62",
+   "#8D5A3B",
+   "#5B3A29"
+  ],
+  "skinChildDefault": "#E0B08A",
+  "unitScaleByAge": [
+   [
+    0,
+    0.5
+   ],
+   [
+    0.1875,
+    0.68
+   ],
+   [
+    0.5,
+    1.0
+   ],
+   [
+    1,
+    1.0
+   ]
+  ],
+  "eyeColors": {
+   "brown": "#5A3A1E",
+   "dark": "#2E1E12",
+   "hazel": "#7A5A2A",
+   "green": "#4E6E38",
+   "blue": "#3E6A9A",
+   "gray": "#6E7A84"
+  },
+  "eyeColorDefault": "brown",
+  "bones": [
+   "Root",
+   "pelvis",
+   "thigh_l",
+   "calf_l",
+   "foot_l",
+   "ball_l",
+   "thigh_r",
+   "calf_r",
+   "foot_r",
+   "ball_r",
+   "spine_01",
+   "spine_02",
+   "spine_03",
+   "clavicle_l",
+   "clavicle_r",
+   "neck_01",
+   "head",
+   "eye_l",
+   "eye_r",
+   "upperarm_l",
+   "lowerarm_l",
+   "hand_l",
+   "upperarm_r",
+   "lowerarm_r",
+   "hand_r",
+   "index_01_l",
+   "index_01_r",
+   "index_02_l",
+   "index_02_r",
+   "index_03_l",
+   "index_03_r",
+   "jaw",
+   "middle_01_l",
+   "middle_01_r",
+   "middle_02_l",
+   "middle_02_r",
+   "middle_03_l",
+   "middle_03_r",
+   "pinky_01_l",
+   "pinky_01_r",
+   "pinky_02_l",
+   "pinky_02_r",
+   "pinky_03_l",
+   "pinky_03_r",
+   "ring_01_l",
+   "ring_01_r",
+   "ring_02_l",
+   "ring_02_r",
+   "ring_03_l",
+   "ring_03_r",
+   "thumb_01_l",
+   "thumb_01_r",
+   "thumb_02_l",
+   "thumb_02_r",
+   "thumb_03_l",
+   "thumb_03_r"
+  ],
+  "regions": [
+   "head",
+   "neck",
+   "chest",
+   "belly",
+   "hips",
+   "upperarm",
+   "lowerarm",
+   "hand",
+   "thigh",
+   "calf",
+   "foot"
+  ],
+  "rig": "human_rig.js",
+  "notes": "Morph değerleri 0..1, nötr 0.5. Hedef ağırlığı = Π pl(param, anahtarlar) (targets). Cinsiyet için kadın 0.0–0.1, erkek 0.9–1.0 kullan; yaş için ageYears tablosunu kullan. İfade/visem: units ağırlıkları = Σ tarif × ağırlık (en çok 1). Göz kırpma blink_l/blink_r. Eklemler: scene.userData.film3.jointDeltas[hedef][kemik] (metre) × ağırlık. Yüz birimleri yaşla ölçeklenir: u_mouth_* birim ağırlığı × pl(age, unitScaleByAge) (göz/kaş/çene birimleri ölçeklenmez). Göz rengi: rig.setEyes(eyeColors[ad]). Kemik adları mpfb2 game_engine + jaw, eye_l, eye_r. Y yukarı, +Z ileri, metre, ayak y=0.",
+  "assetsHash": "6ca7ac28a74f"
+ },
+ "parts": {
+  "hair": [
+   {
+    "id": "bald",
+    "url": null,
+    "label": "Kel",
+    "tint": false,
+    "suits": [
+     "m",
+     "old"
+    ]
+   },
+   {
+    "id": "short_straight",
+    "url": "parts/hair_short_straight.glb",
+    "label": "Kısa düz",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   },
+   {
+    "id": "short_side",
+    "url": "parts/hair_short_side.glb",
+    "label": "Kısa yana taranmış",
+    "tint": true,
+    "suits": [
+     "m"
+    ]
+   },
+   {
+    "id": "short_messy",
+    "url": "parts/hair_short_messy.glb",
+    "label": "Kısa dağınık",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   },
+   {
+    "id": "short_crop",
+    "url": "parts/hair_short_crop.glb",
+    "label": "Kısa kesim",
+    "tint": true,
+    "suits": [
+     "m",
+     "f"
+    ]
+   },
+   {
+    "id": "curly_afro",
+    "url": "parts/hair_curly_afro.glb",
+    "label": "Gür kıvırcık",
+    "tint": true,
+    "suits": [
+     "m",
+     "f"
+    ]
+   },
+   {
+    "id": "long",
+    "url": "parts/hair_long.glb",
+    "label": "Uzun",
+    "tint": true,
+    "suits": [
+     "f"
+    ]
+   },
+   {
+    "id": "braid",
+    "url": "parts/hair_braid.glb",
+    "label": "Örgü",
+    "tint": true,
+    "suits": [
+     "f",
+     "child"
+    ]
+   },
+   {
+    "id": "ponytail",
+    "url": "parts/hair_ponytail.glb",
+    "label": "At kuyruğu",
+    "tint": true,
+    "suits": [
+     "f"
+    ]
+   },
+   {
+    "id": "bob",
+    "url": "parts/hair_bob.glb",
+    "label": "Küt",
+    "tint": true,
+    "suits": [
+     "f"
+    ]
+   },
+   {
+    "id": "short_curly",
+    "url": "parts/hair_short_curly.glb",
+    "label": "Kısa kıvırcık",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   },
+   {
+    "id": "old_sparse",
+    "url": "parts/hair_old_sparse.glb",
+    "label": "Yaşlı seyrek (at nalı kellik)",
+    "tint": true,
+    "suits": [
+     "m",
+     "old"
+    ]
+   },
+   {
+    "id": "buzz",
+    "url": "parts/hair_buzz.glb",
+    "label": "Asker tıraşı (çok kısa)",
+    "tint": true,
+    "suits": [
+     "m",
+     "child"
+    ]
+   }
+  ],
+  "brows": [
+   {
+    "id": "thin",
+    "url": "parts/brows_thin.glb",
+    "label": "İnce",
+    "tint": true
+   },
+   {
+    "id": "normal",
+    "url": "parts/brows_normal.glb",
+    "label": "Normal",
+    "tint": true
+   },
+   {
+    "id": "thick",
+    "url": "parts/brows_thick.glb",
+    "label": "Gür",
+    "tint": true
+   },
+   {
+    "id": "arched",
+    "url": "parts/brows_arched.glb",
+    "label": "Kavisli",
+    "tint": true
+   }
+  ],
+  "lashes": [
+   {
+    "id": "lashes_short",
+    "url": "parts/lashes_lashes_short.glb",
+    "label": "Kısa kirpik",
+    "tint": true
+   },
+   {
+    "id": "lashes_long",
+    "url": "parts/lashes_lashes_long.glb",
+    "label": "Uzun kirpik",
+    "tint": true
+   }
+  ],
+  "beard": [
+   {
+    "id": "none",
+    "url": null,
+    "label": "Yok"
+   },
+   {
+    "id": "full",
+    "url": "parts/beard_full.glb",
+    "label": "Gür sakal",
+    "tint": true
+   },
+   {
+    "id": "short",
+    "url": "parts/beard_short.glb",
+    "label": "Kısa sakal / kirli sakal",
+    "tint": true
+   },
+   {
+    "id": "goatee",
+    "url": "parts/beard_goatee.glb",
+    "label": "Keçi sakalı",
+    "tint": true
+   },
+   {
+    "id": "long",
+    "url": "parts/beard_long.glb",
+    "label": "Uzun sakal (ihtiyar)",
+    "tint": true
+   }
+  ],
+  "mustache": [
+   {
+    "id": "none",
+    "url": null,
+    "label": "Yok"
+   },
+   {
+    "id": "thin",
+    "url": "parts/mustache_thin.glb",
+    "label": "İnce bıyık",
+    "tint": true
+   },
+   {
+    "id": "thick",
+    "url": "parts/mustache_thick.glb",
+    "label": "Pala bıyık",
+    "tint": true
+   },
+   {
+    "id": "handlebar",
+    "url": "parts/mustache_handlebar.glb",
+    "label": "Kalkık uçlu bıyık (paşa)",
+    "tint": true
+   }
+  ],
+  "outfit": [
+   {
+    "id": "village_man",
+    "url": "parts/outfit_village_man.glb",
+    "label": "Köylü erkek (şalvar, yelek, gömlek, kuşak)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_boy",
+    "url": "parts/outfit_village_boy.glb",
+    "label": "Köylü çocuk (gömlek, yelek, şalvar)",
+    "suits": [
+     "child",
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_man_blue",
+    "url": "parts/outfit_village_man_blue.glb",
+    "label": "Köylü erkek (lacivert yelek)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_woman",
+    "url": "parts/outfit_village_woman.glb",
+    "label": "Köylü kadın (entari, önlük, şalvar)",
+    "suits": [
+     "f"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "village_girl",
+    "url": "parts/outfit_village_girl.glb",
+    "label": "Köylü kız çocuğu (basma elbise)",
+    "suits": [
+     "f",
+     "child"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "elder_robe",
+    "url": "parts/outfit_elder_robe.glb",
+    "label": "Yaşlı cübbe (uzun, geniş kollu)",
+    "suits": [
+     "m",
+     "old"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "soldier",
+    "url": "parts/outfit_soldier.glb",
+    "label": "Asker üniforması (haki, kemer, çizme)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "pasha",
+    "url": "parts/outfit_pasha.glb",
+    "label": "Paşa üniforması (lacivert, apolet, sırma)",
+    "suits": [
+     "m",
+     "old"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "clerk",
+    "url": "parts/outfit_clerk.glb",
+    "label": "Memur (ceket, yelek, pantolon)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "worker",
+    "url": "parts/outfit_worker.glb",
+    "label": "İşçi / esnaf (iş tulumu)",
+    "suits": [
+     "m"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "lowerarm",
+     "thigh",
+     "calf",
+     "foot"
+    ]
+   },
+   {
+    "id": "city_woman",
+    "url": "parts/outfit_city_woman.glb",
+    "label": "Kasabalı kadın (uzun etekli takım)",
+    "suits": [
+     "f"
+    ],
+    "hide": [
+     "chest",
+     "belly",
+     "hips",
+     "upperarm",
+     "thigh"
+    ]
+   }
+  ],
+  "hat": [
+   {
+    "id": "none",
+    "url": null,
+    "label": "Yok"
+   },
+   {
+    "id": "fez_red",
+    "url": "parts/hat_fez_red.glb",
+    "label": "Kırmızı fes (püsküllü)",
+    "hidesHair": true
+   },
+   {
+    "id": "kalpak",
+    "url": "parts/hat_kalpak.glb",
+    "label": "Kalpak (kuzu kürkü)",
+    "hidesHair": true
+   },
+   {
+    "id": "turban",
+    "url": "parts/hat_turban.glb",
+    "label": "Sarık (kavuk üstüne sarılı)",
+    "hidesHair": true
+   },
+   {
+    "id": "yazma",
+    "url": "parts/hat_yazma.glb",
+    "label": "Yazma (başörtüsü, çene altından bağlı)",
+    "hidesHair": true
+   },
+   {
+    "id": "fedora",
+    "url": "parts/hat_fedora.glb",
+    "label": "Fötr şapka (MakeHuman CC0)",
+    "hidesHair": true
+   },
+   {
+    "id": "skullcap",
+    "url": "parts/hat_skullcap.glb",
+    "label": "Takke (beyaz örgü)",
+    "hidesHair": true
+   }
+  ],
+  "defaults": {
+   "outfit": {
+    "m": "village_man",
+    "f": "village_woman",
+    "boy": "village_boy",
+    "girl": "village_girl",
+    "old_m": "elder_robe",
+    "old_f": "village_woman"
+   },
+   "brows": "normal",
+   "lashes": {
+    "m": "lashes_short",
+    "f": "lashes_long"
+   },
+   "note": "Her karakter mutlaka bir outfit taşımalı; human.glb iç giysisi yalnızca güvenlik ağıdır."
+  }
+ }
+}

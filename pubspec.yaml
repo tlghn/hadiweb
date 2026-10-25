@@ -50,6 +50,8 @@ flutter:
     - assets/store3d/
     - assets/store3d/v1/
     - assets/store3d/thumbs/
+    # Meydan ana başlık sahne görselleri (tools/meydan_art; meydan_categories.dart › kMeydanPhotos).
+    - assets/meydan/
   fonts:
     - family: Bricolage
       fonts:

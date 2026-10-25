@@ -9,7 +9,9 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil((async () => {
-    for (const k of await caches.keys()) if (k !== CACHE) await caches.delete(k);
+    // Kitap filmi (film3) varlıkları kendi sürümlü önbelleğindedir (film3/player/assets.js): silinmez, yoksa her güncellemede
+    // film dünyası (~15 MB) yeniden iner.
+    for (const k of await caches.keys()) if (k !== CACHE && !k.startsWith('hadi-film3-')) await caches.delete(k);
     await self.clients.claim();
   })());
 });
