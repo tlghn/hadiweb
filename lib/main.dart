@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show SemanticsBinding;
@@ -5,6 +7,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hadi/app.dart' show HadiApp;
 import 'package:hadi/core/analytics.dart';
 import 'package:hadi/core/keep_awake.dart';
+import 'package:hadi/core/power_budget.dart';
 import 'package:hadi/core/money.dart' show CurrencyRate;
 import 'package:hadi/core/recent_errors.dart';
 import 'package:hadi/core/reliability/crash_reporting.dart';
@@ -50,6 +53,9 @@ Future<void> _main() async {
   await Analytics.instance.loadConsent();
   await ThemeController.instance.load();
   KeepAwake.instance.init();
+  // Güç bütçesi (hadi › core/power_budget.dart): gizli sekmede / boşta dekoratif animasyonlar durur; mobil tarayıcıda
+  // pil tasarrufu kendiliğinden açılır (saha bulgusu: web açıkken telefon ısınıyor).
+  unawaited(PowerBudget.instance.init());
   await CrashReporting.instance.init(firebaseReady: firebaseOk);
   RecentErrors.install();
   registerSecondhandHooks(); // HADİ 2. El: grup bit pazarı + profesyonel profil kancaları

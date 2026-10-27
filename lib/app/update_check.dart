@@ -36,7 +36,10 @@ class _UpdateCheckState extends State<UpdateCheck> {
     super.initState();
     if (UpdateCheck.build.isEmpty) return; // yerel geliştirme derlemesi
     Future<void>.delayed(const Duration(seconds: 20), _check);
-    _timer = Timer.periodic(const Duration(minutes: 5), (_) => _check());
+    // Gizli sekmede istek atılmaz (telefon ısınması / pil, 27 Ekim 2026); sekme görünür olunca hemen denetlenir (aşağıda).
+    _timer = Timer.periodic(const Duration(minutes: 5), (_) {
+      if (web.document.visibilityState == 'visible') _check();
+    });
     _onVisible = ((web.Event _) {
       if (web.document.visibilityState == 'visible') _check();
     }).toJS;
