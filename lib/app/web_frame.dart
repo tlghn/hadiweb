@@ -106,7 +106,11 @@ class _Intro extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Uygulamanın açılışındaki logo (15 katman; sitedeki animasyonun aynısı): giriş bir kez, figürler hareketli.
         // Büyük ve sütunda ortalı (kurucu, 24 Ekim 2026).
-        const Center(child: SizedBox(width: 240, height: 240, child: HadiLogoAnimation())),
+        // Figürler 20 sn oynar, sonra durur; fare logonun üstüne gelince bir tur daha (27 Ekim 2026, kurucu: "sekme %100
+        // işlemci harcıyor"). Eskiden döngü hiç durmuyordu: panel uygulamanın DIŞINDA olduğundan güç bütçesine
+        // (hadi › core/power_budget.dart) takılmıyor, masaüstünde her sayfada (profil dahil) saniyede 60 tam kare çizdiriyordu.
+        // Döngü ayrıca boşta, gizli sekmede ve hareketi azaltta durur.
+        const Center(child: SizedBox(width: 240, height: 240, child: HadiLogoAnimation(loopFor: Duration(seconds: 20)))),
         const SizedBox(height: 28),
         Text('Hadi, buluşalım.', style: TextStyle(fontSize: 40, height: 1.1, fontWeight: FontWeight.w700, color: ink)),
         const SizedBox(height: 14),
