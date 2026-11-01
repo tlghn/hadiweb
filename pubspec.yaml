@@ -52,6 +52,8 @@ flutter:
     - assets/store3d/thumbs/
     # Meydan ana başlık sahne görselleri (tools/meydan_art; meydan_categories.dart › kMeydanPhotos).
     - assets/meydan/
+    # Doğum günü kartı pasta görselleri (YZ ile üretildi; lib/features/birthday).
+    - assets/birthday/
   fonts:
     - family: Bricolage
       fonts:
