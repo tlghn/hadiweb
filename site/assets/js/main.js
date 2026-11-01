@@ -10,7 +10,8 @@
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------------- Etkinlik verisi ----------------
-     Takvimi güncellemek için yalnızca bu listeyi düzenleyin. */
+     Etkinlikler ve galeri herkese açık API'den gelir (api.hadisosyal.com/public/events|photos; yalnızca herkese açık
+     bilgi, fotoğraflarda yüzler bulanık). Kategori renkleri aşağıda. */
   var CATS = {
     kultur:  { ad: "Kültür & Gezi",     renk: "var(--h)" },
     sanat:   { ad: "Sanat",             renk: "var(--i)" },
@@ -20,32 +21,25 @@
     soylesi: { ad: "Söyleşi & Buluşma", renk: "var(--ink)" }
   };
 
-  var EVENTS = [
-    { id: "e1", t: "Tarihi Yarımada’da Kültür Yürüyüşü", c: "kultur", d: "2026-10-18T10:00", sure: "4 saat", yer: "Sultanahmet, İstanbul", kap: 20, dolu: 14, ucret: "350 ₺", seviye: "Kolay tempo",
-      acik: "Rehberimiz eşliğinde Hipodrom’dan Sokullu Mehmet Paşa Camii’ne uzanan, bilinen ve az bilinen durakları birleştiren bir rota. Yürüyüş, mahalle aralarında bir çay molasıyla biter." },
-    { id: "e2", t: "Belgrad Ormanı Sonbahar Rotası", c: "doga", d: "2026-10-24T09:30", sure: "3,5 saat", yer: "Neşet Suyu girişi, Sarıyer", kap: 18, dolu: 9, ucret: "200 ₺", seviye: "Orta tempo · 8 km",
-      acik: "Yaprak dökümünün en güzel haftasında, orman içi patikalarda keyifli bir yürüyüş. Grup en yavaş katılımcının temposunda ilerler; kimse geride kalmaz." },
-    { id: "e3", t: "Seramik & Çömlek Atölyesi", c: "atolye", d: "2026-10-31T14:00", sure: "3 saat", yer: "Kadıköy’de partner atölye", kap: 12, dolu: 11, ucret: "950 ₺", seviye: "Başlangıç",
-      acik: "Çamura ilk kez dokunanlar için tasarlandı. Kendi kupanızı şekillendiriyor, sırlıyorsunuz; fırınlanan eseriniz iki hafta sonra teslim ediliyor. Malzeme ücrete dahildir." },
-    { id: "e4", t: "Söyleşi: Şehirde Yavaş Yaşamak", c: "soylesi", d: "2026-11-07T19:00", sure: "2 saat", yer: "Moda, Kadıköy", kap: 30, dolu: 12, ucret: "Ücretsiz", seviye: "Herkese açık",
-      acik: "Kalabalık şehirde ritmi yavaşlatmanın yollarını konuşuyoruz. Kısa bir sunumun ardından sohbet çemberi: herkes söz alabilir, kimse zorunda değil." },
-    { id: "e5", t: "Sahil Koşusu & Pazar Kahvaltısı", c: "spor", d: "2026-11-08T08:30", sure: "3 saat", yer: "Caddebostan Sahili", kap: 25, dolu: 8, ucret: "300 ₺", seviye: "5 km · her seviye",
-      acik: "Koşmak da yürümek de serbest; iki ayrı tempo grubu oluşturuyoruz. Sonrasında sahildeki kahvaltı noktasında hep birlikte uzun bir masa." },
-    { id: "e6", t: "Rehberli Çağdaş Sanat Turu", c: "sanat", d: "2026-11-14T13:00", sure: "2,5 saat", yer: "Karaköy, İstanbul", kap: 16, dolu: 13, ucret: "450 ₺", seviye: "Herkese açık",
-      acik: "Bir sanat tarihçisi eşliğinde güncel sergiyi geziyor, ardından eserler üzerine kısa bir değerlendirme sohbeti yapıyoruz. Müze girişi ücrete dahildir." },
-    { id: "e7", t: "Kutu Oyunları & Tanışma Akşamı", c: "soylesi", d: "2026-11-22T18:30", sure: "3 saat", yer: "Beşiktaş’ta oyun kafe", kap: 24, dolu: 6, ucret: "250 ₺", seviye: "Yeni üyelere ideal",
-      acik: "Kulübe yeni katılanlar ile eski dostları aynı masalarda buluşturan, buz kıran oyunlarla dolu bir akşam. İçecek ikramı dahildir." },
-    { id: "e8", t: "Cumalıkızık Günübirlik Gezisi", c: "kultur", d: "2026-11-29T07:00", sure: "Tam gün", yer: "Kalkış: Kadıköy", kap: 30, dolu: 21, ucret: "1.450 ₺", seviye: "Kolay tempo",
-      acik: "700 yıllık Osmanlı köyünde köy kahvaltısı, sokak yürüyüşü ve Bursa’da kısa bir şehir turu. Ulaşım, kahvaltı ve rehberlik ücrete dahildir." },
-    { id: "e9", t: "Balat’ta Fotoğraf Yürüyüşü", c: "sanat", d: "2026-12-06T10:30", sure: "3 saat", yer: "Balat, Fatih", kap: 15, dolu: 4, ucret: "300 ₺", seviye: "Telefon kamerası yeterli",
-      acik: "Kompozisyon ve ışık üzerine kısa bir giriş, ardından renkli sokaklarda uygulama. Günün sonunda herkes en sevdiği karesini grupla paylaşır." },
-    { id: "e10", t: "Yoga & Nefes Buluşması", c: "spor", d: "2026-12-13T10:00", sure: "1,5 saat", yer: "Cihangir’de stüdyo", kap: 14, dolu: 10, ucret: "400 ₺", seviye: "Başlangıç",
-      acik: "Sertifikalı eğitmen eşliğinde nazik bir akış ve nefes çalışması. Mat stüdyoda mevcuttur; rahat kıyafet yeterlidir." },
-    { id: "e11", t: "El Yapımı Yılbaşı Hediyesi Atölyesi", c: "atolye", d: "2026-12-20T14:00", sure: "3 saat", yer: "Kadıköy’de partner atölye", kap: 16, dolu: 3, ucret: "750 ₺", seviye: "Başlangıç",
-      acik: "Mum, kurutulmuş çiçek ve kâğıt sanatlarıyla sevdikleriniz için kişisel hediyeler hazırlıyoruz. Tüm malzemeler ücrete dahildir." },
-    { id: "e12", t: "Yıl Sonu Buluşması", c: "soylesi", d: "2026-12-27T19:00", sure: "4 saat", yer: "Duyurulacak", kap: 60, dolu: 22, ucret: "Ücretsiz", seviye: "Tüm üyeler",
-      acik: "Yılın en sevilen anlarını birlikte hatırlıyor, yeni yılın etkinlik takvimini topluluk olarak oyluyoruz. Kulübün en sıcak gecesi." }
-  ];
+  var API = "https://api.hadisosyal.com/public";
+  var EVENTS = [];
+  /* API her zaman 200 + liste döner; ağ hatasında da boş liste. */
+  function apiGet(kind, params) {
+    var qs = Object.keys(params || {}).filter(function (k) { return params[k]; })
+      .map(function (k) { return k + "=" + encodeURIComponent(params[k]); }).join("&");
+    if (!window.fetch) return Promise.resolve([]);
+    return fetch(API + "/" + kind + (qs ? "?" + qs : ""), { headers: { Accept: "application/json" } })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { return (j && j.items) || []; })
+      .catch(function () { return []; });
+  }
+  function fromApi(x) {
+    return { id: x.eventId, t: x.name, c: "", d: x.datetime, sure: "", yer: x.location || "Duyurulacak", kap: x.capacity || 0, dolu: null,
+      ucret: (x.price && x.price.label) || "Ücretsiz", seviye: "", acik: x.description || "" };
+  }
+  function catOf(e) { return CATS[e.c] || { ad: "Etkinlik", renk: "var(--h)" }; }
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var HADI_EVENT = function (id) { return "https://hadisosyal.com/etkinlik/" + encodeURIComponent(id); };
 
   var AYLAR = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
   var AYLAR_UZUN = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -89,19 +83,26 @@
   }
 
   function card(e) {
-    var d = dt(e), cat = CATS[e.c], kalan = e.kap - e.dolu, pct = Math.round(e.dolu / e.kap * 100);
-    return '<article class="event" data-cat="' + e.c + '" style="--c:' + cat.renk + '">' +
+    var d = dt(e), cat = catOf(e);
+    var seats = "";
+    if (e.dolu != null && e.kap) {
+      var kalan = e.kap - e.dolu, pct = Math.round(e.dolu / e.kap * 100);
+      seats = '<div class="seats"><div class="seats-bar"><span data-w="' + pct + '%"></span></div>' +
+        '<div class="seats-label"><span>' + (kalan <= 3 ? 'Son ' + kalan + ' yer' : kalan + ' kişilik yer kaldı') + '</span><span>' + e.kap + ' kişilik grup</span></div></div>';
+    } else if (e.kap) {
+      seats = '<div class="seats"><div class="seats-label"><span>' + e.kap + ' kişilik grup</span></div></div>';
+    }
+    return '<article class="event" data-cat="' + esc(e.c) + '" style="--c:' + cat.renk + '">' +
       '<div class="event-top"><div class="event-date"><b>' + d.getDate() + '</b><small>' + AYLAR[d.getMonth()] + '</small></div>' +
-      '<div><span class="event-cat">' + cat.ad + '</span><h3>' + e.t + '</h3></div></div>' +
+      '<div><span class="event-cat">' + cat.ad + '</span><h3>' + esc(e.t) + '</h3></div></div>' +
       '<div class="event-body"><ul class="event-info">' +
-      '<li>' + ICON.cal + GUNLER[d.getDay()] + ', ' + saat(d) + ' · ' + e.sure + '</li>' +
-      '<li>' + ICON.pin + e.yer + '</li></ul>' +
-      '<div class="seats"><div class="seats-bar"><span data-w="' + pct + '%"></span></div>' +
-      '<div class="seats-label"><span>' + (kalan <= 3 ? 'Son ' + kalan + ' yer' : kalan + ' kişilik yer kaldı') + '</span><span>' + e.kap + ' kişilik grup</span></div></div>' +
-      '<div class="event-foot"><span class="price">' + e.ucret + '</span>' +
+      '<li>' + ICON.cal + GUNLER[d.getDay()] + ', ' + saat(d) + (e.sure ? ' · ' + esc(e.sure) : '') + '</li>' +
+      '<li>' + ICON.pin + esc(e.yer) + '</li></ul>' + seats +
+      '<div class="event-foot"><span class="price">' + esc(e.ucret) + '</span>' +
       '<span class="ev-actions">' +
-      '<button class="ev-ic" type="button" data-ics="' + e.id + '" aria-label="Takvime ekle" title="Takvime ekle">' + ICON.cal + '</button>' +
+      '<button class="ev-ic" type="button" data-ics="' + esc(e.id) + '" aria-label="Takvime ekle" title="Takvime ekle">' + ICON.cal + '</button>' +
       '<a class="ev-ic" href="' + waLink(e) + '" target="_blank" rel="noopener" aria-label="WhatsApp’ta paylaş" title="WhatsApp’ta paylaş">' + ICON.wa + '</a>' +
+      '<a class="btn btn--sm btn--h" href="' + HADI_EVENT(e.id) + '" rel="noopener">Katıl ' + ICON.arrow + '</a>' +
       '</span></div></div></article>';
   }
 
@@ -385,15 +386,35 @@
   var lb = $("#lb");
   if (lb) {
     var lbImg = $("img", lb), lbCap = $("p", lb);
-    $$("[data-lightbox]").forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault(); lbImg.src = a.href; lbImg.alt = $("img", a).alt; lbCap.textContent = $("img", a).alt;
-        lb.hidden = false; document.body.style.overflow = "hidden"; $(".lb-x", lb).focus();
-      });
+    /* Galeri sonradan (API'den) dolduğu için tıklama belgede yakalanır. */
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest("[data-lightbox]"); if (!a) return;
+      e.preventDefault(); lbImg.src = a.href; lbImg.alt = $("img", a).alt; lbCap.textContent = $("img", a).alt;
+      lb.hidden = false; document.body.style.overflow = "hidden"; $(".lb-x", lb).focus();
     });
     var lbClose = function () { lb.hidden = true; document.body.style.overflow = ""; };
     lb.addEventListener("click", function (e) { if (e.target === lb || e.target.closest(".lb-x")) lbClose(); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) lbClose(); });
+  }
+
+  /* Galeri: tamamlanan etkinliklerin albüm kareleri, yüzler oval bulanık (API yalnızca bulanık kopyayı verir). */
+  var gal = $("#api-gallery");
+  if (gal) {
+    var GCOL = ["var(--h)", "var(--a)", "var(--d)", "var(--i)", "var(--pink)"];
+    apiGet("photos", {}).then(function (items) {
+      var now = new Date();
+      items = items.filter(function (p) { return !p.datetime || new Date(p.datetime) < now; });
+      if (!items.length) { gal.innerHTML = '<p class="muted">İlk karelerimiz yakında burada.</p>'; gal.classList.add("gallery--empty"); return; }
+      gal.classList.remove("gallery--empty");
+      gal.innerHTML = items.map(function (p, i) {
+        var d = p.datetime ? new Date(p.datetime) : null;
+        var label = p.eventName + (d ? " · " + d.getDate() + " " + AYLAR_UZUN[d.getMonth()] + " " + d.getFullYear() : "");
+        var h = p.width && p.height ? Math.round(720 * p.height / p.width) : "";
+        return '<a class="g-item" href="' + esc(p.url) + '" data-lightbox style="--c:' + GCOL[i % GCOL.length] + '">' +
+          '<img src="' + esc(p.thumbUrl || p.url) + '" alt="' + esc(label) + '"' + (h ? ' width="720" height="' + h + '"' : '') + ' loading="lazy" decoding="async">' +
+          '<span>' + esc(p.eventName) + '</span></a>';
+      }).join("");
+    });
   }
 
   /* ---------------- Sen hangi harfsin? ---------------- */
@@ -863,28 +884,32 @@
   }
 
   /* ---------------- Etkinlik listeleri ---------------- */
-  var homeList = $("#home-events");
-  if (homeList) { homeList.innerHTML = EVENTS.slice(0, 6).map(card).join(""); fillSeats(homeList); }
-
-  var allList = $("#all-events");
-  if (allList) { allList.innerHTML = EVENTS.slice(0, 6).map(card).join(""); fillSeats(allList); }
-
-  /* Geri sayım */
-  var cd = $("#countdown");
-  if (cd) {
-    var nxt = upcoming()[0], box = $("#next-event");
-    if (!nxt) { if (box) box.hidden = true; }
-    else {
-      $("#next-title").textContent = nxt.t;
-      var nd = dt(nxt);
-      $("#next-meta").textContent = nd.getDate() + " " + AYLAR_UZUN[nd.getMonth()] + " " + GUNLER[nd.getDay()] + ", " + saat(nd) + " · " + nxt.yer;
-      var tick = function () {
-        var ms = Math.max(0, dt(nxt) - new Date()), s = Math.floor(ms / 1000);
-        var vals = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
-        $$("b", cd).forEach(function (b, i) { b.textContent = String(vals[i]).padStart(2, "0"); });
-      };
-      tick(); setInterval(tick, 1000);
-    }
+  var homeList = $("#home-events"), allList = $("#all-events"), cd = $("#countdown"), cdTimer = null;
+  function renderEvents() {
+    var list = upcoming(), empty = '<p class="muted">Yeni etkinlikler planlandığında burada görünecek.</p>';
+    if (homeList) { homeList.innerHTML = list.length ? list.slice(0, 6).map(card).join("") : empty; fillSeats(homeList); }
+    if (allList) { allList.innerHTML = list.length ? list.slice(0, 12).map(card).join("") : empty; fillSeats(allList); }
+    /* Geri sayım */
+    if (!cd) return;
+    var nxt = list[0], box = $("#next-event");
+    if (!nxt) { if (box) box.hidden = true; return; }
+    if (box) box.hidden = false;
+    $("#next-title").textContent = nxt.t;
+    var nd = dt(nxt);
+    $("#next-meta").textContent = nd.getDate() + " " + AYLAR_UZUN[nd.getMonth()] + " " + GUNLER[nd.getDay()] + ", " + saat(nd) + " · " + nxt.yer;
+    var tick = function () {
+      var ms = Math.max(0, dt(nxt) - new Date()), s = Math.floor(ms / 1000);
+      var vals = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+      $$("b", cd).forEach(function (b, i) { b.textContent = String(vals[i]).padStart(2, "0"); });
+    };
+    tick(); if (cdTimer) clearInterval(cdTimer); cdTimer = setInterval(tick, 1000);
+  }
+  if (homeList || allList || cd) {
+    if (cd && $("#next-event")) $("#next-event").hidden = true;
+    apiGet("events", { minDate: new Date().toISOString() }).then(function (items) {
+      EVENTS = items.map(fromApi).filter(function (e) { return e.id && e.d; });
+      renderEvents();
+    });
   }
 
   /* ---------------- Modal ---------------- */
@@ -892,17 +917,17 @@
   function openModal(id) {
     var e = EVENTS.filter(function (x) { return x.id === id; })[0];
     if (!e || !modal) return;
-    var d = dt(e), cat = CATS[e.c], kalan = e.kap - e.dolu;
+    var d = dt(e), cat = catOf(e);
     $(".modal-content", modal).innerHTML =
       '<span class="event-cat" style="--c:' + cat.renk + '">' + cat.ad + '</span>' +
-      '<h2 id="modal-title">' + e.t + '</h2><p>' + e.acik + '</p>' +
+      '<h2 id="modal-title">' + esc(e.t) + '</h2><p>' + esc(e.acik) + '</p>' +
       '<ul class="event-info">' +
       '<li>' + ICON.cal + d.getDate() + ' ' + AYLAR_UZUN[d.getMonth()] + ' ' + d.getFullYear() + ', ' + GUNLER[d.getDay()] + ' · ' + saat(d) + '</li>' +
-      '<li>' + ICON.clock + 'Süre: ' + e.sure + '</li>' +
-      '<li>' + ICON.pin + e.yer + '</li>' +
-      '<li>' + ICON.lvl + e.seviye + ' · ' + kalan + ' / ' + e.kap + ' yer boş</li></ul>' +
-      '<div class="event-foot" style="border:0;padding:0"><span class="price">' + e.ucret + '</span>' +
-      '<a class="btn" href="katil.html?etkinlik=' + e.id + '">Yerimi ayır ' + ICON.arrow + '</a></div>' +
+      (e.sure ? '<li>' + ICON.clock + 'Süre: ' + esc(e.sure) + '</li>' : '') +
+      '<li>' + ICON.pin + esc(e.yer) + '</li>' +
+      (e.kap ? '<li>' + ICON.lvl + e.kap + ' kişilik grup</li>' : '') + '</ul>' +
+      '<div class="event-foot" style="border:0;padding:0"><span class="price">' + esc(e.ucret) + '</span>' +
+      '<a class="btn" href="' + HADI_EVENT(e.id) + '" rel="noopener">Yerimi ayır ' + ICON.arrow + '</a></div>' +
       '<p class="form-note">Kayıt, <a href="katilim-kosullari.html">Etkinlik Katılım Koşulları</a>’nın kabulü anlamına gelir. Etkinlikten 48 saat öncesine kadar ücretsiz iptal.</p>';
     lastFocus = document.activeElement;
     modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
