@@ -21,15 +21,7 @@
     soylesi: { ad: "Söyleşi & Buluşma", renk: "var(--ink)" }
   };
 
-  // Doluluk %70'in altındaysa gösterilen katılıma 9 kişilik yönetim ekibi eklenir (en fazla kapasite).
-  // Sonuç kapasitenin yarısına ulaşmıyorsa gösterilmez (uygulama öncesi katılımlar sayılmadı).
-  var EKIP = 9;
-  function wentCount(n, kap) {
-    if (!n || !kap) return 0;
-    var t = n < kap * 0.7 ? Math.min(n + EKIP, kap) : n;
-    return t >= kap / 2 ? t : 0;
-  }
-  var API = "https://api.hadisosyal.com/public", API_V = "2";
+  var API = "https://api.hadisosyal.com/public", API_V = "3";
   var EVENTS = [];
   /* API her zaman 200 + liste döner; ağ hatasında da boş liste. */
   function apiGet(kind, params) {
@@ -45,7 +37,7 @@
   }
   function fromApi(x) {
     return { id: x.eventId, t: x.name, c: "", d: x.datetime, sure: "", yer: x.location || "Duyurulacak", kap: x.capacity || 0, dolu: null,
-      ucret: (x.price && x.price.label) || "Ücretsiz", seviye: "", acik: x.description || "", katilan: x.attendees || 0, img: x.imageUrl || "" };
+      ucret: (x.price && x.price.label) || "Ücretsiz", seviye: "", acik: x.description || "", katilan: x.attendees || 0 /* sunucu gösterilecek sayıyı verir; gizliyse null */, img: x.imageUrl || "" };
   }
   function catOf(e) { return CATS[e.c] || { ad: "Etkinlik", renk: "var(--h)" }; }
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -102,10 +94,10 @@
     } else if (e.kap) {
       seats = '<div class="seats"><div class="seats-label"><span>' + e.kap + ' kişilik grup</span></div></div>';
     }
-    if (past) seats = (wentCount(e.katilan, e.kap) ? '<div class="ev-went"><b>' + wentCount(e.katilan, e.kap) + '</b> kişi katıldı</div>' : "") +
+    if (past) seats = (e.katilan ? '<div class="ev-went"><b>' + e.katilan + '</b> kişi katıldı</div>' : "") +
       (e.kap ? '<div class="seats"><div class="seats-label"><span>' + e.kap + ' kişilik grup</span></div></div>' : "");
     return '<article class="event' + (e.img ? ' event--cover' : '') + (past ? ' event--past' : '') + '" data-cat="' + esc(e.c) + '" style="--c:' + cat.renk + '">' +
-      (e.img ? '<div class="event-cover"><img src="' + esc(e.img) + '" alt="" loading="lazy" decoding="async">' + (past && wentCount(e.katilan, e.kap) ? '<span>👥 ' + wentCount(e.katilan, e.kap) + '</span>' : '') + '</div>' : '') +
+      (e.img ? '<div class="event-cover"><img src="' + esc(e.img) + '" alt="" loading="lazy" decoding="async">' + (past && e.katilan ? '<span>👥 ' + e.katilan + '</span>' : '') + '</div>' : '') +
       '<div class="event-top"><div class="event-date"><b>' + d.getDate() + '</b><small>' + AYLAR[d.getMonth()] + '</small></div>' +
       '<div><span class="event-cat">' + cat.ad + '</span><h3>' + esc(e.t) + '</h3></div></div>' +
       '<div class="event-body"><ul class="event-info">' +
@@ -457,7 +449,7 @@
         var go = function () {
           if (tok !== seq) return;
           L.classList.toggle("is-intro", !!p.intro);
-          $(".hg-intro", L).innerHTML = p.intro ? '<span class="hg-kick">Anı albümü</span><b>' + esc(p.eventName) + '</b><em>' + (wentCount(p.attendees, p.capacity) ? wentCount(p.attendees, p.capacity) + " kişi katıldı · " : p.capacity ? p.capacity + " kişilik grup · " : "") + p.count + " kare</em>" : "";
+          $(".hg-intro", L).innerHTML = p.intro ? '<span class="hg-kick">Anı albümü</span><b>' + esc(p.eventName) + '</b><em>' + (p.attendees ? p.attendees + " kişi katıldı · " : p.capacity ? p.capacity + " kişilik grup · " : "") + p.count + " kare</em>" : "";
           L.href = p.url;
           img.alt = lb.ev + (lb.date ? " · " + lb.date : "");
           L.style.setProperty("--ox", (20 + Math.random() * 60) + "%");

@@ -14,6 +14,20 @@ if (-not $Flutter) {
   $cmd = Get-Command flutter -ErrorAction SilentlyContinue
   $Flutter = if ($cmd) { $cmd.Source } else { "D:\flutter\flutter\bin\flutter.bat" }
 }
+# Kilit: aynı anda iki derleme build\web'i karıştırmasın (2 Kasım 2026: 483 ve 484 birlikte derlenince index.html bir
+# derlemenin, hadi_build.txt diğerinin etiketini taşıdı → açık uygulamada sonsuz "HADİ güncellendi"). Dosya özel açılır;
+# süreç bitince (hata ya da kapanma dahil) Windows kilidi kendiliğinden bırakır. İkinci derleme ilki bitene kadar bekler.
+$lockPath = Join-Path $root "build.lock"
+$lock = $null
+$waitUntil = (Get-Date).AddMinutes(60)
+while (-not $lock) {
+  try { $lock = [IO.File]::Open($lockPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None) }
+  catch [System.IO.IOException] {
+    if ((Get-Date) -gt $waitUntil) { throw "Başka bir web derlemesi 60 dakikadır sürüyor; build.lock bırakılmadı." }
+    Write-Host "Başka bir web derlemesi sürüyor; bitmesi bekleniyor..."
+    Start-Sleep -Seconds 10
+  }
+}
 if (-not (Test-Path "..\hadimobile\pubspec.yaml")) { throw "..\hadimobile bulunamadı: klasörler yan yana olmalı (D:\hadimobile, D:\hadiweb)." }
 if (-not (Test-Path "web_config.json")) { & (Join-Path $PSScriptRoot "make_web_config.ps1") }
 $wc = Get-Content -Raw -Encoding UTF8 "web_config.json" | ConvertFrom-Json
@@ -50,9 +64,17 @@ New-Item -ItemType Directory -Force "build\web\.well-known" | Out-Null
 Copy-Item -Force "site\.well-known\*" "build\web\.well-known\"
 # Kökte 404.html olmamalı: bilinmeyen her yol uygulamayı (index.html) açar.
 if (Test-Path "build\web\404.html") { Remove-Item "build\web\404.html" }
+# Son denetim: sayfanın istediği sürüm, açık uygulamanın denetlediği sürüm ve uygulamanın kendi etiketi aynı olmalı.
+$idx = [IO.File]::ReadAllText((Join-Path $root "build\web\index.html"))
+$bt = [IO.File]::ReadAllText((Join-Path $root "build\web\hadi_build.txt")).Trim()
+$mj = [IO.File]::ReadAllText((Join-Path $root "build\web\main.dart.js"))
+if ($bt -ne $stamp -or -not $idx.Contains("'$stamp'") -or $idx.Contains("__HADI_BUILD__") -or -not $mj.Contains($stamp)) {
+  throw "Sürüm etiketleri tutarsız (beklenen $stamp); yayın yapılmadı."
+}
 Write-Host "Derleme hazır: $root\build\web"
 if ($Deploy) {
   # functions\ (proje kökünde) Pages Function olarak birlikte yüklenir; site_functions\share.js onun içine paketlenir.
   npx --yes wrangler pages deploy build/web --project-name=hadi-web --branch=main --commit-dirty=true
   if ($LASTEXITCODE -ne 0) { throw "Cloudflare yüklemesi başarısız" }
 }
+$lock.Dispose()

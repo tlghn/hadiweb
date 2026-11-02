@@ -23,3 +23,6 @@ _to_delete/
 
 # Uygulamanın görselleri: derlemede ..\hadimobile\assets'ten kopyalanır (tools/sync_assets.ps1)
 /assets/
+
+# web derleme kilidi (tools/build.ps1)
+build.lock
