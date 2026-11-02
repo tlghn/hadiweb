@@ -1382,3 +1382,79 @@ tr:last-child td { border-bottom: 0; }
   .g-emoji { font-size: 2.4rem; }
 }
 .g-over [hidden], .g-result[hidden] { display: none !important; }
+
+/* ---------------- Galeri: sonsuz carousel ---------------- */
+.hg-sec { background: #0D2033; padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(2.5rem, 5vw, 4rem); overflow: hidden; }
+.hg-sec .g-note { color: #C6D3DF; margin-top: 2rem; }
+.hg-sec .g-note a:not(.btn) { color: #fff; }
+.hg { position: relative; width: min(1180px, calc(100% - 32px)); margin: 0 auto; aspect-ratio: 16 / 10; max-height: 78vh; border-radius: 32px; overflow: hidden; background: #0a1828; box-shadow: 0 50px 100px -40px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06); outline: none; }
+.hg:focus-visible { box-shadow: 0 0 0 4px var(--a); }
+.hg-stage { position: absolute; inset: 0; touch-action: pan-y; }
+.hg-wait { position: absolute; inset: 0; display: grid; place-items: center; color: #9DB0C2; margin: 0; }
+.hg-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s cubic-bezier(.4,0,.2,1); cursor: zoom-in; display: block; }
+.hg-slide.on { opacity: 1; z-index: 1; }
+.hg-slide img { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Dikey kareler kırpılmaz: önde kare bütünüyle, arkada aynı karenin bulanık dolgusu */
+.hg-bg { object-fit: cover; filter: blur(28px) saturate(1.3) brightness(.55); transform: scale(1.2); }
+.hg-fg { object-fit: contain; transform-origin: var(--ox, 50%) var(--oy, 40%); }
+.hg-slide.on .hg-fg { animation: hg-kb 7s ease-out forwards; }
+.hg-slide.on .hg-bg { animation: hg-bgkb 7s ease-out forwards; }
+@keyframes hg-kb { from { transform: scale(1); } to { transform: scale(1.08); } }
+@keyframes hg-bgkb { from { transform: scale(1.2); } to { transform: scale(1.32); } }
+.hg-glow { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 110%, rgba(13,32,51,.9), transparent 55%), linear-gradient(180deg, rgba(13,32,51,.45), transparent 25%); pointer-events: none; }
+.hg-ui { position: absolute; inset: auto 0 0 0; z-index: 3; padding: clamp(1rem, 3vw, 2rem); display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; color: #fff; pointer-events: none; }
+.hg-ui[hidden] { display: none; }
+.hg-cap { display: grid; gap: .2rem; min-width: 0; }
+.hg-ev { font-family: var(--display); font-weight: 800; font-size: clamp(1.3rem, 3vw, 2.2rem); letter-spacing: -.02em; line-height: 1.05; text-shadow: 0 4px 24px rgba(0,0,0,.5); }
+.hg-date { color: #E8EFF5; font-weight: 600; font-size: .95rem; }
+.hg-ctrl { display: flex; align-items: center; gap: .5rem; pointer-events: auto; }
+.hg-idx { font-variant-numeric: tabular-nums; font-weight: 700; font-size: .9rem; color: #E8EFF5; min-width: 4.5em; text-align: center; }
+.hg-btn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: rgba(13,32,51,.45); color: #fff; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: background .25s, transform .25s; }
+.hg-btn:hover { background: var(--h); border-color: var(--h); transform: scale(1.06); }
+.hg-btn svg { width: 20px; height: 20px; }
+.hg-play .i-play, .hg.is-stopped .hg-play .i-pause { display: none; }
+.hg.is-stopped .hg-play .i-play { display: block; }
+.hg-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,.12); }
+.hg-bar span { display: block; height: 100%; width: 100%; transform-origin: left; background: linear-gradient(90deg, var(--h), var(--pink), var(--i), var(--a)); animation: hg-bar 5.2s linear forwards; }
+.hg.is-paused .hg-bar span { animation-play-state: paused; }
+@keyframes hg-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.hg-strips { display: grid; gap: .75rem; margin-top: clamp(1.25rem, 3vw, 2rem); -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.hg-strip { overflow: hidden; }
+.hg-track { display: flex; gap: .75rem; width: max-content; animation: hg-run var(--t, 80s) linear infinite; }
+.hg-strip--rev .hg-track { animation-direction: reverse; }
+.hg-strips:hover .hg-track { animation-play-state: paused; }
+@keyframes hg-run { to { transform: translateX(-50%); } }
+.hg-track a { display: block; flex: none; width: clamp(110px, 14vw, 170px); aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; opacity: .62; transition: opacity .3s, transform .3s, box-shadow .3s; }
+.hg-track a:hover, .hg-track a.on { opacity: 1; transform: translateY(-4px); box-shadow: 0 0 0 2px var(--h), 0 16px 30px -14px rgba(0,0,0,.7); }
+.hg-track img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 700px) {
+  .hg { aspect-ratio: 4 / 5; border-radius: 24px; }
+  .hg-ui { flex-direction: column; align-items: stretch; }
+  .hg-ctrl { justify-content: space-between; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hg-slide.on .hg-fg, .hg-slide.on .hg-bg, .hg-track { animation: none; }
+  .hg-strip { overflow-x: auto; }
+}
+
+/* Etkinlik kartı: yapay zekâ kapağı, geçmiş etkinlikte katılımcı rozeti */
+.event--cover { overflow: hidden; }
+.event-cover { position: relative; height: 150px; margin: 0 0 -.25rem; overflow: hidden; }
+.event-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.event:hover .event-cover img { transform: scale(1.06); }
+.event-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(255,255,255,.95)); }
+.event-cover span { position: absolute; z-index: 1; top: .75rem; right: .75rem; background: rgba(13,32,51,.78); color: #fff; font-weight: 800; font-size: .85rem; padding: .3rem .7rem; border-radius: 999px; backdrop-filter: blur(6px); }
+.ev-went { font-size: .95rem; color: var(--ink-2); }
+.ev-went b { font-family: var(--display); font-size: 1.35rem; color: var(--c); margin-right: .15rem; }
+.event--past .price { font-size: .95rem; font-weight: 700; color: var(--ink-2); }
+/* Carousel: etkinlik giriş karesi */
+.hg-intro { position: absolute; inset: 0; z-index: 2; display: none; flex-direction: column; justify-content: center; align-items: flex-start; gap: .5rem; padding: clamp(1.5rem, 6vw, 4.5rem); color: #fff; background: linear-gradient(90deg, rgba(13,32,51,.88), rgba(13,32,51,.25) 70%); pointer-events: none; }
+.hg-slide.is-intro .hg-intro { display: flex; }
+.hg-slide.is-intro .hg-fg { object-fit: cover; }
+.hg-kick { font-weight: 800; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; color: var(--h); }
+.hg-intro b { font-family: var(--display); font-size: clamp(2rem, 5.5vw, 4rem); line-height: 1; letter-spacing: -.03em; max-width: 14ch; }
+.hg-intro em { font-style: normal; font-weight: 700; color: #E8EFF5; font-size: 1.05rem; }
+.hg-slide.on .hg-intro b, .hg-slide.on .hg-intro em, .hg-slide.on .hg-kick { animation: hg-rise .9s var(--ease) both; }
+.hg-slide.on .hg-intro b { animation-delay: .12s; }
+.hg-slide.on .hg-intro em { animation-delay: .24s; }
+@keyframes hg-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }

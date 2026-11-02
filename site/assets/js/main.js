@@ -21,21 +21,31 @@
     soylesi: { ad: "Söyleşi & Buluşma", renk: "var(--ink)" }
   };
 
-  var API = "https://api.hadisosyal.com/public";
+  // Doluluk %70'in altındaysa gösterilen katılıma 9 kişilik yönetim ekibi eklenir (en fazla kapasite).
+  // Sonuç kapasitenin yarısına ulaşmıyorsa gösterilmez (uygulama öncesi katılımlar sayılmadı).
+  var EKIP = 9;
+  function wentCount(n, kap) {
+    if (!n || !kap) return 0;
+    var t = n < kap * 0.7 ? Math.min(n + EKIP, kap) : n;
+    return t >= kap / 2 ? t : 0;
+  }
+  var API = "https://api.hadisosyal.com/public", API_V = "2";
   var EVENTS = [];
   /* API her zaman 200 + liste döner; ağ hatasında da boş liste. */
   function apiGet(kind, params) {
     var qs = Object.keys(params || {}).filter(function (k) { return params[k]; })
       .map(function (k) { return k + "=" + encodeURIComponent(params[k]); }).join("&");
     if (!window.fetch) return Promise.resolve([]);
-    return fetch(API + "/" + kind + (qs ? "?" + qs : ""), { headers: { Accept: "application/json" } })
+    /* v: tarayıcıların eski (uzun önbellekli) yanıtı kullanmaması için; API bilinmeyen parametreyi yok sayar. */
+    qs += (qs ? "&" : "") + "v=" + API_V;
+    return fetch(API + "/" + kind + "?" + qs, { headers: { Accept: "application/json" } })
       .then(function (r) { return r.json(); })
       .then(function (j) { return (j && j.items) || []; })
       .catch(function () { return []; });
   }
   function fromApi(x) {
     return { id: x.eventId, t: x.name, c: "", d: x.datetime, sure: "", yer: x.location || "Duyurulacak", kap: x.capacity || 0, dolu: null,
-      ucret: (x.price && x.price.label) || "Ücretsiz", seviye: "", acik: x.description || "" };
+      ucret: (x.price && x.price.label) || "Ücretsiz", seviye: "", acik: x.description || "", katilan: x.attendees || 0, img: x.imageUrl || "" };
   }
   function catOf(e) { return CATS[e.c] || { ad: "Etkinlik", renk: "var(--h)" }; }
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -82,7 +92,7 @@
     return EVENTS.filter(function (e) { return dt(e) > now; }).sort(function (a, b) { return dt(a) - dt(b); });
   }
 
-  function card(e) {
+  function card(e, past) {
     var d = dt(e), cat = catOf(e);
     var seats = "";
     if (e.dolu != null && e.kap) {
@@ -92,17 +102,21 @@
     } else if (e.kap) {
       seats = '<div class="seats"><div class="seats-label"><span>' + e.kap + ' kişilik grup</span></div></div>';
     }
-    return '<article class="event" data-cat="' + esc(e.c) + '" style="--c:' + cat.renk + '">' +
+    if (past) seats = (wentCount(e.katilan, e.kap) ? '<div class="ev-went"><b>' + wentCount(e.katilan, e.kap) + '</b> kişi katıldı</div>' : "") +
+      (e.kap ? '<div class="seats"><div class="seats-label"><span>' + e.kap + ' kişilik grup</span></div></div>' : "");
+    return '<article class="event' + (e.img ? ' event--cover' : '') + (past ? ' event--past' : '') + '" data-cat="' + esc(e.c) + '" style="--c:' + cat.renk + '">' +
+      (e.img ? '<div class="event-cover"><img src="' + esc(e.img) + '" alt="" loading="lazy" decoding="async">' + (past && wentCount(e.katilan, e.kap) ? '<span>👥 ' + wentCount(e.katilan, e.kap) + '</span>' : '') + '</div>' : '') +
       '<div class="event-top"><div class="event-date"><b>' + d.getDate() + '</b><small>' + AYLAR[d.getMonth()] + '</small></div>' +
       '<div><span class="event-cat">' + cat.ad + '</span><h3>' + esc(e.t) + '</h3></div></div>' +
       '<div class="event-body"><ul class="event-info">' +
       '<li>' + ICON.cal + GUNLER[d.getDay()] + ', ' + saat(d) + (e.sure ? ' · ' + esc(e.sure) : '') + '</li>' +
       '<li>' + ICON.pin + esc(e.yer) + '</li></ul>' + seats +
-      '<div class="event-foot"><span class="price">' + esc(e.ucret) + '</span>' +
+      '<div class="event-foot"><span class="price">' + (past ? (d.getDate() + " " + AYLAR_UZUN[d.getMonth()] + " " + d.getFullYear()) : esc(e.ucret)) + '</span>' +
       '<span class="ev-actions">' +
-      '<button class="ev-ic" type="button" data-ics="' + esc(e.id) + '" aria-label="Takvime ekle" title="Takvime ekle">' + ICON.cal + '</button>' +
+      (past ? '' : '<button class="ev-ic" type="button" data-ics="' + esc(e.id) + '" aria-label="Takvime ekle" title="Takvime ekle">' + ICON.cal + '</button>') +
       '<a class="ev-ic" href="' + waLink(e) + '" target="_blank" rel="noopener" aria-label="WhatsApp’ta paylaş" title="WhatsApp’ta paylaş">' + ICON.wa + '</a>' +
-      '<a class="btn btn--sm btn--h" href="' + HADI_EVENT(e.id) + '" rel="noopener">Katıl ' + ICON.arrow + '</a>' +
+      (past ? '<a class="btn btn--sm" href="' + HADI_EVENT(e.id) + '" rel="noopener">Etkinliği gör ' + ICON.arrow + '</a>'
+        : '<a class="btn btn--sm btn--h" href="' + HADI_EVENT(e.id) + '" rel="noopener">Katıl ' + ICON.arrow + '</a>') +
       '</span></div></div></article>';
   }
 
@@ -397,23 +411,107 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lb.hidden) lbClose(); });
   }
 
-  /* Galeri: tamamlanan etkinliklerin albüm kareleri, yüzler oval bulanık (API yalnızca bulanık kopyayı verir). */
+  /* Galeri: tamamlanan etkinliklerin albüm kareleri, yüzler oval bulanık (API yalnızca bulanık kopyayı verir).
+     Sonsuz carousel: büyük sahnede kareler yavaş yakınlaşarak sırayla geçer (bitince başa döner); altta iki şerit
+     zıt yönlere kesintisiz akar. Üzerine gelince / dokununca durur; kaydırma, ok tuşları; kareye dokununca büyür. */
   var gal = $("#api-gallery");
   if (gal) {
-    var GCOL = ["var(--h)", "var(--a)", "var(--d)", "var(--i)", "var(--pink)"];
-    apiGet("photos", {}).then(function (items) {
-      var now = new Date();
-      items = items.filter(function (p) { return !p.datetime || new Date(p.datetime) < now; });
-      if (!items.length) { gal.innerHTML = '<p class="muted">İlk karelerimiz yakında burada.</p>'; gal.classList.add("gallery--empty"); return; }
-      gal.classList.remove("gallery--empty");
-      gal.innerHTML = items.map(function (p, i) {
+    Promise.all([apiGet("photos", {}), apiGet("events", {})]).then(function (r) {
+      var now = new Date(), photos = r[0], evs = {};
+      r[1].forEach(function (e) { evs[e.eventId] = e; });
+      photos = photos.filter(function (p) { return !p.datetime || new Date(p.datetime) < now; });
+      /* Her etkinliğin kareleri bir arada; önce etkinliğin giriş karesi (yapay zekâ kapağı + ad + katılımcı) */
+      var groups = [], seen = {};
+      photos.forEach(function (p) { if (!seen[p.eventId]) { seen[p.eventId] = []; groups.push(p.eventId); } seen[p.eventId].push(p); });
+      var items = [];
+      groups.forEach(function (id) {
+        var e = evs[id], first = seen[id][0];
+        if (e && e.imageUrl) items.push({ intro: true, url: e.imageUrl, thumbUrl: e.imageUrl, eventName: e.name, datetime: e.datetime, attendees: e.attendees, capacity: e.capacity, count: seen[id].length });
+        seen[id].forEach(function (p) { items.push({ url: p.url, thumbUrl: p.thumbUrl, eventName: p.eventName, datetime: p.datetime, bg: e && e.imageUrl }); });
+        void first;
+      });
+      var stage = $(".hg-stage", gal), ui = $(".hg-ui", gal);
+      if (!items.length) { stage.innerHTML = '<p class="hg-wait">İlk karelerimiz yakında burada.</p>'; return; }
+      var label = function (p) {
         var d = p.datetime ? new Date(p.datetime) : null;
-        var label = p.eventName + (d ? " · " + d.getDate() + " " + AYLAR_UZUN[d.getMonth()] + " " + d.getFullYear() : "");
-        var h = p.width && p.height ? Math.round(720 * p.height / p.width) : "";
-        return '<a class="g-item" href="' + esc(p.url) + '" data-lightbox style="--c:' + GCOL[i % GCOL.length] + '">' +
-          '<img src="' + esc(p.thumbUrl || p.url) + '" alt="' + esc(label) + '"' + (h ? ' width="720" height="' + h + '"' : '') + ' loading="lazy" decoding="async">' +
-          '<span>' + esc(p.eventName) + '</span></a>';
-      }).join("");
+        return { ev: p.eventName, date: d ? d.getDate() + " " + AYLAR_UZUN[d.getMonth()] + " " + d.getFullYear() : "" };
+      };
+      var DUR = 5200, i = -1, timer = null, paused = false, hover = false, front = 0;
+      stage.innerHTML = "";
+      var layers = [0, 1].map(function () {
+        var a = document.createElement("a"); a.className = "hg-slide"; a.setAttribute("data-lightbox", "");
+        a.innerHTML = '<img class="hg-bg" alt="" decoding="async"><img class="hg-fg" alt="" decoding="async"><span class="hg-glow"></span><div class="hg-intro"></div>';
+        stage.appendChild(a); return a;
+      });
+      ui.hidden = false;
+      var bar = $(".hg-bar span", gal), idx = $(".hg-idx", gal), ev = $(".hg-ev", gal), dt0 = $(".hg-date", gal);
+      var preload = function (n) { var im = new Image(); im.src = items[(n + items.length) % items.length].url; };
+      var seq = 0;
+      /* i = istenen kare. Her istek bir sıra numarası alır; yüklenince yalnızca EN SON istek gösterilir
+         (hızlı art arda geçişte katmanlar karışmaz). Gizli katman yeni kareyi yükler, sonra yumuşakça öne geçer. */
+      function show(n) {
+        n = (n + items.length) % items.length;
+        if (n === i) return;
+        i = n;
+        var tok = ++seq, p = items[n], L = layers[1 - front], img = $(".hg-fg", L), bg = $(".hg-bg", L), lb = label(p);
+        var go = function () {
+          if (tok !== seq) return;
+          L.classList.toggle("is-intro", !!p.intro);
+          $(".hg-intro", L).innerHTML = p.intro ? '<span class="hg-kick">Anı albümü</span><b>' + esc(p.eventName) + '</b><em>' + (wentCount(p.attendees, p.capacity) ? wentCount(p.attendees, p.capacity) + " kişi katıldı · " : p.capacity ? p.capacity + " kişilik grup · " : "") + p.count + " kare</em>" : "";
+          L.href = p.url;
+          img.alt = lb.ev + (lb.date ? " · " + lb.date : "");
+          L.style.setProperty("--ox", (20 + Math.random() * 60) + "%");
+          L.style.setProperty("--oy", (20 + Math.random() * 50) + "%");
+          L.classList.remove("on"); void L.offsetWidth; L.classList.add("on");
+          layers[front].classList.remove("on");
+          front = 1 - front;
+          ev.textContent = p.intro ? "" : lb.ev; dt0.textContent = p.intro ? "" : lb.date;
+          idx.textContent = (n + 1) + " / " + items.length;
+          bar.style.animation = "none"; void bar.offsetWidth; bar.style.animation = "";
+          gal.classList.toggle("is-paused", paused || hover);
+          $$(".hg-strip a", gal.parentNode).forEach(function (t) { t.classList.toggle("on", +t.dataset.i === n); });
+          preload(n + 1);
+        };
+        bg.src = p.bg || p.thumbUrl || p.url;
+        if (img.getAttribute("src") === p.url && img.complete) go();
+        else { img.onload = go; img.onerror = go; img.src = p.url; }
+      }
+      function tick() { clearTimeout(timer); if (!paused && !hover && !document.hidden) timer = setTimeout(function () { show(i + 1); tick(); }, DUR); }
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) { paused = true; gal.classList.add("is-paused"); }
+      var playBtn = $(".hg-play", gal);
+      var setPlay = function () { playBtn.setAttribute("aria-label", paused ? "Oynat" : "Duraklat"); gal.classList.toggle("is-stopped", paused); gal.classList.toggle("is-paused", paused || hover); };
+      $(".hg-prev", gal).addEventListener("click", function (e) { e.stopPropagation(); show(i - 1); tick(); });
+      $(".hg-next", gal).addEventListener("click", function (e) { e.stopPropagation(); show(i + 1); tick(); });
+      playBtn.addEventListener("click", function (e) { e.stopPropagation(); paused = !paused; setPlay(); tick(); });
+      gal.addEventListener("mouseenter", function () { hover = true; gal.classList.add("is-paused"); clearTimeout(timer); });
+      gal.addEventListener("mouseleave", function () { hover = false; gal.classList.toggle("is-paused", paused); tick(); });
+      gal.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") { show(i + 1); tick(); } else if (e.key === "ArrowLeft") { show(i - 1); tick(); }
+      });
+      document.addEventListener("visibilitychange", tick);
+      /* Parmakla kaydır */
+      var x0 = null, moved = false;
+      stage.addEventListener("pointerdown", function (e) { x0 = e.clientX; moved = false; });
+      stage.addEventListener("pointerup", function (e) {
+        if (x0 == null) return; var dx = e.clientX - x0; x0 = null;
+        if (Math.abs(dx) > 40) { moved = true; show(i + (dx < 0 ? 1 : -1)); tick(); }
+      });
+      stage.addEventListener("click", function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+      /* Şeritler: iki kez çoğaltılır, kesintisiz akar; dokunulan kare sahneye gelir */
+      var strips = $$(".hg-strip", gal.parentNode);
+      strips.forEach(function (st, k) {
+        var order = items.map(function (_, n) { return n; }).filter(function (n) { return !items[n].intro; });
+        if (k) order = order.slice(Math.floor(order.length / 2)).concat(order.slice(0, Math.floor(order.length / 2)));
+        var html = order.map(function (n) { var p = items[n]; return '<a href="#api-gallery" data-i="' + n + '"><img src="' + esc(p.thumbUrl || p.url) + '" alt="" loading="lazy" decoding="async"></a>'; }).join("");
+        st.innerHTML = '<div class="hg-track" style="--t:' + Math.max(40, items.length * 6) + 's">' + html + html + "</div>";
+      });
+      gal.parentNode.addEventListener("click", function (e) {
+        var t = e.target.closest(".hg-strip a"); if (!t) return;
+        e.preventDefault(); show(+t.dataset.i); tick();
+        gal.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      });
+      setPlay(); show(0); tick();
     });
   }
 
@@ -884,11 +982,19 @@
   }
 
   /* ---------------- Etkinlik listeleri ---------------- */
-  var homeList = $("#home-events"), allList = $("#all-events"), cd = $("#countdown"), cdTimer = null;
+  var homeList = $("#home-events"), allList = $("#all-events"), pastList = $("#past-events"), cd = $("#countdown"), cdTimer = null;
   function renderEvents() {
     var list = upcoming(), empty = '<p class="muted">Yeni etkinlikler planlandığında burada görünecek.</p>';
-    if (homeList) { homeList.innerHTML = list.length ? list.slice(0, 6).map(card).join("") : empty; fillSeats(homeList); }
-    if (allList) { allList.innerHTML = list.length ? list.slice(0, 12).map(card).join("") : empty; fillSeats(allList); }
+    if (homeList) { homeList.innerHTML = list.length ? list.slice(0, 6).map(function (e) { return card(e); }).join("") : empty; fillSeats(homeList); }
+    if (allList) { allList.innerHTML = list.length ? list.slice(0, 12).map(function (e) { return card(e); }).join("") : empty; fillSeats(allList); }
+    if (pastList) {
+      var now = new Date();
+      /* Sevilen etkinlik önde: en çok katılım, eşitse en yeni */
+      var past = EVENTS.filter(function (e) { return dt(e) <= now; })
+        .sort(function (a, b) { return (b.katilan - a.katilan) || (dt(b) - dt(a)); }).slice(0, 12);
+      var box = $("#past-box"); if (box) box.hidden = !past.length;
+      pastList.innerHTML = past.map(function (e) { return card(e, true); }).join("");
+    }
     /* Geri sayım */
     if (!cd) return;
     var nxt = list[0], box = $("#next-event");
@@ -904,9 +1010,9 @@
     };
     tick(); if (cdTimer) clearInterval(cdTimer); cdTimer = setInterval(tick, 1000);
   }
-  if (homeList || allList || cd) {
+  if (homeList || allList || pastList || cd) {
     if (cd && $("#next-event")) $("#next-event").hidden = true;
-    apiGet("events", { minDate: new Date().toISOString() }).then(function (items) {
+    apiGet("events", pastList ? {} : { minDate: new Date().toISOString() }).then(function (items) {
       EVENTS = items.map(fromApi).filter(function (e) { return e.id && e.d; });
       renderEvents();
     });
