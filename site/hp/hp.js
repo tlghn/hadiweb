@@ -164,6 +164,7 @@
       <section class="hp-card hp-chan" data-ch="${esc(c.id)}">
         <h2>${esc(c.label)}${c.sandbox ? ' <span class="hp-tag">TEST MODU · gerçek ödeme alınmaz</span>' : ""}</h2>
         ${c.note ? `<p class="muted small">${esc(c.note)}</p>` : ""}
+        <p class="muted small">Fiyatlara KDV dahildir.</p>
         <div class="hp-pkgs">
           ${c.packages.map((p) => `<button class="hp-pkg" type="button" data-ch="${esc(c.id)}" data-pkg="${esc(p.id)}"><b>${esc(hp(p.hp))}</b><span>${esc(tl(p.tl))} → ${esc(hp(p.hp))}</span></button>`).join("")}
         </div>
