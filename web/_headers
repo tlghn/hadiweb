@@ -56,6 +56,21 @@
 /canvaskit/*
   ! Cache-Control
   Cache-Control: public, max-age=86400
+# Uygulama kodu her zaman sürüm etiketiyle istenir (index.html / flutter_bootstrap.js › ?v=HADI_BUILD): içerik o etikette
+# hiç değişmez, tarayıcı bir kez indirir. (3 Kasım 2026: WebAssembly'ye geçince main.dart.wasm "no-cache" ile her açılışta
+# 6,5 MB yeniden iniyordu.) Etiketsiz parçalar (main.dart.js_N.part.js) burada DEĞİL: eski kopya kalmasın.
+/main.dart.wasm
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+/main.dart.mjs
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+/main.dart.js
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+/flutter_bootstrap.js
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
 # HADİ Kitap kamu malı kataloğu (hadimobile/tools/gen_book_catalog.js): yalnızca sunucu (books.adminSeedCatalog) okur.
 /books_seed/*
   ! Cache-Control
