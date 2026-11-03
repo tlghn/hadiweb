@@ -32,7 +32,7 @@
     .grecaptcha-badge { visibility: hidden !important; }
     html, body { margin: 0; height: 100%; background: #FFF8F1; overscroll-behavior: none; }
     @media (prefers-color-scheme: dark) { html, body { background: #121820; } }
-    #acilis { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+    #acilis { position: fixed; inset: 0; z-index: 2147483000; background: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
       transition: opacity .35s ease; }
     #acilis img { width: 120px; height: 120px; animation: nabiz 1.4s ease-in-out infinite; }
     #acilis span { font: 600 14px system-ui, -apple-system, "Segoe UI", sans-serif; color: #8A7A6D; letter-spacing: .2px; }
@@ -44,11 +44,18 @@
   <div id="acilis" aria-live="polite"><img src="splash.webp" alt="HADİ"><span>Hadi, açılıyor…</span></div>
   <noscript>HADİ'yi kullanmak için tarayıcında JavaScript'i aç.</noscript>
   <script>
-    // Flutter ilk kareyi çizince açılış ekranı kaybolur.
-    window.addEventListener('flutter-first-frame', function () {
-      var a = document.getElementById('acilis');
-      if (a) { a.style.opacity = '0'; setTimeout(function () { a.remove(); }, 400); }
-    });
+    // Flutter ilk kareyi çizince açılış ekranı kaybolur. Bağlantıyla açılışta (kök dışı adres: etkinlik, profil, /baglan…)
+    // ekran uygulama hedef sayfayı gösterene kadar kalır (Dart: 'hadi-ready', app.dart › _maybeReady); üye arada uygulamanın
+    // kendi açılış ekranını ve ana sayfayı görmez. Emniyet: en geç 20 sn.
+    (function () {
+      var bekle = location.pathname !== '/';
+      function kapat() {
+        var a = document.getElementById('acilis');
+        if (a && !a.dataset.kapaniyor) { a.dataset.kapaniyor = '1'; a.style.opacity = '0'; setTimeout(function () { a.remove(); }, 400); }
+      }
+      window.addEventListener('hadi-ready', kapat);
+      window.addEventListener('flutter-first-frame', function () { if (bekle) setTimeout(kapat, 20000); else kapat(); });
+    })();
   </script>
   <script>
     // Ana ekrana ekleme (PWA) köprüsü — Dart tarafı: lib/app/pwa.dart.
