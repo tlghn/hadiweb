@@ -42,7 +42,9 @@ if ($Site) { & (Join-Path $PSScriptRoot "sync_site.ps1") -Site $Site } else { & 
 if ($LASTEXITCODE -ne 0) { throw "pub get başarısız" }
 # HADI_BUILD: oyun dosyalarının sürüm etiketi (game_web_frame_web.dart; tarayıcı önbelleğindeki eski oyun dosyası kullanılmasın).
 $stamp = Get-Date -Format "yyyyMMddHHmmss"
-& $Flutter build web --release --no-web-resources-cdn --no-wasm-dry-run --dart-define-from-file=web_config.json --dart-define=HADI_BUILD=$stamp
+# --wasm (hız, 3 Kasım 2026): WebAssembly + JavaScript birlikte derlenir; tarayıcı destekliyorsa WebAssembly açılır
+# (yerel ölçüm: ilk ekran 1,67–1,92 sn → 1,19–1,37 sn). Desteklemeyen tarayıcı main.dart.js ile açılır.
+& $Flutter build web --release --wasm --no-web-resources-cdn --dart-define-from-file=web_config.json --dart-define=HADI_BUILD=$stamp
 if ($LASTEXITCODE -ne 0) { throw "web derlemesi başarısız" }
 # Sürüm etiketi: index.html ve flutter_bootstrap.js içindeki __HADI_BUILD__ yerine yazılır (uygulama dosyaları etiketle istenir;
 # telefon tarayıcısında Ctrl+F5 gerekmez). hadi_build.txt: açık uygulama yeni sürümü bununla fark eder (lib/app/update_check.dart).
@@ -86,7 +88,7 @@ if ($hashes.Count -lt 50 -or [IO.File]::ReadAllText($swf).Contains("__HADI_BUILD
 $idx = [IO.File]::ReadAllText((Join-Path $root "build\web\index.html"))
 $bt = [IO.File]::ReadAllText((Join-Path $root "build\web\hadi_build.txt")).Trim()
 $mj = [IO.File]::ReadAllText((Join-Path $root "build\web\main.dart.js"))
-if ($bt -ne $stamp -or -not $idx.Contains("'$stamp'") -or $idx.Contains("__HADI_BUILD__") -or -not $mj.Contains($stamp)) {
+if ($bt -ne $stamp -or -not $idx.Contains("'$stamp'") -or $idx.Contains("__HADI_BUILD__") -or -not $mj.Contains($stamp) -or -not (Test-Path (Join-Path $root "build\web\main.dart.wasm"))) {
   throw "Sürüm etiketleri tutarsız (beklenen $stamp); yayın yapılmadı."
 }
 Write-Host "Derleme hazır: $root\build\web"

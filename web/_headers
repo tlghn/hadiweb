@@ -6,6 +6,11 @@
 # Kamera/mikrofon/konum yalnızca bu site için ve üye izin verirse (sesli mesaj, canlı yayın / sesli oda, yakındaki etkinlikler).
 # Canlı yayın (LiveKit): sinyal wss: ve medya WebRTC (ICE/TURN, CSP dışı); connect-src https: wss: yeter, media-src blob: var.
 # Uygulama sayfaları arama motorlarına kapalı (tuval üstünde çizilir); yasal sayfalar açıktır (aşağıda).
+# Çok çekirdekli WebAssembly (3 Kasım 2026, kurucu kararı): COOP same-origin + COEP credentialless → sayfa "cross-origin
+# isolated" olur, Flutter çizimi ayrı çekirdekte yapar (skwasm). credentialless: başka adreslerden kimlik bilgisiz gelen görseller
+# (Firebase Storage, GIF) ek ayar istemez. Yerelde denendi: telefonla giriş (reCAPTCHA), fotoğraflar, GIF, oyun sahnesi. Safari
+# credentialless'ı desteklemez → orada tek çekirdekle açılır. Açılan pencerelerle açan sayfa arasındaki bağ (opener) kopar;
+# kartla ödeme yeni sekmede açıldığı ve opener kullanmadığı için etkilenmez.
 
 /*
   X-Robots-Tag: noindex, nofollow, noarchive
@@ -13,7 +18,8 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: credentialless
   Permissions-Policy: camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), interest-cohort=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.recaptcha.net https://www.googletagmanager.com https://unpkg.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss: blob: data:; frame-src 'self' https:; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self' https:
   Cache-Control: no-cache
