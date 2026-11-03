@@ -85,7 +85,8 @@
         }
       };
     })();
-    // Çevrimdışı açılışta "bağlantı yok" sayfası (sw.js; uygulama dosyalarını önbelleğe almaz).
+    // sw.js: çevrimdışı açılışta "bağlantı yok" sayfası; uygulama dosyaları (ikon, yazı tipi, görsel…) içerik parmak iziyle
+    // bir kez iner (asset_hashes.json). Sayfa ve üye verisi önbelleğe alınmaz.
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () { navigator.serviceWorker.register(new URL('sw.js', document.baseURI).href).catch(function () {}); });
     }

@@ -33,6 +33,13 @@
 /hadi_build.txt
   ! Cache-Control
   Cache-Control: no-store
+# Uygulama dosyalarının içerik parmak izleri (tools/build.ps1 yazar, sw.js okur) ve service worker'ın kendisi: her derlemede değişir.
+/asset_hashes.json
+  ! Cache-Control
+  Cache-Control: no-store
+/sw.js
+  ! Cache-Control
+  Cache-Control: no-cache
 # Tarayıcı bildirimleri service worker'ı: her açılışta güncel sürüm (Firebase Messaging; kendi kapsamında çalışır).
 /firebase-messaging-sw.js
   ! Cache-Control

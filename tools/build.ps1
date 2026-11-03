@@ -64,6 +64,24 @@ New-Item -ItemType Directory -Force "build\web\.well-known" | Out-Null
 Copy-Item -Force "site\.well-known\*" "build\web\.well-known\"
 # Kökte 404.html olmamalı: bilinmeyen her yol uygulamayı (index.html) açar.
 if (Test-Path "build\web\404.html") { Remove-Item "build\web\404.html" }
+# Uygulama dosyaları tarayıcıya bir kez iner (web/sw.js; kurucu kuralı, 3 Kasım 2026): her dosyanın içerik parmak izi
+# asset_hashes.json'a yazılır; service worker dosyayı parmak iziyle saklar, yalnızca içeriği değişeni yeniden indirir.
+# sw.js'e sürüm etiketi yazılır: her derlemede değişir, tarayıcı yeni çalışanı kurar ve yeni listeyi okur.
+$web = Join-Path $root "build\web"
+$rx = '^(assets/|icons/|favicon\.png$|splash\.webp$)'
+$sha = [Security.Cryptography.SHA256]::Create()
+$hashes = [ordered]@{}
+Get-ChildItem -Recurse -File $web | Sort-Object FullName | ForEach-Object {
+  $rel = $_.FullName.Substring($web.Length + 1).Replace('\', '/')
+  if ($rel -match $rx) {
+    $hashes[$rel] = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($_.FullName))) -replace '-', '').Substring(0, 16).ToLower()
+  }
+}
+[IO.File]::WriteAllText((Join-Path $web "asset_hashes.json"), ($hashes | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding $false))
+$swf = Join-Path $web "sw.js"
+[IO.File]::WriteAllText($swf, [IO.File]::ReadAllText($swf).Replace("__HADI_BUILD__", $stamp), (New-Object Text.UTF8Encoding $false))
+if ($hashes.Count -lt 50 -or [IO.File]::ReadAllText($swf).Contains("__HADI_BUILD__")) { throw "asset_hashes.json / sw.js hazırlanamadı; yayın yapılmadı." }
+
 # Son denetim: sayfanın istediği sürüm, açık uygulamanın denetlediği sürüm ve uygulamanın kendi etiketi aynı olmalı.
 $idx = [IO.File]::ReadAllText((Join-Path $root "build\web\index.html"))
 $bt = [IO.File]::ReadAllText((Join-Path $root "build\web\hadi_build.txt")).Trim()
