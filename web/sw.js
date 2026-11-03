@@ -10,6 +10,11 @@
 const BUILD = '__HADI_BUILD__'; // tools/build.ps1 yazar: her derlemede bu dosya değişir, tarayıcı yeni çalışanı kurar
 const CACHE = 'hadi-offline-v2';
 const ASSETS = 'hadi-assets-v1';
+// Uygulama kodu (main.dart.wasm/.mjs/.js): her zaman ?v=<sürüm> ile istenir; o adresin içeriği hiç değişmez. Tam adresle
+// (sürüm dahil) saklanır, aynı dosyanın eski sürümü silinir. (3 Kasım 2026: 6,5 MB'lık main.dart.wasm bazı tarayıcıların HTTP
+// önbelleğine sığmayıp her açılışta yeniden iniyordu.)
+const CODE = 'hadi-code-v1';
+const CODE_RE = /^main\.dart\.(wasm|mjs|js)$/;
 const OFFLINE = ['offline.html', 'splash.webp', 'icons/Icon-192.png'];
 const MANIFEST = 'asset_hashes.json?b=' + BUILD;
 // Parmak iziyle saklanan dosyaların yolları (tools/build.ps1 › asset_hashes.json ile aynı kapsam).
@@ -47,7 +52,7 @@ self.addEventListener('activate', (e) => {
   e.waitUntil((async () => {
     // Kitap filmi (film3) varlıkları kendi sürümlü önbelleğindedir (film3/player/assets.js): silinmez, yoksa her güncellemede
     // film dünyası (~15 MB) yeniden iner.
-    for (const k of await caches.keys()) if (k !== CACHE && k !== ASSETS && !k.startsWith('hadi-film3-')) await caches.delete(k);
+    for (const k of await caches.keys()) if (k !== CACHE && k !== ASSETS && k !== CODE && !k.startsWith('hadi-film3-')) await caches.delete(k);
     // Bu derlemede artık olmayan ya da içeriği değişmiş dosyaların eski kopyaları ve eski parmak izi listeleri silinir.
     const m = await manifest();
     if (m) {
@@ -74,6 +79,26 @@ async function fromAssets(req, path, hash) {
   return res;
 }
 
+// Yanıt hemen döner (WebAssembly indirilirken derlenmeye başlar); kopyası arka planda saklanır.
+async function fromCode(e, req) {
+  let c;
+  try {
+    c = await caches.open(CODE);
+    const hit = await c.match(req.url);
+    if (hit) return hit;
+  } catch (_) {}
+  const res = await fetch(req);
+  if (c && res.status === 200 && res.type === 'basic') {
+    e.waitUntil((async () => {
+      await c.put(req.url, res.clone());
+      // Aynı dosyanın başka sürümleri silinir (yalnızca son indirilen kalır).
+      const p = new URL(req.url).pathname;
+      for (const k of await c.keys()) if (new URL(k.url).pathname === p && k.url !== req.url) await c.delete(k);
+    })().catch(() => {}));
+  }
+  return res;
+}
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.mode === 'navigate') {
@@ -87,6 +112,10 @@ self.addEventListener('fetch', (e) => {
   try {
     path = decodeURIComponent(u.pathname.slice(new URL(base()).pathname.length));
   } catch (_) {
+    return;
+  }
+  if (CODE_RE.test(path) && u.searchParams.get('v')) {
+    e.respondWith(fromCode(e, req));
     return;
   }
   // Yalnızca uygulama dosyaları bu çalışandan geçer; sayfa, API, sürüm etiketi ve diğer her şey tarayıcının olağan yolundan.
