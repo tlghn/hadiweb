@@ -15,4 +15,6 @@ if (window.HADI_BUILD && _flutter.buildConfig && _flutter.buildConfig.builds) {
 }
 // 5 Kasım 2026: WebAssembly + tek çekirdekli çizim (Flutter 3.47.9). COOP/COEP olmadığı için skwasm tek çekirdekle açılır (web/_headers).
 // Çok çekirdekli çizim telefonda ilk açılışta sayfayı kilitliyordu. Sorun olursa: { config: { renderer: 'canvaskit' } }.
-_flutter.loader.load();
+// Çizim dosyaları her sürümde ayrı klasörden (ck/<etiket>/; tools/build.ps1): canvaskit/ 24 saat önbellekte durduğu için Flutter
+// sürümü değişince eski skwasm.js yeni skwasm.wasm ile birleşip uygulamayı açmıyordu (5 Kasım 2026).
+_flutter.loader.load({ config: { canvasKitBaseUrl: 'ck/' + window.HADI_BUILD + '/' } });

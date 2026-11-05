@@ -82,6 +82,13 @@ $swf = Join-Path $web "sw.js"
 [IO.File]::WriteAllText($swf, [IO.File]::ReadAllText($swf).Replace("__HADI_BUILD__", $stamp), (New-Object Text.UTF8Encoding $false))
 if ($hashes.Count -lt 50 -or [IO.File]::ReadAllText($swf).Contains("__HADI_BUILD__")) { throw "asset_hashes.json / sw.js hazırlanamadı; yayın yapılmadı." }
 
+# Çizim dosyaları sürüm klasörüne (flutter_bootstrap.js › canvasKitBaseUrl): eski önbellekle karışmaz.
+$ck = Join-Path $root "build\web\ck"
+if (Test-Path $ck) { Remove-Item -Recurse -Force $ck }
+New-Item -ItemType Directory -Force $ck | Out-Null
+Copy-Item -Recurse -Force (Join-Path $root "build\web\canvaskit") (Join-Path $ck $stamp)
+if (-not (Test-Path (Join-Path $ck "$stamp\skwasm.js"))) { throw "ck klasörü hazırlanamadı; yayın yapılmadı." }
+
 # Son denetim: sayfanın istediği sürüm, açık uygulamanın denetlediği sürüm ve uygulamanın kendi etiketi aynı olmalı.
 $idx = [IO.File]::ReadAllText((Join-Path $root "build\web\index.html"))
 $bt = [IO.File]::ReadAllText((Join-Path $root "build\web\hadi_build.txt")).Trim()
