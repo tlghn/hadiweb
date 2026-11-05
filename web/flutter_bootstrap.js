@@ -6,7 +6,6 @@
 // iziyle bir kez indirilmesi (değişen dosya yeniden iner; yeni sürüm her açılışta gelir).
 // main.dart.js sürüm etiketiyle istenir (index.html › HADI_BUILD; önbellekteki eski kopya kullanılmaz).
 // WebAssembly derlemesi (3 Kasım 2026; tools/build.ps1 --wasm): main.dart.wasm ve main.dart.mjs de aynı etiketle istenir.
-// Destekleyen tarayıcı (WasmGC: güncel Chrome/Edge/Firefox, Safari 18.2+) WebAssembly'yi, diğerleri main.dart.js'i açar.
 if (window.HADI_BUILD && _flutter.buildConfig && _flutter.buildConfig.builds) {
   for (const b of _flutter.buildConfig.builds) {
     for (const k of ['mainJsPath', 'mainWasmPath', 'jsSupportRuntimePath']) {
@@ -14,4 +13,6 @@ if (window.HADI_BUILD && _flutter.buildConfig && _flutter.buildConfig.builds) {
     }
   }
 }
-_flutter.loader.load();
+// 5 Kasım 2026: çizim yeniden CanvasKit (main.dart.js). skwasm (3 Kasım) telefonda harfleri bozuyordu; açınca düzeliyordu.
+// Derleme ikisini de üretir; yalnızca bu satır seçer.
+_flutter.loader.load({ config: { renderer: 'canvaskit' } });
