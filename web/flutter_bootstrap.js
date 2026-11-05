@@ -13,6 +13,6 @@ if (window.HADI_BUILD && _flutter.buildConfig && _flutter.buildConfig.builds) {
     }
   }
 }
-// 5 Kasım 2026: çizim yeniden CanvasKit (main.dart.js). skwasm (3 Kasım) telefonda harfleri bozuyordu; açınca düzeliyordu.
-// Derleme ikisini de üretir; yalnızca bu satır seçer.
-_flutter.loader.load({ config: { renderer: 'canvaskit' } });
+// 5 Kasım 2026: WebAssembly + tek çekirdekli çizim (Flutter 3.47.9). COOP/COEP olmadığı için skwasm tek çekirdekle açılır (web/_headers).
+// Çok çekirdekli çizim telefonda ilk açılışta sayfayı kilitliyordu. Sorun olursa: { config: { renderer: 'canvaskit' } }.
+_flutter.loader.load();

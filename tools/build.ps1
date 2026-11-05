@@ -10,10 +10,8 @@ param([switch]$Deploy, [string]$Flutter = "", [string]$Site = "")
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
-if (-not $Flutter) {
-  $cmd = Get-Command flutter -ErrorAction SilentlyContinue
-  $Flutter = if ($cmd) { $cmd.Source } else { "D:\flutter\flutter\bin\flutter.bat" }
-}
+# HADİ Web Flutter 3.47.9 ile derlenir (5 Kasım 2026); Crew, Kurucu Paneli ve telefon uygulaması D:\flutter sürümünde kalır.
+if (-not $Flutter) { $Flutter = "D:\fl347\flutter\bin\flutter.bat" }
 # Kilit: aynı anda iki derleme build\web'i karıştırmasın (2 Kasım 2026: 483 ve 484 birlikte derlenince index.html bir
 # derlemenin, hadi_build.txt diğerinin etiketini taşıdı → açık uygulamada sonsuz "HADİ güncellendi"). Dosya özel açılır;
 # süreç bitince (hata ya da kapanma dahil) Windows kilidi kendiliğinden bırakır. İkinci derleme ilki bitene kadar bekler.
