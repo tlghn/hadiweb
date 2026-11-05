@@ -80,6 +80,11 @@ class _InstallNudgeState extends State<InstallNudge> {
   }
 
   Future<void> _add() async {
+    if (_pwa.isSamsung) {
+      _close(remember: false);
+      _pwa.openInChrome();
+      return;
+    }
     if (_pwa.isIos && !_pwa.canPrompt.value) {
       setState(() => _iosHelp = true);
       return;
@@ -114,7 +119,7 @@ class _InstallNudgeState extends State<InstallNudge> {
             child: AnimatedOpacity(
               opacity: _show ? 1 : 0,
               duration: const Duration(milliseconds: 240),
-              child: _iosHelp ? _IosHelp(dark: dark, onClose: () => _close()) : _Card(dark: dark, busy: _busy, onAdd: _add, onLater: () => _close()),
+              child: _iosHelp ? _IosHelp(dark: dark, onClose: () => _close()) : _Card(dark: dark, busy: _busy, samsung: _pwa.isSamsung, onAdd: _add, onLater: () => _close()),
             ),
           ),
         ),
@@ -146,8 +151,8 @@ class _Shell extends StatelessWidget {
 }
 
 class _Card extends StatelessWidget {
-  const _Card({required this.dark, required this.busy, required this.onAdd, required this.onLater});
-  final bool dark, busy;
+  const _Card({required this.dark, required this.busy, required this.samsung, required this.onAdd, required this.onLater});
+  final bool dark, busy, samsung;
   final VoidCallback onAdd, onLater;
 
   @override
@@ -161,16 +166,16 @@ class _Card extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('HADİ\'yi ana ekrana ekle', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+            Text(samsung ? 'HADİ\'yi Chrome ile ekle' : 'HADİ\'yi ana ekrana ekle', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
             const SizedBox(height: 2),
-            Text('Uygulama gibi tek dokunuşla, tam ekran açılır.', maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.5, height: 1.3, color: sub)),
+            Text(samsung ? 'Samsung Internet ile eklenen uygulamayı Google engelliyor.' : 'Uygulama gibi tek dokunuşla, tam ekran açılır.', maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.5, height: 1.3, color: sub)),
           ]),
         ),
         const SizedBox(width: 8),
         FilledButton(
           onPressed: busy ? null : onAdd,
           style: FilledButton.styleFrom(backgroundColor: fill.bg, foregroundColor: fill.fg, padding: const EdgeInsets.symmetric(horizontal: 16), minimumSize: const Size(0, 40)),
-          child: const Text('Ekle', style: TextStyle(fontWeight: FontWeight.w700)),
+          child: Text(samsung ? 'Chrome\'da aç' : 'Ekle', style: const TextStyle(fontWeight: FontWeight.w700)),
         ),
         IconButton(onPressed: onLater, icon: Icon(Icons.close_rounded, size: 20, color: sub)),
       ]),

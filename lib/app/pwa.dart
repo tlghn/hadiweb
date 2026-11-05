@@ -38,8 +38,18 @@ class Pwa {
   /// iPhone / iPad (yükleme penceresi yok; elle eklenir).
   bool get isIos => _ok && _isIos();
 
+  /// Samsung Internet: ürettiği uygulama paketini Google Play Protect "güvenli olmayan uygulama" diye engelliyor
+  /// (5 Kasım 2026). Yükleme penceresi açılmaz, üye Chrome'a yönlendirilir.
+  bool get isSamsung => web.window.navigator.userAgent.contains('SamsungBrowser');
+
+  /// Aynı sayfayı Chrome'da açar (yoksa Android, Play Store'u açar).
+  void openInChrome() {
+    final l = web.window.location;
+    web.window.location.href = 'intent://${l.host}${l.pathname}#Intent;scheme=https;package=com.android.chrome;end';
+  }
+
   /// Bu tarayıcıda ana ekrana eklemek mümkün mü?
-  bool get available => !standalone && (canPrompt.value || isIos);
+  bool get available => !standalone && (canPrompt.value || isIos || isSamsung);
 
   void _refresh() => canPrompt.value = _ok && _canPrompt();
 
